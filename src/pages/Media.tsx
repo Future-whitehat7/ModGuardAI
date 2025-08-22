@@ -20,7 +20,12 @@ import {
   BookOpen,
   Newspaper,
   Linkedin,
-  Twitter
+  Twitter,
+  Upload,
+  Zap,
+  Eye,
+  BarChart3,
+  Settings
 } from 'lucide-react';
 
 interface PressRelease {
@@ -96,18 +101,8 @@ export const Media = () => {
               </div>
             </div>
             
-            <div className="flex items-center space-x-4">
-              <Link to="/blog" className="text-gray-600 hover:text-gray-900 font-medium">
-                Blog
-              </Link>
-              <Link
-                to="/demo"
-                className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transition-all inline-flex items-center space-x-2"
-              >
-                <MessageCircle className="h-4 w-4" />
-                <span>Try Live Demo</span>
-              </Link>
-            </div>
+            {/* Removed Blog and Try Live Demo from header */}
+            <div className="flex items-center space-x-4" />
           </div>
         </div>
       </header>
@@ -121,10 +116,10 @@ export const Media = () => {
             transition={{ duration: 0.8 }}
           >
             <h1 className="text-5xl md:text-6xl font-black text-gray-900 mb-8 leading-tight">
-              Press & Media Center
+              ModGuard AI Media Hub
             </h1>
             <p className="text-2xl text-gray-600 leading-relaxed mb-8">
-              Latest news, press releases, and media resources about ModGuard AI's mission to protect digital truth and safeguard digital authenticity worldwide.
+              Latest news, releases, and resources — unified with our Content Moderation Suite.
             </p>
             <div className="flex items-center justify-center space-x-8 text-sm text-gray-500">
               <div className="flex items-center space-x-2">
@@ -142,6 +137,81 @@ export const Media = () => {
             </div>
           </motion.div>
         </div>
+
+        {/* Inline Content Moderation Suite (merged) */}
+        <section className="mb-20">
+          <div className="bg-white rounded-3xl shadow-xl p-10 border border-gray-200">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+              Content Moderation Suite
+            </h2>
+
+            {/* Upload & Analyze */}
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8 mb-10">
+              <h3 className="text-xl font-semibold text-gray-900 mb-6">Upload & Analyze Content</h3>
+              <div className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center bg-gray-50">
+                <Upload className="h-16 w-16 text-gray-400 mx-auto mb-6" />
+                <h4 className="text-xl font-semibold text-gray-900 mb-3">Upload Content for Analysis</h4>
+                <p className="text-gray-600 mb-0 max-w-md mx-auto">
+                  Drag and drop images, videos, or audio files here, or click to select files from your computer.
+                </p>
+                <p className="text-sm text-gray-500 mt-4">Supports images, videos, and audio files (max 100MB)</p>
+              </div>
+            </div>
+
+            {/* Capabilities Grid (no demo links) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                {
+                  icon: Shield,
+                  title: 'Deepfake Detection',
+                  description: 'Advanced AI models detect synthetic media with 99.2% accuracy across all formats'
+                },
+                {
+                  icon: Globe,
+                  title: 'Cultural Context Analysis',
+                  description: 'Understands cultural nuances and regional sensitivities across 50+ markets'
+                },
+                {
+                  icon: Zap,
+                  title: 'Real-time Processing',
+                  description: 'Lightning-fast analysis with 127ms average response time for instant results'
+                },
+                {
+                  icon: Eye,
+                  title: 'Content Verification',
+                  description: 'Comprehensive authenticity verification with detailed confidence scoring'
+                },
+                {
+                  icon: BarChart3,
+                  title: 'Analytics & Reporting',
+                  description: 'Detailed insights and comprehensive reporting on all content analysis'
+                },
+                {
+                  icon: Settings,
+                  title: 'Custom Configuration',
+                  description: 'Tailored moderation settings and rules for your specific requirements'
+                }
+              ].map((feature, index) => (
+                <motion.div
+                  key={feature.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                  className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-shadow"
+                >
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="p-3 bg-blue-100 rounded-lg">
+                      <feature.icon className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900">{feature.title}</h3>
+                  </div>
+                  <p className="text-gray-600">{feature.description}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* CEO Section */}
         <section className="mb-20">
