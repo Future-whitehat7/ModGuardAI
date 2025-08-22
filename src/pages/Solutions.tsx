@@ -205,14 +205,14 @@ export const Solutions = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white flex flex-col">
       {/* Background Effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-40 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
       </div>
 
-      <div className="relative z-10">
+      <div className="relative z-10 flex-1 flex flex-col">
         {/* Header */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12">
           <motion.div
@@ -247,81 +247,8 @@ export const Solutions = () => {
           </motion.div>
         </div>
 
-        {/* Footer */}
-        <footer className="bg-gray-900 text-white py-16 mt-auto">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
-              {/* Company Info */}
-              <div>
-                <Link to="/" className="flex items-center space-x-2 mb-6">
-                  <Shield className="h-8 w-8 text-cyan-400" />
-                  <span className="text-2xl font-bold">ModGuard AI</span>
-                </Link>
-                <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-                  Defending digital truth with AI-powered content moderation and deepfake detection.
-                </p>
-              </div>
-              
-              {/* Platform */}
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Technology</h3>
-                <ul className="space-y-2 text-sm">
-                  <li><Link to="/" className="text-gray-400 hover:text-white transition-colors">Home</Link></li>
-                  <li><Link to="/features" className="text-gray-400 hover:text-white transition-colors">Features</Link></li>
-                  <li><Link to="/solutions" className="text-gray-400 hover:text-white transition-colors">Solutions</Link></li>
-                  <li><Link to="/demo" className="text-gray-400 hover:text-white transition-colors">Live Demo</Link></li>
-                </ul>
-              </div>
-              
-              {/* Media & Resources */}
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Media & Resources</h3>
-                <ul className="space-y-2 text-sm">
-                  <li><Link to="/dashboard" className="text-gray-400 hover:text-white transition-colors">Dashboard</Link></li>
-                  <li><Link to="/media" className="text-gray-400 hover:text-white transition-colors">Press & Media</Link></li>
-                  <li><Link to="/blog" className="text-gray-400 hover:text-white transition-colors">Blog</Link></li>
-                  <li><Link to="/case-studies" className="text-gray-400 hover:text-white transition-colors">Case Studies</Link></li>
-                </ul>
-              </div>
-              
-              {/* Utilities */}
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Utilities</h3>
-                <ul className="space-y-2 text-sm">
-                  <li><Link to="/api" className="text-gray-400 hover:text-white transition-colors">API Access</Link></li>
-                  <li><Link to="/resources" className="text-gray-400 hover:text-white transition-colors">FAQ</Link></li>
-                  <li><Link to="/resources" className="text-gray-400 hover:text-white transition-colors">Support</Link></li>
-                  <li><Link to="/earlyaccess" className="text-gray-400 hover:text-white transition-colors">Contact</Link></li>
-                </ul>
-              </div>
-              
-              {/* Legal */}
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Legal</h3>
-                <ul className="space-y-2 text-sm">
-                  <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link></li>
-                  <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link></li>
-                  <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors">Compliance</Link></li>
-                  <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors">Security</Link></li>
-                </ul>
-              </div>
-            </div>
-            
-            <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-              <p className="text-gray-400 text-sm">
-                © 2025 ModGuard AI. All rights reserved.
-              </p>
-              <div className="flex items-center space-x-6 mt-4 md:mt-0">
-                <Link to="/" className="text-gray-400 hover:text-white transition-colors">Home</Link>
-                <Link to="/api" className="text-gray-400 hover:text-white transition-colors">API</Link>
-                <Link to="/earlyaccess" className="text-gray-400 hover:text-white transition-colors">Contact</Link>
-              </div>
-            </div>
-          </div>
-        </footer>
-
         {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
           <AnimatePresence mode="wait">
             {!selectedSolution ? (
               // Solutions Overview Grid
@@ -511,6 +438,79 @@ export const Solutions = () => {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* Footer - Now properly positioned at the bottom */}
+      <footer className="bg-gray-900 text-white py-16 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
+            {/* Company Info */}
+            <div>
+              <Link to="/" className="flex items-center space-x-2 mb-6">
+                <Shield className="h-8 w-8 text-cyan-400" />
+                <span className="text-2xl font-bold">ModGuard AI</span>
+              </Link>
+              <p className="text-gray-400 text-sm mb-6 leading-relaxed">
+                Defending digital truth with AI-powered content moderation and deepfake detection.
+              </p>
+            </div>
+            
+            {/* Platform */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Technology</h3>
+              <ul className="space-y-2 text-sm">
+                <li><Link to="/" className="text-gray-400 hover:text-white transition-colors">Home</Link></li>
+                <li><Link to="/features" className="text-gray-400 hover:text-white transition-colors">Features</Link></li>
+                <li><Link to="/solutions" className="text-gray-400 hover:text-white transition-colors">Solutions</Link></li>
+                <li><Link to="/demo" className="text-gray-400 hover:text-white transition-colors">Live Demo</Link></li>
+              </ul>
+            </div>
+            
+            {/* Media & Resources */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Media & Resources</h3>
+              <ul className="space-y-2 text-sm">
+                <li><Link to="/dashboard" className="text-gray-400 hover:text-white transition-colors">Dashboard</Link></li>
+                <li><Link to="/media" className="text-gray-400 hover:text-white transition-colors">Press & Media</Link></li>
+                <li><Link to="/blog" className="text-gray-400 hover:text-white transition-colors">Blog</Link></li>
+                <li><Link to="/case-studies" className="text-gray-400 hover:text-white transition-colors">Case Studies</Link></li>
+              </ul>
+            </div>
+            
+            {/* Utilities */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Utilities</h3>
+              <ul className="space-y-2 text-sm">
+                <li><Link to="/api" className="text-gray-400 hover:text-white transition-colors">API Access</Link></li>
+                <li><Link to="/resources" className="text-gray-400 hover:text-white transition-colors">FAQ</Link></li>
+                <li><Link to="/resources" className="text-gray-400 hover:text-white transition-colors">Support</Link></li>
+                <li><Link to="/earlyaccess" className="text-gray-400 hover:text-white transition-colors">Contact</Link></li>
+              </ul>
+            </div>
+            
+            {/* Legal */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Legal</h3>
+              <ul className="space-y-2 text-sm">
+                <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link></li>
+                <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors">Compliance</Link></li>
+                <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors">Security</Link></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-400 text-sm">
+              © 2025 ModGuard AI. All rights reserved.
+            </p>
+            <div className="flex items-center space-x-6 mt-4 md:mt-0">
+              <Link to="/" className="text-gray-400 hover:text-white transition-colors">Home</Link>
+              <Link to="/api" className="text-gray-400 hover:text-white transition-colors">API</Link>
+              <Link to="/earlyaccess" className="text-gray-400 hover:text-white transition-colors">Contact</Link>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
