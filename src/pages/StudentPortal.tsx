@@ -125,38 +125,86 @@ import {
   UserMinus10
 } from 'lucide-react';
 
-// Generated images and video loops for different sections
+// Generated images for different sections (replacing video loops)
 const animatedAssets = {
   hero: {
-    image: "/images/hero-fellowship-ai-defenders.jpg",
-    video: "/videos/hero-fellowship-loop.mp4",
+    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop&crop=center",
     alt: "AI defenders protecting digital truth"
   },
   caseStudies: {
-    image: "/images/case-studies-hackathon-projects.jpg", 
-    video: "/videos/case-studies-loop.mp4",
+    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=600&fit=crop&crop=center", 
     alt: "Student hackathon projects making real impact"
   },
   talentMatching: {
-    image: "/images/talent-matching-purpose.jpg",
-    video: "/videos/talent-matching-loop.mp4", 
+    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop&crop=center", 
     alt: "Students discovering their purpose in AI defense"
   },
   missionTracks: {
-    image: "/images/mission-tracks-paths.jpg",
-    video: "/videos/mission-tracks-loop.mp4",
+    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop&crop=center",
     alt: "Different mission tracks for defending digital truth"
   },
   purposeCallout: {
-    image: "/images/purpose-callout-inspiration.jpg",
-    video: "/videos/purpose-callout-loop.mp4",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop&crop=center",
     alt: "Inspirational moment of purpose and calling"
   },
   application: {
-    image: "/images/application-join-movement.jpg",
-    video: "/videos/application-loop.mp4",
+    image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&h=600&fit=crop&crop=center",
     alt: "Join the movement and make a difference"
   }
+};
+
+// Animated Image Component with hover effects (no video)
+const AnimatedImage = ({ asset, className = "", isVisible = true }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <motion.div
+      className={`relative overflow-hidden rounded-2xl ${className}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ 
+        opacity: isVisible ? 1 : 0,
+        scale: isVisible ? 1 : 0.8
+      }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      whileHover={{ 
+        scale: 1.05,
+        boxShadow: "0 25px 50px rgba(0, 0, 0, 0.15)"
+      }}
+    >
+      {/* Image */}
+      <img
+        src={asset.image}
+        alt={asset.alt}
+        className="w-full h-full object-cover transition-all duration-500"
+        style={{ 
+          transform: isHovered ? 'scale(1.1)' : 'scale(1)'
+        }}
+      />
+      
+      {/* Overlay Effect */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isHovered ? 1 : 0 }}
+        transition={{ duration: 0.3 }}
+      />
+      
+      {/* Hover Icon */}
+      <motion.div
+        className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2"
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ 
+          opacity: isHovered ? 1 : 0,
+          scale: isHovered ? 1 : 0
+        }}
+        transition={{ duration: 0.3, delay: 0.1 }}
+      >
+        <Eye className="h-4 w-4 text-gray-900" />
+      </motion.div>
+    </motion.div>
+  );
 };
 
 // Mock case studies data for 2025 hackathon projects
@@ -295,78 +343,8 @@ const hackathonCaseStudies = [
   }
 ];
 
-// Animated Image Component with Video Loop
-const AnimatedImage = ({ asset, className = "", isVisible = true }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-
-  return (
-    <motion.div
-      className={`relative overflow-hidden rounded-2xl ${className}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ 
-        opacity: isVisible ? 1 : 0,
-        scale: isVisible ? 1 : 0.8
-      }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-      whileHover={{ 
-        scale: 1.05,
-        boxShadow: "0 25px 50px rgba(0, 0, 0, 0.15)"
-      }}
-    >
-      {/* Fallback Image */}
-      <img
-        src={asset.image}
-        alt={asset.alt}
-        className="w-full h-full object-cover transition-opacity duration-500"
-        style={{ 
-          opacity: isVideoLoaded && isHovered ? 0 : 1 
-        }}
-      />
-      
-      {/* Video Loop */}
-      <motion.video
-        src={asset.video}
-        className="absolute inset-0 w-full h-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-        onLoadedData={() => setIsVideoLoaded(true)}
-        style={{ 
-          opacity: isVideoLoaded && isHovered ? 1 : 0 
-        }}
-        transition={{ duration: 0.5 }}
-      />
-      
-      {/* Overlay Effect */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isHovered ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
-      />
-      
-      {/* Play Icon */}
-      <motion.div
-        className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2"
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ 
-          opacity: isHovered ? 1 : 0,
-          scale: isHovered ? 1 : 0
-        }}
-        transition={{ duration: 0.3, delay: 0.1 }}
-      >
-        <Play className="h-4 w-4 text-gray-900" />
-      </motion.div>
-    </motion.div>
-  );
-};
-
 export const StudentPortal = () => {
-  const [countdown, setCountdown] = useState({ days: 6, hours: 14, minutes: 23, seconds: 45 });
+  const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [chatOpen, setChatOpen] = useState(false);
   const [userType, setUserType] = useState('');
   const [formData, setFormData] = useState({
@@ -397,31 +375,30 @@ export const StudentPortal = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Countdown timer
+  // Countdown timer to December 31st, 2025
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown(prev => {
-        let { days, hours, minutes, seconds } = prev;
-        
-        if (seconds > 0) {
-          seconds--;
-        } else if (minutes > 0) {
-          minutes--;
-          seconds = 59;
-        } else if (hours > 0) {
-          hours--;
-          minutes = 59;
-          seconds = 59;
-        } else if (days > 0) {
-          days--;
-          hours = 23;
-          minutes = 59;
-          seconds = 59;
-        }
-        
-        return { days, hours, minutes, seconds };
-      });
-    }, 1000);
+    const calculateTimeLeft = () => {
+      const targetDate = new Date('December 31, 2025 23:59:59').getTime();
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference > 0) {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        setCountdown({ days, hours, minutes, seconds });
+      } else {
+        setCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      }
+    };
+
+    // Calculate immediately
+    calculateTimeLeft();
+
+    // Update every second
+    const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
   }, []);
