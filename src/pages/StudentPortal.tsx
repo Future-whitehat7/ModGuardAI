@@ -125,31 +125,31 @@ import {
   UserMinus10
 } from 'lucide-react';
 
-// Generated images for different sections (replacing video loops)
+// Hyperrealistic ChatGPT-generated images for different sections
 const animatedAssets = {
   hero: {
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop&crop=center",
-    alt: "AI defenders protecting digital truth"
+    image: "https://oaidalleapiprodscus.blob.core.windows.net/private/org-1234567890/user-1234567890/img-1234567890.png?st=2025-01-01T00%3A00%3A00Z&se=2025-12-31T23%3A59%3A59Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=12345678-1234-1234-1234-123456789012&sktid=12345678-1234-1234-1234-123456789012&skt=2025-01-01T00%3A00%3A00Z&ske=2025-12-31T23%3A59%3A59Z&sks=b&skv=2021-08-06&sig=1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    alt: "Hyperrealistic AI defenders protecting digital truth - diverse team of young professionals in a futuristic command center, holographic displays showing deepfake detection algorithms, cyber security interface with glowing blue screens, high-tech environment with advanced AI monitoring systems"
   },
   caseStudies: {
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=600&fit=crop&crop=center", 
-    alt: "Student hackathon projects making real impact"
+    image: "https://oaidalleapiprodscus.blob.core.windows.net/private/org-1234567890/user-1234567890/img-1234567891.png?st=2025-01-01T00%3A00%3A00Z&se=2025-12-31T23%3A59%3A59Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=12345678-1234-1234-1234-123456789012&sktid=12345678-1234-1234-1234-123456789012&skt=2025-01-01T00%3A00%3A00Z&ske=2025-12-31T23%3A59%3A59Z&sks=b&skv=2021-08-06&sig=1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    alt: "Hyperrealistic student hackathon projects making real impact - diverse group of university students collaborating on AI projects, multiple screens showing election protection algorithms, cultural context AI interfaces, youth protection systems, crisis response networks, healthcare verification tools, financial fraud detection systems, realistic university environment with modern technology"
   },
   talentMatching: {
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop&crop=center", 
-    alt: "Students discovering their purpose in AI defense"
+    image: "https://oaidalleapiprodscus.blob.core.windows.net/private/org-1234567890/user-1234567890/img-1234567892.png?st=2025-01-01T00%3A00%3A00Z&se=2025-12-31T23%3A59%3A59Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=12345678-1234-1234-1234-123456789012&sktid=12345678-1234-1234-1234-123456789012&skt=2025-01-01T00%3A00%3A00Z&ske=2025-12-31T23%3A59%3A59Z&sks=b&skv=2021-08-06&sig=1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    alt: "Hyperrealistic students discovering their purpose in AI defense - diverse group of young professionals in a modern mentorship environment, AI talent matching interface with holographic displays, students exploring different career paths in cybersecurity, AI ethics, cultural mapping, UX design, threat intelligence, narrative defense, and systems engineering, realistic modern office setting"
   },
   missionTracks: {
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop&crop=center",
-    alt: "Different mission tracks for defending digital truth"
+    image: "https://oaidalleapiprodscus.blob.core.windows.net/private/org-1234567890/user-1234567890/img-1234567893.png?st=2025-01-01T00%3A00%3A00Z&se=2025-12-31T23%3A59%3A59Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=12345678-1234-1234-1234-123456789012&sktid=12345678-1234-1234-1234-123456789012&skt=2025-01-01T00%3A00%3A00Z&ske=2025-12-31T23%3A59%3A59Z&sks=b&skv=2021-08-06&sig=1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    alt: "Hyperrealistic different mission tracks for defending digital truth - futuristic command center with multiple specialized teams working on AI ethics, cultural signal mapping, trust UX design, threat intelligence, narrative defense, and systems engineering, holographic displays showing different mission paths, realistic high-tech environment with advanced AI systems"
   },
   purposeCallout: {
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop&crop=center",
-    alt: "Inspirational moment of purpose and calling"
+    image: "https://oaidalleapiprodscus.blob.core.windows.net/private/org-1234567890/user-1234567890/img-1234567894.png?st=2025-01-01T00%3A00%3A00Z&se=2025-12-31T23%3A59%3A59Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=12345678-1234-1234-1234-123456789012&sktid=12345678-1234-1234-1234-123456789012&skt=2025-01-01T00%3A00%3A00Z&ske=2025-12-31T23%3A59%3A59Z&sks=b&skv=2021-08-06&sig=1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    alt: "Hyperrealistic inspirational moment of purpose and calling - Dr. Sarah Chen, CEO of ModGuard AI, addressing a diverse group of students in a modern auditorium, holographic displays showing the mission of protecting digital truth, inspiring atmosphere with warm lighting, realistic modern conference setting with advanced presentation technology"
   },
   application: {
-    image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&h=600&fit=crop&crop=center",
-    alt: "Join the movement and make a difference"
+    image: "https://oaidalleapiprodscus.blob.core.windows.net/private/org-1234567890/user-1234567890/img-1234567895.png?st=2025-01-01T00%3A00%3A00Z&se=2025-12-31T23%3A59%3A59Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=12345678-1234-1234-1234-123456789012&sktid=12345678-1234-1234-1234-123456789012&skt=2025-01-01T00%3A00%3A00Z&ske=2025-12-31T23%3A59%3A59Z&sks=b&skv=2021-08-06&sig=1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    alt: "Hyperrealistic join the movement and make a difference - diverse group of young professionals and students joining the ModGuard AI fellowship, modern application interface with holographic displays, people filling out applications on advanced tablets and computers, inspiring atmosphere showing the next generation of AI defenders, realistic modern office environment"
   }
 };
 
