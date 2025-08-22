@@ -125,6 +125,40 @@ import {
   UserMinus10
 } from 'lucide-react';
 
+// Generated images and video loops for different sections
+const animatedAssets = {
+  hero: {
+    image: "/images/hero-fellowship-ai-defenders.jpg",
+    video: "/videos/hero-fellowship-loop.mp4",
+    alt: "AI defenders protecting digital truth"
+  },
+  caseStudies: {
+    image: "/images/case-studies-hackathon-projects.jpg", 
+    video: "/videos/case-studies-loop.mp4",
+    alt: "Student hackathon projects making real impact"
+  },
+  talentMatching: {
+    image: "/images/talent-matching-purpose.jpg",
+    video: "/videos/talent-matching-loop.mp4", 
+    alt: "Students discovering their purpose in AI defense"
+  },
+  missionTracks: {
+    image: "/images/mission-tracks-paths.jpg",
+    video: "/videos/mission-tracks-loop.mp4",
+    alt: "Different mission tracks for defending digital truth"
+  },
+  purposeCallout: {
+    image: "/images/purpose-callout-inspiration.jpg",
+    video: "/videos/purpose-callout-loop.mp4",
+    alt: "Inspirational moment of purpose and calling"
+  },
+  application: {
+    image: "/images/application-join-movement.jpg",
+    video: "/videos/application-loop.mp4",
+    alt: "Join the movement and make a difference"
+  }
+};
+
 // Mock case studies data for 2025 hackathon projects
 const hackathonCaseStudies = [
   {
@@ -261,6 +295,76 @@ const hackathonCaseStudies = [
   }
 ];
 
+// Animated Image Component with Video Loop
+const AnimatedImage = ({ asset, className = "", isVisible = true }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+
+  return (
+    <motion.div
+      className={`relative overflow-hidden rounded-2xl ${className}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ 
+        opacity: isVisible ? 1 : 0,
+        scale: isVisible ? 1 : 0.8
+      }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      whileHover={{ 
+        scale: 1.05,
+        boxShadow: "0 25px 50px rgba(0, 0, 0, 0.15)"
+      }}
+    >
+      {/* Fallback Image */}
+      <img
+        src={asset.image}
+        alt={asset.alt}
+        className="w-full h-full object-cover transition-opacity duration-500"
+        style={{ 
+          opacity: isVideoLoaded && isHovered ? 0 : 1 
+        }}
+      />
+      
+      {/* Video Loop */}
+      <motion.video
+        src={asset.video}
+        className="absolute inset-0 w-full h-full object-cover"
+        autoPlay
+        muted
+        loop
+        playsInline
+        onLoadedData={() => setIsVideoLoaded(true)}
+        style={{ 
+          opacity: isVideoLoaded && isHovered ? 1 : 0 
+        }}
+        transition={{ duration: 0.5 }}
+      />
+      
+      {/* Overlay Effect */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isHovered ? 1 : 0 }}
+        transition={{ duration: 0.3 }}
+      />
+      
+      {/* Play Icon */}
+      <motion.div
+        className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2"
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ 
+          opacity: isHovered ? 1 : 0,
+          scale: isHovered ? 1 : 0
+        }}
+        transition={{ duration: 0.3, delay: 0.1 }}
+      >
+        <Play className="h-4 w-4 text-gray-900" />
+      </motion.div>
+    </motion.div>
+  );
+};
+
 export const StudentPortal = () => {
   const [countdown, setCountdown] = useState({ days: 6, hours: 14, minutes: 23, seconds: 45 });
   const [chatOpen, setChatOpen] = useState(false);
@@ -276,10 +380,22 @@ export const StudentPortal = () => {
   const [selectedCaseStudy, setSelectedCaseStudy] = useState(null);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [scrollY, setScrollY] = useState(0);
 
-  const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 300], [0, -50]);
-  const y2 = useTransform(scrollY, [0, 300], [0, -100]);
+  // Enhanced scroll tracking for animations
+  const { scrollYProgress } = useScroll();
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [1, 1, 1, 0]);
+
+  // Track scroll position for section animations
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Countdown timer
   useEffect(() => {
@@ -367,14 +483,65 @@ export const StudentPortal = () => {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 overflow-x-hidden">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <motion.div
+          style={{ y: y1 }}
+          className="absolute top-20 left-10 w-72 h-72 bg-cyan-500/5 rounded-full blur-3xl"
+          animate={{ 
+            rotate: 360,
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.6, 0.3]
+          }}
+          transition={{ 
+            duration: 20, 
+            repeat: Infinity, 
+            ease: "linear",
+            scale: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+            opacity: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+          }}
+        />
+        <motion.div
+          style={{ y: y2 }}
+          className="absolute top-40 right-10 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl"
+          animate={{ 
+            rotate: -360,
+            scale: [1, 0.8, 1],
+            opacity: [0.2, 0.5, 0.2]
+          }}
+          transition={{ 
+            duration: 25, 
+            repeat: Infinity, 
+            ease: "linear",
+            scale: { duration: 10, repeat: Infinity, ease: "easeInOut" },
+            opacity: { duration: 7, repeat: Infinity, ease: "easeInOut" }
+          }}
+        />
+        <motion.div
+          className="absolute bottom-20 left-1/2 w-64 h-64 bg-orange-500/5 rounded-full blur-3xl"
+          animate={{ 
+            scale: [1, 1.3, 1],
+            opacity: [0.1, 0.4, 0.1]
+          }}
+          transition={{ 
+            duration: 15, 
+            repeat: Infinity, 
+            ease: "easeInOut"
+          }}
+        />
+      </div>
+
       {/* Header - Exact match to home page */}
-      <header 
+      <motion.header 
         className="fixed top-0 w-full z-50 py-5"
         style={{
           background: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(20px)',
           borderBottom: '1px solid rgba(0,0,0,0.1)'
         }}
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
       >
         <nav className="container max-w-7xl mx-auto px-8">
           <div className="flex justify-between items-center">
@@ -545,12 +712,12 @@ export const StudentPortal = () => {
             </div>
           </div>
         </nav>
-      </header>
+      </motion.header>
 
       <div className="flex-1 flex flex-col" style={{ marginTop: '100px' }}>
-        {/* Hero Section - Exact match to home page styling */}
+        {/* Hero Section - Enhanced with animated image */}
         <section 
-          className="bg-white"
+          className="bg-white relative"
           style={{ padding: '120px 0 200px 0', textAlign: 'center', position: 'relative' }}
         >
           <motion.div
@@ -651,11 +818,25 @@ export const StudentPortal = () => {
               </motion.button>
             </motion.div>
 
-            {/* Global Impact Stats - Exact match to home page */}
+            {/* Hero Animated Image */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 1 }}
+              className="relative max-w-4xl mx-auto mb-16"
+            >
+              <AnimatedImage 
+                asset={animatedAssets.hero}
+                className="h-64 md:h-80 lg:h-96"
+                isVisible={true}
+              />
+            </motion.div>
+
+            {/* Global Impact Stats - Enhanced with animations */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 1, delay: 1 }}
+              transition={{ duration: 1, delay: 1.2 }}
               className="relative max-w-4xl mx-auto"
             >
               <div className="bg-white rounded-3xl p-10 border border-gray-200 shadow-xl">
@@ -664,36 +845,49 @@ export const StudentPortal = () => {
                 </h2>
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-cyan-500 mb-2" style={{ fontWeight: 900 }}>2,847</div>
-                    <p className="text-gray-600 font-medium">Active Fellows</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-blue-600 mb-2" style={{ fontWeight: 900 }}>47</div>
-                    <p className="text-gray-600 font-medium">Universities</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-purple-600 mb-2" style={{ fontWeight: 900 }}>127M</div>
-                    <p className="text-gray-600 font-medium">Lives Protected</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-orange-600 mb-2" style={{ fontWeight: 900 }}>23</div>
-                    <p className="text-gray-600 font-medium">Countries</p>
-                  </div>
+                  {[
+                    { value: "2,847", label: "Active Fellows", color: "text-cyan-500" },
+                    { value: "47", label: "Universities", color: "text-blue-600" },
+                    { value: "127M", label: "Lives Protected", color: "text-purple-600" },
+                    { value: "23", label: "Countries", color: "text-orange-600" }
+                  ].map((stat, index) => (
+                    <motion.div
+                      key={stat.label}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 1.4 + index * 0.1 }}
+                      className="text-center"
+                    >
+                      <motion.div 
+                        className={`text-3xl font-bold mb-2 ${stat.color}`}
+                        style={{ fontWeight: 900 }}
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ 
+                          delay: 1.6 + index * 0.1,
+                          type: "spring",
+                          stiffness: 200
+                        }}
+                      >
+                        {stat.value}
+                      </motion.div>
+                      <p className="text-gray-600 font-medium">{stat.label}</p>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
             </motion.div>
           </motion.div>
         </section>
 
-        {/* Real Projects. Real Impact. Section - Exact match to home page */}
-        <section className="py-20 bg-gray-50">
+        {/* Real Projects. Real Impact. Section - Enhanced with animated image */}
+        <section className="py-20 bg-gray-50 relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-100px" }}
               className="text-center mb-16"
             >
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6" style={{ fontWeight: 900 }}>
@@ -704,18 +898,33 @@ export const StudentPortal = () => {
               </p>
             </motion.div>
 
+            {/* Section Animated Image */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              viewport={{ once: true, margin: "-100px" }}
+              className="mb-16"
+            >
+              <AnimatedImage 
+                asset={animatedAssets.caseStudies}
+                className="h-64 md:h-80 max-w-4xl mx-auto"
+                isVisible={true}
+              />
+            </motion.div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {hackathonCaseStudies.map((caseStudy, index) => (
                 <motion.div
                   key={caseStudy.id}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.8 }}
+                  viewport={{ once: true, margin: "-50px" }}
                   whileHover={{ 
                     scale: 1.02,
-                    y: -5,
-                    boxShadow: "0 20px 40px rgba(0, 0, 0, 0.1)"
+                    y: -10,
+                    boxShadow: "0 25px 50px rgba(0, 0, 0, 0.15)"
                   }}
                   onClick={() => openCaseStudy(caseStudy)}
                   className="bg-white rounded-xl p-8 shadow-lg border border-gray-100 cursor-pointer transition-all hover:shadow-xl group"
@@ -995,14 +1204,14 @@ export const StudentPortal = () => {
           )}
         </AnimatePresence>
 
-        {/* Talent Matching - Exact match to home page */}
-        <section className="py-20 bg-white">
+        {/* Talent Matching - Enhanced with animated image */}
+        <section className="py-20 bg-white relative">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-100px" }}
               className="text-center mb-16"
             >
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6" style={{ fontWeight: 900 }}>
@@ -1011,6 +1220,21 @@ export const StudentPortal = () => {
               <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                 Let's match your unique gifts to a mission that matters
               </p>
+            </motion.div>
+
+            {/* Section Animated Image */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              viewport={{ once: true, margin: "-100px" }}
+              className="mb-16"
+            >
+              <AnimatedImage 
+                asset={animatedAssets.talentMatching}
+                className="h-64 md:h-80 max-w-4xl mx-auto"
+                isVisible={true}
+              />
             </motion.div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
@@ -1024,9 +1248,9 @@ export const StudentPortal = () => {
                   key={talent.label}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  whileHover={{ scale: 1.05 }}
+                  transition={{ delay: index * 0.1, duration: 0.8 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  whileHover={{ scale: 1.05, y: -5 }}
                   className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all text-center group"
                 >
                   <talent.icon className="h-8 w-8 text-cyan-500 mx-auto mb-3 group-hover:scale-110 transition-transform" />
@@ -1051,14 +1275,14 @@ export const StudentPortal = () => {
           </div>
         </section>
 
-        {/* Mission Tracks - Exact match to home page */}
-        <section className="py-20 bg-gray-50">
+        {/* Mission Tracks - Enhanced with animated image */}
+        <section className="py-20 bg-gray-50 relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-100px" }}
               className="text-center mb-16"
             >
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6" style={{ fontWeight: 900 }}>
@@ -1069,6 +1293,21 @@ export const StudentPortal = () => {
               <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                 Choose your path to defending digital truth
               </p>
+            </motion.div>
+
+            {/* Section Animated Image */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              viewport={{ once: true, margin: "-100px" }}
+              className="mb-16"
+            >
+              <AnimatedImage 
+                asset={animatedAssets.missionTracks}
+                className="h-64 md:h-80 max-w-4xl mx-auto"
+                isVisible={true}
+              />
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -1084,8 +1323,8 @@ export const StudentPortal = () => {
                   key={track.id}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.8 }}
+                  viewport={{ once: true, margin: "-50px" }}
                   whileHover={{ scale: 1.02, y: -5 }}
                   className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all group cursor-pointer"
                 >
@@ -1100,16 +1339,31 @@ export const StudentPortal = () => {
           </div>
         </section>
 
-        {/* Purpose Callout - Exact match to home page */}
-        <section className="py-20 bg-white">
+        {/* Purpose Callout - Enhanced with animated image */}
+        <section className="py-20 bg-white relative">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-100px" }}
               className="bg-gradient-to-r from-cyan-50 to-blue-50 border border-cyan-200 rounded-3xl p-12"
             >
+              {/* Section Animated Image */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                className="mb-8"
+              >
+                <AnimatedImage 
+                  asset={animatedAssets.purposeCallout}
+                  className="h-48 md:h-64 max-w-2xl mx-auto"
+                  isVisible={true}
+                />
+              </motion.div>
+
               <blockquote className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8 leading-tight" style={{ fontWeight: 900 }}>
                 <span className="text-gray-900">"We believe your gifts are not an accident.</span>
                 <br />
@@ -1137,14 +1391,14 @@ export const StudentPortal = () => {
           </div>
         </section>
 
-        {/* Countdown + Application - Exact match to home page */}
-        <section id="apply-section" className="py-20 bg-gradient-to-r from-orange-50 via-red-50 to-pink-50">
+        {/* Countdown + Application - Enhanced with animated image */}
+        <section id="apply-section" className="py-20 bg-gradient-to-r from-orange-50 via-red-50 to-pink-50 relative">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-100px" }}
               className="text-center"
             >
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6" style={{ fontWeight: 900 }}>
@@ -1156,6 +1410,21 @@ export const StudentPortal = () => {
               <p className="text-2xl text-gray-700 font-medium mb-8 leading-relaxed">
                 This is your moment. Ready to leave your fingerprint on something that will outlive you?
               </p>
+
+              {/* Section Animated Image */}
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                className="mb-8"
+              >
+                <AnimatedImage 
+                  asset={animatedAssets.application}
+                  className="h-48 md:h-64 max-w-2xl mx-auto"
+                  isVisible={true}
+                />
+              </motion.div>
               
               <div className="bg-white rounded-2xl p-8 border border-orange-200 mb-8 shadow-lg">
                 <p className="text-orange-600 font-medium text-lg mb-6" style={{ fontWeight: 700 }}>
@@ -1163,27 +1432,44 @@ export const StudentPortal = () => {
                 </p>
                 
                 <div className="grid grid-cols-4 gap-4 mb-8">
-                  <div className="text-center">
-                    <div className="text-4xl font-bold text-orange-600" style={{ fontWeight: 900 }}>{countdown.days}</div>
-                    <div className="text-gray-600 font-medium">Days</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-4xl font-bold text-orange-600" style={{ fontWeight: 900 }}>{countdown.hours}</div>
-                    <div className="text-gray-600 font-medium">Hours</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-4xl font-bold text-orange-600" style={{ fontWeight: 900 }}>{countdown.minutes}</div>
-                    <div className="text-gray-600 font-medium">Minutes</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-4xl font-bold text-orange-600" style={{ fontWeight: 900 }}>{countdown.seconds}</div>
-                    <div className="text-gray-600 font-medium">Seconds</div>
-                  </div>
+                  {[
+                    { value: countdown.days, label: "Days" },
+                    { value: countdown.hours, label: "Hours" },
+                    { value: countdown.minutes, label: "Minutes" },
+                    { value: countdown.seconds, label: "Seconds" }
+                  ].map((time, index) => (
+                    <motion.div
+                      key={time.label}
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.1, type: "spring", stiffness: 200 }}
+                      viewport={{ once: true }}
+                      className="text-center"
+                    >
+                      <motion.div 
+                        className="text-4xl font-bold text-orange-600"
+                        style={{ fontWeight: 900 }}
+                        key={time.value}
+                        initial={{ scale: 1 }}
+                        animate={{ scale: [1, 1.1, 1] }}
+                        transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 1 }}
+                      >
+                        {time.value}
+                      </motion.div>
+                      <div className="text-gray-600 font-medium">{time.label}</div>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
 
-              {/* Application Form - Exact match to home page */}
-              <div className="bg-white rounded-xl p-8 border border-gray-200 text-left max-w-2xl mx-auto shadow-lg">
+              {/* Application Form - Enhanced with animations */}
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                className="bg-white rounded-xl p-8 border border-gray-200 text-left max-w-2xl mx-auto shadow-lg"
+              >
                 <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center" style={{ fontWeight: 900 }}>
                   Join the Fellowship
                 </h3>
@@ -1191,7 +1477,12 @@ export const StudentPortal = () => {
                 {!submitted ? (
                   <form onSubmit={handleFormSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 }}
+                        viewport={{ once: true }}
+                      >
                         <input
                           type="text"
                           required
@@ -1200,9 +1491,14 @@ export const StudentPortal = () => {
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900"
                           placeholder="Your full name"
                         />
-                      </div>
+                      </motion.div>
                       
-                      <div>
+                      <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 }}
+                        viewport={{ once: true }}
+                      >
                         <input
                           type="text"
                           required
@@ -1211,10 +1507,15 @@ export const StudentPortal = () => {
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900"
                           placeholder="Your university"
                         />
-                      </div>
+                      </motion.div>
                     </div>
                     
-                    <div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                      viewport={{ once: true }}
+                    >
                       <input
                         type="email"
                         required
@@ -1223,9 +1524,14 @@ export const StudentPortal = () => {
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900"
                         placeholder="your.email@university.edu"
                       />
-                    </div>
+                    </motion.div>
                     
-                    <div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 }}
+                      viewport={{ once: true }}
+                    >
                       <select 
                         required
                         value={formData.superpower}
@@ -1240,9 +1546,14 @@ export const StudentPortal = () => {
                         <option value="storytelling">Storytelling & Content</option>
                         <option value="other">Other (I'll explain)</option>
                       </select>
-                    </div>
+                    </motion.div>
                     
-                    <div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 }}
+                      viewport={{ once: true }}
+                    >
                       <textarea
                         required
                         rows={4}
@@ -1251,9 +1562,15 @@ export const StudentPortal = () => {
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900"
                         placeholder="Why does protecting truth matter to you?"
                       />
-                    </div>
+                    </motion.div>
                     
-                    <div className="bg-cyan-50 border border-cyan-200 rounded-lg p-4">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6 }}
+                      viewport={{ once: true }}
+                      className="bg-cyan-50 border border-cyan-200 rounded-lg p-4"
+                    >
                       <h4 className="font-bold text-cyan-800 mb-2" style={{ fontWeight: 700 }}>What You'll Get:</h4>
                       <ul className="text-sm text-gray-700 space-y-1">
                         <li>• Direct mentorship from ModGuard AI team</li>
@@ -1262,18 +1579,29 @@ export const StudentPortal = () => {
                         <li>• Access to exclusive AI research</li>
                         <li>• Career placement opportunities</li>
                       </ul>
-                    </div>
+                    </motion.div>
                     
-                    <button 
+                    <motion.button 
                       type="submit"
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.7 }}
+                      viewport={{ once: true }}
+                      whileHover={{ scale: 1.02, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
                       className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-4 px-6 rounded-xl font-bold text-lg hover:shadow-xl transition-all"
                       style={{ fontWeight: 700 }}
                     >
                       Submit & Join the Movement
-                    </button>
+                    </motion.button>
                   </form>
                 ) : (
-                  <div className="text-center py-8">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="text-center py-8"
+                  >
                     <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
                     <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontWeight: 900 }}>
                       Application Submitted!
@@ -1282,9 +1610,9 @@ export const StudentPortal = () => {
                       Welcome to the ModGuard AI Fellowship. Redirecting to your dashboard...
                     </p>
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500 mx-auto"></div>
-                  </div>
+                  </motion.div>
                 )}
-              </div>
+              </motion.div>
             </motion.div>
           </div>
         </section>
