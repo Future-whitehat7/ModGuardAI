@@ -127,35 +127,41 @@ import {
 
 // Working images for different sections (using reliable image sources)
 const animatedAssets = {
+  // 3. News Editor Under Pressure - fits the command-center hero vibe
   hero: {
-    image: "/ai/hero.jpg",
+    image: "/ai/newsroom-election-misinformation.jpg",
     fallback: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=800&fit=crop&crop=center&q=80",
-    alt: "AI defenders protecting digital truth - diverse team of young professionals in a futuristic command center, holographic displays showing deepfake detection algorithms, cyber security interface with glowing blue screens, high-tech environment with advanced AI monitoring systems"
+    alt: "Wide overhead newsroom command center on election night, chief editor and journalists under deadline pressure, wall of monitors showing political videos with ModGuard AUTHENTIC vs DEEPFAKE flags in green and red, harsh fluorescent lighting mixed with blue screen glow, documentary realism style."
   },
+  // Case studies benefit from legal/forensics context
   caseStudies: {
-    image: "/ai/case-studies.jpg", 
+    image: "/ai/legal-team-forensic-analysis.jpg",
     fallback: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=800&fit=crop&crop=center&q=80",
-    alt: "Student hackathon projects making real impact - diverse group of university students collaborating on AI projects, multiple screens showing election protection algorithms, cultural context AI interfaces, youth protection systems, crisis response networks, healthcare verification tools, financial fraud detection systems, realistic university environment with modern technology"
+    alt: "Bird's eye view of legal defense team war room, lead attorney over table of case files, associates reviewing laptops, wall monitor with ModGuard forensic frame-by-frame manipulation detection, high-contrast legal thriller lighting with noir shadows."
   },
+  // Talent matching leans into creator crisis as a relatable scenario for students
   talentMatching: {
-    image: "/ai/talent-matching.jpg", 
+    image: "/ai/influencer-reputation-crisis.jpg",
     fallback: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&h=800&fit=crop&crop=center&q=80",
-    alt: "Students discovering their purpose in AI defense - diverse group of young professionals in a modern mentorship environment, AI talent matching interface with holographic displays, students exploring different career paths in cybersecurity, AI ethics, cultural mapping, UX design, threat intelligence, narrative defense, and systems engineering, realistic modern office setting"
+    alt: "Low dutch angle in home studio: overwhelmed female influencer with ring lights, multiple phones showing viral deepfake content, large monitor displays ModGuard verification badges on authentic content, dramatic side lighting, fashion meets crisis documentation style."
   },
+  // Mission tracks: corporate-scale coordination scene
   missionTracks: {
-    image: "/ai/mission-tracks.jpg",
+    image: "/ai/hr-executive-verification-center.jpg",
     fallback: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=800&fit=crop&crop=center&q=80",
-    alt: "Different mission tracks for defending digital truth - futuristic command center with multiple specialized teams working on AI ethics, cultural signal mapping, trust UX design, threat intelligence, narrative defense, and systems engineering, holographic displays showing different mission paths, realistic high-tech environment with advanced AI systems"
+    alt: "Wide shot of corporate crisis management center, HR director at podium addressing comms specialists, massive curved video wall with ModGuard green verification checkmarks on executive statements, clean modern lighting, high-contrast business aesthetic."
   },
+  // Purpose callout: human impact and hope
   purposeCallout: {
-    image: "/ai/purpose-callout.jpg",
+    image: "/ai/victim-finding-hope.jpg",
     fallback: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=800&fit=crop&crop=center&q=80",
-    alt: "Inspirational moment of purpose and calling - Dr. Sarah Chen, CEO of ModGuard AI, addressing a diverse group of students in a modern auditorium, holographic displays showing the mission of protecting digital truth, inspiring atmosphere with warm lighting, realistic modern conference setting with advanced presentation technology"
+    alt: "Close-up portrait of a young woman lit by cold blue laptop glow showing deepfake, tear tracks visible, second monitor with ModGuard TAKEDOWN SUCCESSFUL bright green notification, warm desk lamp split-lighting between despair and hope, emotional photojournalism style."
   },
+  // Application: family and personal protection resonate strongly
   application: {
-    image: "/ai/application.jpg",
+    image: "/ai/elderly-family-protection.jpg",
     fallback: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1200&h=800&fit=crop&crop=center&q=80",
-    alt: "Join the movement and make a difference - diverse group of young professionals and students joining the ModGuard AI fellowship, modern application interface with holographic displays, people filling out applications on advanced tablets and computers, inspiring atmosphere showing the next generation of AI defenders, realistic modern office environment"
+    alt: "Three-quarter dining table shot: grandfather with adult daughter pointing at computer showing deepfake scam email, ModGuard browser extension banner SCAM DETECTED in red, warm home lighting with natural window light, documentary family protection aesthetic."
   }
 };
 
