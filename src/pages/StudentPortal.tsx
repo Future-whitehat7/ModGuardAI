@@ -128,27 +128,33 @@ import {
 // Working images for different sections (using reliable image sources)
 const animatedAssets = {
   hero: {
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=800&fit=crop&crop=center&q=80",
+    image: "/ai/hero.jpg",
+    fallback: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=800&fit=crop&crop=center&q=80",
     alt: "AI defenders protecting digital truth - diverse team of young professionals in a futuristic command center, holographic displays showing deepfake detection algorithms, cyber security interface with glowing blue screens, high-tech environment with advanced AI monitoring systems"
   },
   caseStudies: {
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=800&fit=crop&crop=center&q=80", 
+    image: "/ai/case-studies.jpg", 
+    fallback: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=800&fit=crop&crop=center&q=80",
     alt: "Student hackathon projects making real impact - diverse group of university students collaborating on AI projects, multiple screens showing election protection algorithms, cultural context AI interfaces, youth protection systems, crisis response networks, healthcare verification tools, financial fraud detection systems, realistic university environment with modern technology"
   },
   talentMatching: {
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&h=800&fit=crop&crop=center&q=80", 
+    image: "/ai/talent-matching.jpg", 
+    fallback: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&h=800&fit=crop&crop=center&q=80",
     alt: "Students discovering their purpose in AI defense - diverse group of young professionals in a modern mentorship environment, AI talent matching interface with holographic displays, students exploring different career paths in cybersecurity, AI ethics, cultural mapping, UX design, threat intelligence, narrative defense, and systems engineering, realistic modern office setting"
   },
   missionTracks: {
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=800&fit=crop&crop=center&q=80",
+    image: "/ai/mission-tracks.jpg",
+    fallback: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=800&fit=crop&crop=center&q=80",
     alt: "Different mission tracks for defending digital truth - futuristic command center with multiple specialized teams working on AI ethics, cultural signal mapping, trust UX design, threat intelligence, narrative defense, and systems engineering, holographic displays showing different mission paths, realistic high-tech environment with advanced AI systems"
   },
   purposeCallout: {
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=800&fit=crop&crop=center&q=80",
+    image: "/ai/purpose-callout.jpg",
+    fallback: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=800&fit=crop&crop=center&q=80",
     alt: "Inspirational moment of purpose and calling - Dr. Sarah Chen, CEO of ModGuard AI, addressing a diverse group of students in a modern auditorium, holographic displays showing the mission of protecting digital truth, inspiring atmosphere with warm lighting, realistic modern conference setting with advanced presentation technology"
   },
   application: {
-    image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1200&h=800&fit=crop&crop=center&q=80",
+    image: "/ai/application.jpg",
+    fallback: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1200&h=800&fit=crop&crop=center&q=80",
     alt: "Join the movement and make a difference - diverse group of young professionals and students joining the ModGuard AI fellowship, modern application interface with holographic displays, people filling out applications on advanced tablets and computers, inspiring atmosphere showing the next generation of AI defenders, realistic modern office environment"
   }
 };
@@ -156,6 +162,11 @@ const animatedAssets = {
 // Animated Image Component with hover effects (no video)
 const AnimatedImage = ({ asset, className = "", isVisible = true }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [src, setSrc] = useState(asset.image);
+
+  useEffect(() => {
+    setSrc(asset.image);
+  }, [asset.image]);
 
   return (
     <motion.div
@@ -173,10 +184,13 @@ const AnimatedImage = ({ asset, className = "", isVisible = true }) => {
         boxShadow: "0 25px 50px rgba(0, 0, 0, 0.15)"
       }}
     >
-      {/* Image */}
+      {/* Image with graceful fallback */}
       <img
-        src={asset.image}
+        src={src}
         alt={asset.alt}
+        onError={() => {
+          if (asset.fallback && src !== asset.fallback) setSrc(asset.fallback);
+        }}
         className="w-full h-full object-cover transition-all duration-500"
         style={{ 
           transform: isHovered ? 'scale(1.1)' : 'scale(1)'
