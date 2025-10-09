@@ -27,6 +27,7 @@ const Solutions = lazy(() => import('./pages/Solutions').then(m => ({ default: m
 const Demo = lazy(() => import('./pages/Demo').then(m => ({ default: m.Demo })));
 const Blog = lazy(() => import('./pages/Blog').then(m => ({ default: m.Blog })));
 const About = lazy(() => import('./pages/About').then(m => ({ default: m.About })));
+const ERMModule = lazy(() => import('./pages/erm/ERMModule').then(m => ({ default: m.ERMModule })));
 
 const LoadingSpinner = () => (
   <div className="min-h-screen bg-white flex items-center justify-center">
@@ -67,6 +68,7 @@ function App() {
           <Route path="/resources" element={<Layout><Resources /></Layout>} />
           <Route path="/events" element={<Layout><Events /></Layout>} />
           <Route path="/media" element={<Layout><Media /></Layout>} />
+          <Route path="/erm/*" element={<ERMModule />} />
         </Routes>
       </Suspense>
     </Router>
