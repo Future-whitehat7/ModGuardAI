@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "ModGuardAI",
+    "slug": "modguardai",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F172A"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.modguardai.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "ModGuardAI needs access to your camera to scan and verify media.",
+        "NSMicrophoneUsageDescription": "ModGuardAI needs access to your microphone to analyze audio for deepfakes.",
+        "NSPhotoLibraryUsageDescription": "ModGuardAI needs access to your photo library to scan images and videos.",
+        "NSFaceIDUsageDescription": "ModGuardAI uses Face ID to securely log you in."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0F172A"
+      },
+      "package": "com.modguardai.app",
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-camera",
+      "expo-av",
+      "expo-local-authentication"
+    ]
+  }
+}
