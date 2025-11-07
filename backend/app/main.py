@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .core.config import settings
+from .api import auth
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -32,9 +33,11 @@ async def health_check():
     return {"status": "healthy"}
 
 
-# Include routers (these would be created separately)
-# from .api import auth, verify, challenges, labs, badges, lessons, users
-# app.include_router(auth.router, prefix=f"{settings.API_V1_PREFIX}/auth", tags=["auth"])
+# Include routers
+app.include_router(auth.router, prefix=f"{settings.API_V1_PREFIX}/auth", tags=["Authentication"])
+
+# TODO: Implement remaining routers
+# from .api import verify, challenges, labs, badges, lessons, users
 # app.include_router(verify.router, prefix=f"{settings.API_V1_PREFIX}/verify", tags=["verify"])
 # app.include_router(challenges.router, prefix=f"{settings.API_V1_PREFIX}/challenges", tags=["challenges"])
 # app.include_router(labs.router, prefix=f"{settings.API_V1_PREFIX}/labs", tags=["labs"])
