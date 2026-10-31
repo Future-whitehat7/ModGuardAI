@@ -7,6 +7,12 @@
 
 # Former pages described products that are not shipped. Send them home.
 [[redirects]]
+  from = "/pulse.json"
+  to = "/.netlify/functions/threats"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/features"
   to = "/"
   status = 301
