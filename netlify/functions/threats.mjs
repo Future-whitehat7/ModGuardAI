@@ -13,7 +13,7 @@ export default async () => {
       // Keep the last good payload. The client also falls back to /threats.json.
     }
   }
-  const body = cached.body ?? { asOf: null, stats: [], pulses: [], items: [], dots: [], skipped: ['No public data available.'] };
+  const body = cached.body ?? { asOf: null, stats: [], items: [], skipped: ['No public data available.'] };
   return new Response(JSON.stringify(body), {
     headers: {
       'content-type': 'application/json; charset=utf-8',

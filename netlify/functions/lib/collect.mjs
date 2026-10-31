@@ -4,26 +4,8 @@ const FEEDS = [
   ['CISA', 'https://www.cisa.gov/cybersecurity-advisories/all.xml', 'https://www.cisa.gov/news-events/cybersecurity-advisories'],
 ];
 
-const PLACES = [
-  ['US', 'United States', -97, 38], ['GB', 'United Kingdom', -2, 54], ['UA', 'Ukraine', 32, 49],
-  ['RU', 'Russia', 90, 60], ['CN', 'China', 104, 35], ['IR', 'Iran', 53, 32], ['IL', 'Israel', 35, 31],
-  ['IN', 'India', 79, 22], ['PK', 'Pakistan', 69, 30], ['KP', 'North Korea', 127, 40],
-  ['KR', 'South Korea', 128, 36], ['JP', 'Japan', 138, 36], ['TW', 'Taiwan', 121, 24],
-  ['AU', 'Australia', 134, -25], ['CA', 'Canada', -106, 56], ['MX', 'Mexico', -102, 23],
-  ['BR', 'Brazil', -52, -10], ['DE', 'Germany', 10, 51], ['FR', 'France', 2, 46],
-  ['IT', 'Italy', 12, 43], ['ES', 'Spain', -4, 40], ['NL', 'Netherlands', 5, 52],
-  ['PL', 'Poland', 20, 52], ['TR', 'Turkey', 35, 39], ['SA', 'Saudi Arabia', 45, 24],
-  ['AE', 'United Arab Emirates', 54, 24], ['SG', 'Singapore', 104, 1], ['VN', 'Vietnam', 108, 14],
-  ['ID', 'Indonesia', 118, -2], ['NG', 'Nigeria', 8, 10], ['ZA', 'South Africa', 25, -29],
-  ['EG', 'Egypt', 30, 27], ['KE', 'Kenya', 38, 0], ['PH', 'Philippines', 122, 12],
-];
-
 const AI_TITLE = /\b(AI|LLM|LLMs|ChatGPT|OpenAI|Claude|Gemini|deepfake|machine learning|generative)\b/i;
 const DAY = 86400000;
-
-function point(lon, lat) {
-  return { x: ((lon + 180) / 360) * 100, y: ((90 - lat) / 180) * 50 };
-}
 
 function decode(value) {
   return value
@@ -149,39 +131,17 @@ export async function collectThreats(now = Date.now()) {
     }
   } else skipped.push('NVD');
 
-  const pulses = [];
   if (feodoText) {
     try {
       const rows = JSON.parse(feodoText);
-      const online = Array.isArray(rows) ? rows.filter((row) => row.status === 'online' && typeof row.country === 'string' && row.country) : [];
+      const online = Array.isArray(rows) ? rows.filter((row) => row.status === 'online').length : 0;
       stats.push({
-        label: 'Online botnet C2 hosts with a country field',
-        value: online.length,
+        label: 'Online botnet C2 hosts',
+        value: online,
         source: 'abuse.ch Feodo Tracker',
         url: 'https://feodotracker.abuse.ch/',
         asOf,
       });
-      const grouped = new Map();
-      for (const row of online) {
-        const code = row.country.toUpperCase();
-        const bucket = grouped.get(code) ?? [];
-        bucket.push(row.malware);
-        grouped.set(code, bucket);
-      }
-      for (const [code, names] of grouped) {
-        const place = PLACES.find(([iso]) => iso === code);
-        const located = place ? point(place[2], place[3]) : { x: null, y: null };
-        pulses.push({
-          country: place ? place[1] : code,
-          code,
-          count: names.length,
-          x: located.x,
-          y: located.y,
-          source: 'abuse.ch Feodo Tracker',
-          url: 'https://feodotracker.abuse.ch/',
-          asOf,
-        });
-      }
     } catch {
       skipped.push('Feodo Tracker');
     }
@@ -209,12 +169,5 @@ export async function collectThreats(now = Date.now()) {
 
   skipped.push('URLhaus and ThreatFox require an API key, so they are omitted.');
 
-  return {
-    asOf,
-    stats,
-    pulses,
-    items,
-    dots: PLACES.map(([, name, lon, lat]) => ({ name, ...point(lon, lat) })),
-    skipped,
-  };
+  return { asOf, stats, items, skipped };
 }
