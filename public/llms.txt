@@ -1,0 +1,34 @@
+# ModGuard AI
+
+> AI safety studio. The only live product is ScamCheck, a free AI scam checker.
+
+ModGuard AI (https://modguardai.org) is an AI safety studio. ScamCheck (https://scamcheck.modguardai.org) is the first shipped tool.
+
+## ScamCheck
+
+ScamCheck is a free AI scam checker. You can submit:
+
+- a message, including a text or email
+- a link
+- a screenshot of a text or email
+
+A check returns an AI verdict. Links are also checked against known-phishing blocklists from OpenPhish and Phishing Army. ScamCheck includes a newsletter.
+
+Other ModGuard work is in research. This site does not describe unreleased capabilities or dates.
+
+## Pages
+
+- [Home](https://modguardai.org/): AI scam checker overview
+- [About](https://modguardai.org/about): What the studio is, and how to reach the live tool
+- [ScamCheck](https://scamcheck.modguardai.org): The live checker
+
+## Terms this site uses
+
+- AI scam checker
+- check if a message is a scam
+- phishing link checker
+
+## Optional
+
+- [Sitemap](https://modguardai.org/sitemap.xml)
+- [Robots](https://modguardai.org/robots.txt)
