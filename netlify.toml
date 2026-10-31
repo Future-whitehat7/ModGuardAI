@@ -5,6 +5,127 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Former pages described products that are not shipped. Send them home.
+[[redirects]]
+  from = "/features"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/features/*"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/solutions"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/solutions/*"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/demo"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/pricing"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/earlyaccess"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/waitlist"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/blog"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/case-studies"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/student-portal"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/leaderboard"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/api"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/resources"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/events"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/media"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/dashboard"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/upload"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/analytics"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/settings"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/perks"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/fellowship/*"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/enterprise-dashboard"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/threat-map"
+  to = "/"
+  status = 301
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
