@@ -16,23 +16,9 @@ interface ThreatStat {
   asOf: string;
 }
 
-interface ThreatPulsePoint {
-  country: string;
-  code: string;
-  count: number;
-  x: number | null;
-  y: number | null;
-  source: string;
-  url: string;
-  asOf: string;
-}
-
 interface ThreatFile {
   stats?: ThreatStat[];
-  pulses?: ThreatPulsePoint[];
   items?: ThreatItem[];
-  dots?: Array<{ name: string; x: number; y: number }>;
-  skipped?: string[];
 }
 
 function asOf(value: string) {
@@ -50,7 +36,10 @@ export function ThreatPulse() {
     const load = async () => {
       try {
         const live = await fetch('/pulse.json');
-        if (live.ok) return live.json() as Promise<ThreatFile>;
+        if (live.ok) {
+          const json = await live.json() as ThreatFile;
+          if (json.stats || json.items) return json;
+        }
       } catch {
         // Static file from the last build.
       }
@@ -62,10 +51,8 @@ export function ThreatPulse() {
   }, []);
 
   const stats = data?.stats ?? [];
-  const pulses = data?.pulses ?? [];
-  const mapped = pulses.filter((item) => item.x != null && item.y != null);
   const items = data?.items ?? [];
-  const ticker = aiOnly ? items.filter((item) => item.ai) : items;
+  const shown = aiOnly ? items.filter((item) => item.ai) : items;
   const aiCount = items.filter((item) => item.ai).length;
 
   return (
@@ -74,14 +61,14 @@ export function ThreatPulse() {
         <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-frost">Pulse</p>
         <h2 className="display mt-3 text-4xl text-ice sm:text-6xl">Global threat pulse</h2>
         <p className="mt-4 max-w-2xl text-lg text-frost">
-          Public counts and headlines, refreshed about every 15 minutes. A blue pulse is drawn only when the source includes a country code.
+          Public counts and headlines, refreshed about every 15 minutes.
         </p>
         {stats.length > 0 && (
           <ul className="mt-8 grid gap-px overflow-hidden rounded-[20px] border border-[#E6E6E1] bg-[#E6E6E1] sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((stat) => (
               <li key={`${stat.source}-${stat.label}`} className="min-h-36 bg-white p-5">
-                <p className="display text-4xl text-ice">{stat.value.toLocaleString('en-US')}</p>
-                <p className="mt-2 text-sm text-ice">{stat.label}</p>
+                <p className="display text-5xl text-ice">{stat.value.toLocaleString('en-US')}</p>
+                <p className="mt-3 text-sm text-ice">{stat.label}</p>
                 <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.08em] text-frost">
                   <a href={stat.url}>{stat.source}</a>
                   {' · as of '}
@@ -91,66 +78,40 @@ export function ThreatPulse() {
             ))}
           </ul>
         )}
-        <div className="glass relative mt-8 aspect-[2/1] overflow-hidden">
-          <svg viewBox="0 0 100 50" className="h-full w-full" role="img" aria-label="Dotted world map">
-            {(data?.dots ?? []).map((dot) => (
-              <circle key={dot.name} cx={dot.x} cy={dot.y} r="0.35" fill="#B9BDC6" />
-            ))}
-            {mapped.map((item) => (
-              <a key={item.code} href={item.url}>
-                <circle className="pulse-dot" cx={item.x ?? 0} cy={item.y ?? 0} r="0.7" fill="#2B4BFF" />
-                <circle cx={item.x ?? 0} cy={item.y ?? 0} r="0.45" fill="#2B4BFF" />
-              </a>
-            ))}
-          </svg>
-          {!stats.length && !items.length && (
-            <p className="absolute inset-x-0 bottom-4 text-center text-sm text-frost">
-              {failed || data ? 'No public threat data was available.' : 'Loading public threat data.'}
-            </p>
-          )}
-        </div>
-        {pulses.length > 0 && (
-          <ul className="mt-6 space-y-3">
-            {pulses.map((item) => (
-              <li key={item.code} className="text-sm">
-                <a className="underline decoration-[#E6E6E1] underline-offset-4" href={item.url}>{item.country}</a>
-                <span className="text-frost">
-                  {' · '}{item.count} online {item.count === 1 ? 'host' : 'hosts'}
-                  {' · '}{item.source}
-                  {' · as of '}{asOf(item.asOf)}
-                  {item.x == null ? ' · country code is not on this map' : ''}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
         {items.length > 0 && (
-          <div className="mt-6 flex flex-wrap items-center gap-3">
+          <div className="mt-10 flex flex-wrap items-center gap-3">
             <button type="button" className="btn-ghost" aria-pressed={aiOnly} onClick={() => setAiOnly((value) => !value)}>
               {aiOnly ? 'All headlines' : `AI headlines (${aiCount})`}
             </button>
             <p className="text-sm text-frost">The AI tag is a keyword match on the title, not a label from the publisher.</p>
           </div>
         )}
-        {ticker.length > 0 && (
-          <div className="mt-4 overflow-hidden border-y border-[#E6E6E1] py-3">
-            <div className="ticker">
-              {[0, 1].map((copy) => (
-                <p key={copy} className="flex gap-8 text-sm">
-                  {ticker.map((item) => (
-                    <a key={`${copy}-${item.url}`} href={item.url}>
-                      {item.ai ? 'AI · ' : ''}{item.title} · {item.source} · {item.date || 'Date not in source'}
-                    </a>
-                  ))}
-                </p>
-              ))}
-            </div>
-          </div>
+        {shown.length > 0 && (
+          <ul className="mt-4 divide-y divide-[#E6E6E1] border-y border-[#E6E6E1]">
+            {shown.map((item) => (
+              <li key={item.url}>
+                <a className="flex flex-col gap-2 py-5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8" href={item.url}>
+                  <span className="text-lg text-ice">
+                    {item.ai && <span className="mr-3 font-mono text-[11px] uppercase tracking-[0.12em] text-accent">AI</span>}
+                    {item.title}
+                  </span>
+                  <span className="shrink-0 font-mono text-[11px] uppercase tracking-[0.08em] text-frost">
+                    {item.source} · {item.date || 'Date not in source'}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
         )}
-        {aiOnly && !ticker.length && (
+        {aiOnly && !shown.length && (
           <p className="mt-4 text-sm text-frost">No headline in this pull has an AI keyword in the title.</p>
         )}
-        <p className="mt-4 text-sm text-frost">URLhaus and ThreatFox require an API key, so those counts are not shown.</p>
+        {!stats.length && !items.length && (
+          <p className="mt-8 text-sm text-frost">
+            {failed || data ? 'No public threat data was available.' : 'Loading public threat data.'}
+          </p>
+        )}
+        <p className="mt-6 text-sm text-frost">URLhaus and ThreatFox require an API key, so those counts are not shown.</p>
       </div>
     </section>
   );
