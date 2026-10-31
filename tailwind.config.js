@@ -4,14 +4,16 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['ui-sans-serif', 'system-ui', 'Segoe UI', 'Helvetica Neue', 'Arial', 'sans-serif'],
-        mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+        sans: ['"Inter Tight"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       colors: {
-        ink: '#05070d',
-        ice: '#cfe9ff',
-        frost: '#8fb8ff',
-        accent: '#7dd3fc',
+        ink: '#ffffff',
+        ice: '#0E0F12',
+        frost: '#4A4E57',
+        accent: '#2B4BFF',
+        pearl: '#F6F6F3',
       },
     },
   },

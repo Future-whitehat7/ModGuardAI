@@ -98,7 +98,7 @@ export function StarfieldCanvas() {
       context.clearRect(0, 0, width, height);
 
       context.lineWidth = 1;
-      context.strokeStyle = 'rgba(143, 184, 255, 0.22)';
+      context.strokeStyle = 'rgba(185, 189, 198, 0.9)';
       context.beginPath();
       links.forEach(([from, to]) => {
         const start = point(stars[from], width, height, time);
@@ -114,7 +114,7 @@ export function StarfieldCanvas() {
         const position = point(star, width, height, time);
         const twinkle = 0.45 + star.z * 0.4 + Math.sin(time * 0.0012 + star.phase) * 0.12;
         context.globalAlpha = Math.max(0.15, Math.min(1, twinkle));
-        context.fillStyle = star.z > 0.9 ? '#eaf6ff' : '#8fb8ff';
+        context.fillStyle = star.z > 0.9 ? '#0E0F12' : '#4A4E57';
         context.beginPath();
         context.arc(position.x, position.y, star.radius, 0, Math.PI * 2);
         context.fill();

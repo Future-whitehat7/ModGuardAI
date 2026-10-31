@@ -1,8 +1,8 @@
 export const SITE_URL = 'https://modguardai.org';
 export const SCAMCHECK_URL = 'https://scamcheck.modguardai.org';
-export const SCAMCHECK_LABEL = 'ScamCheck: free AI scam checker';
+export const SCAMCHECK_LABEL = 'ScamCheck ↗';
 
-export const DEFAULT_TITLE = 'AI scam checker for messages and links | ModGuard ScamCheck';
+export const DEFAULT_TITLE = 'ModGuard AI — Free AI Scam Checker | ScamCheck';
 
 export const DEFAULT_DESCRIPTION =
   'Check if a message is a scam. ModGuard ScamCheck is a free AI scam checker for texts, emails, and links, with an AI verdict and phishing link checks against OpenPhish and Phishing Army.';

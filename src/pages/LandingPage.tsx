@@ -1,135 +1,159 @@
-import { useRef } from 'react';
-import type { CSSProperties } from 'react';
-import { HeroStage } from '../components/marketing/HeroStage';
-import { useReveal } from '../components/marketing/useReveal';
-import { SCAMCHECK_LABEL, SCAMCHECK_URL } from '../components/marketing/site';
-
-function revealDelay(index: number): CSSProperties {
-  return { animationDelay: `${index * 70}ms` };
-}
+import { useCallback, useState } from 'react';
+import { Modal } from '../components/marketing/Modal';
+import { ThreatPulse } from '../components/marketing/ThreatPulse';
+import { SCAMCHECK_URL } from '../components/marketing/site';
 
 const checks = [
-  {
-    index: '01',
-    title: 'Message',
-    copy: 'Paste a text or email you are unsure about.',
-  },
-  {
-    index: '02',
-    title: 'Link',
-    copy: 'Paste a link before you open it.',
-  },
-  {
-    index: '03',
-    title: 'Screenshot',
-    copy: 'Upload a screenshot of a text or email.',
-  },
+  ['01', 'Paste', 'A message, a link, or a screenshot of a text or email.'],
+  ['02', 'Read', 'An AI verdict, plus OpenPhish and Phishing Army checks on links.'],
+  ['03', 'Decide', 'You get the verdict and the reason to look at before you act.'],
 ];
 
+const faqs = [
+  ['What is ModGuard ScamCheck?', 'ScamCheck is a free AI scam checker for messages, links, and screenshots of texts or emails. It returns an AI verdict and checks links against known-phishing lists from OpenPhish and Phishing Army.'],
+  ['Is ScamCheck free? Do I need an account?', 'ScamCheck is free. This site does not say whether an account is required. Open ScamCheck to use it.'],
+  ['How does ScamCheck decide if something is a scam?', 'It returns an AI verdict. Links are also checked against OpenPhish and Phishing Army. This site does not publish an accuracy rate.'],
+  ['Can it detect AI voice-clone scam calls?', 'This site does not claim phone-call or voice-clone detection. What is published is checks of messages, links, and screenshots of texts or emails.'],
+  ['Is my message stored?', 'This site does not state a retention policy. ScamCheck is where a check is handled.'],
+  ['What should I do if ScamCheck says Scam?', 'Do not reply, pay, or open the link. Review the check on ScamCheck before you act.'],
+  ['Is the verdict guaranteed?', 'No. A verdict is a check, not a guarantee.'],
+];
+
+const scams = [
+  ['01', 'Fake bank text messages', '“Your account is locked. Verify now.”'],
+  ['02', 'Crypto investment DMs', '“I turned $500 into $12,000 in two weeks.”'],
+  ['03', 'AI voice-clone family emergency calls', '“Grandma, it’s me. I need bail money.”'],
+  ['04', 'Fake package delivery texts', '“USPS: your package is on hold.”'],
+  ['05', 'Fake job and task scams', '“Earn $300/day liking videos.”'],
+  ['06', 'Tech support and virus pop-ups', '“Your computer is infected. Call Microsoft.”'],
+];
+
+type OpenState = { kind: 'faq' | 'scam'; index: number } | null;
+
 export const LandingPage = () => {
-  const pageRef = useRef<HTMLDivElement>(null);
-  useReveal(pageRef);
+  const [open, setOpen] = useState<OpenState>(null);
+  const close = useCallback(() => setOpen(null), []);
+  const activeFaq = open?.kind === 'faq' ? faqs[open.index] : null;
+  const activeScam = open?.kind === 'scam' ? scams[open.index] : null;
 
   return (
-    <div ref={pageRef}>
-      <section className="relative flex min-h-[calc(100svh-7.5rem)] items-start overflow-hidden lg:min-h-[calc(100svh-4.5rem)] lg:items-center">
-        <HeroStage />
-        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:py-16">
-          <div className="max-w-xl">
-            <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">
-              ModGuard AI · AI safety studio
-            </p>
-            <h1 className="mt-4 text-[2.6rem] font-semibold leading-[0.95] tracking-tight text-ice sm:text-6xl">
-              Check if a message is a scam.
-            </h1>
-            <p className="mt-5 text-xl font-medium leading-snug text-ice sm:text-2xl">
-              ScamCheck is our first live tool: a free AI scam checker.
-            </p>
-            <div className="mt-6 flex flex-col gap-3">
-              <a href={SCAMCHECK_URL} className="btn-accent w-full sm:w-auto">
-                {SCAMCHECK_LABEL}
-              </a>
-              <a href="#how" className="btn-ghost w-full sm:w-auto">
-                How a check works
-              </a>
-            </div>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-ice/75">
-              Use it on a message, a link, or a screenshot of a text or email. You get an AI verdict, and the link is checked against known-phishing lists from OpenPhish and Phishing Army.
-            </p>
+    <div>
+      <section className="relative mx-auto flex min-h-[calc(100svh-7.5rem)] w-full max-w-6xl items-end px-4 py-16 sm:px-6 lg:items-center">
+        <div className="max-w-3xl">
+          <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-accent">Live · Free</p>
+          <h1 className="display mt-4 text-5xl leading-[0.95] text-ice sm:text-7xl">
+            Check it <em>before</em> you trust it.
+          </h1>
+          <p className="mt-6 max-w-xl text-xl text-frost">
+            ModGuard ScamCheck — a free AI scam checker for messages and links.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <a className="btn-accent w-full sm:w-auto" href={SCAMCHECK_URL}>Check a message — free</a>
+            <a className="btn-ghost w-full sm:w-auto" href="#how">How it works</a>
           </div>
         </div>
       </section>
 
-      <section id="how" className="chapter mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
-        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">01 / Check</p>
-        <h2 className="mt-3 max-w-2xl text-3xl font-semibold tracking-tight text-ice sm:text-5xl">
-          An AI scam checker for messages and links
-        </h2>
-        <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ice/75">
-          ScamCheck is free. It reads what you give it and returns a verdict in plain language.
-        </p>
-        <ol className="mt-8 grid gap-4 md:grid-cols-3">
-          {checks.map((item, index) => (
-            <li key={item.index} className="glass reveal p-6" style={revealDelay(index)}>
-              <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">
-                {item.index} / {item.title}
-              </p>
-              <p className="mt-3 text-ice/80">{item.copy}</p>
-            </li>
+      <section className="mx-auto w-full max-w-3xl px-4 pb-16 sm:px-6">
+        <form className="glass p-6" action={SCAMCHECK_URL}>
+          <label className="block text-sm text-frost" htmlFor="paste">
+            Paste a message or link. Checking opens ScamCheck.
+          </label>
+          <textarea id="paste" className="field mt-3 min-h-28 py-3" placeholder="Paste a text, email, or link" />
+          <button className="btn-accent mt-4 w-full sm:w-auto" type="submit">Check a message — free</button>
+        </form>
+        <aside className="glass reveal mt-4 p-6">
+          <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-frost">Example</p>
+          <p className="mt-3 text-ice">“Your account is locked. Verify now.”</p>
+          <p className="mt-2 text-sm text-frost">This card is an example, not a live verdict.</p>
+        </aside>
+      </section>
+
+      <section id="how" className="chapter mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
+        <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-frost">How it works</p>
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          {checks.map(([index, title, copy]) => (
+            <article key={index} className="glass reveal p-6">
+              <p className="font-mono text-[11px] text-frost">{index}</p>
+              <h2 className="display mt-3 text-4xl text-ice">{title}</h2>
+              <p className="mt-3 text-frost">{copy}</p>
+            </article>
           ))}
-        </ol>
-        <a href={SCAMCHECK_URL} className="btn-accent mt-8 w-full sm:w-auto">
-          {SCAMCHECK_LABEL}
-        </a>
+        </div>
       </section>
 
-      <section className="chapter border-t border-ice/10">
-        <div className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">02 / Verdict</p>
-          <h2 className="mt-3 max-w-2xl text-3xl font-semibold tracking-tight text-ice sm:text-5xl">
-            An AI verdict, then a phishing link check
-          </h2>
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            <article className="glass reveal p-6" style={revealDelay(0)}>
-              <h3 className="text-xl font-semibold text-ice">AI verdict</h3>
-              <p className="mt-3 leading-relaxed text-ice/75">
-                ScamCheck gives an AI verdict on the message, link, or screenshot you submitted.
-              </p>
-            </article>
-            <article className="glass reveal p-6" style={revealDelay(1)}>
-              <h3 className="text-xl font-semibold text-ice">Phishing link checker</h3>
-              <p className="mt-3 leading-relaxed text-ice/75">
-                Links are also checked against known-phishing blocklists from OpenPhish and Phishing Army.
-              </p>
-            </article>
+      <ThreatPulse />
+
+      <section className="chapter mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-frost">Field guides</p>
+            <h2 className="display mt-3 text-4xl text-ice sm:text-6xl">Scams going around right now</h2>
           </div>
+          <a className="font-mono text-[11px] uppercase tracking-[0.12em] text-frost" href={SCAMCHECK_URL}>All guides</a>
+        </div>
+        <p className="mt-4 max-w-2xl text-frost">Examples from ScamCheck. They are not incident reports from this site.</p>
+        <div className="mt-8 grid gap-px overflow-hidden rounded-[20px] border border-[#E6E6E1] bg-[#E6E6E1] sm:grid-cols-2 lg:grid-cols-4">
+          {scams.map(([index, title, quote], item) => (
+            <button key={index} type="button" className="scam-tile min-h-40 bg-white p-5" onClick={() => setOpen({ kind: 'scam', index: item })}>
+              <span className="font-mono text-[11px] text-frost">{index}</span>
+              <span className="mt-3 block text-lg text-ice">{title}</span>
+              <span className="mt-2 block text-sm text-frost">{quote}</span>
+            </button>
+          ))}
         </div>
       </section>
 
-      <section className="chapter border-t border-ice/10">
-        <div className="mx-auto w-full max-w-3xl px-4 py-20 sm:px-6">
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">03 / Letter</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-ice sm:text-5xl">A newsletter</h2>
-          <p className="mt-4 text-lg leading-relaxed text-ice/75">
-            ScamCheck includes a newsletter. Sign-up lives on ScamCheck, with the checker.
-          </p>
-          <a href={SCAMCHECK_URL} className="btn-ghost mt-8 w-full sm:w-auto">
-            Open ScamCheck
-          </a>
+      <section className="chapter mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
+        <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-frost">FAQ</p>
+        <h2 className="display mt-3 text-4xl text-ice sm:text-6xl">Questions people ask</h2>
+        <div className="mt-8 divide-y divide-[#E6E6E1] border-y border-[#E6E6E1]">
+          {faqs.map(([question], item) => (
+            <button key={question} type="button" className="faq-row flex min-h-16 items-center justify-between gap-4 py-4 text-left" onClick={() => setOpen({ kind: 'faq', index: item })}>
+              <span>{question}</span>
+              <span aria-hidden="true">+</span>
+            </button>
+          ))}
         </div>
       </section>
 
-      <section id="next" className="chapter border-t border-ice/10">
-        <div className="mx-auto w-full max-w-3xl px-4 py-20 sm:px-6">
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">04 / Next</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-ice sm:text-5xl">
-            What we&apos;re building next
-          </h2>
-          <p className="mt-4 text-lg leading-relaxed text-ice/75">
-            In research. Nothing else is live, and this page does not promise capabilities or dates.
-          </p>
+      <section id="next" className="chapter mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
+        <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-frost">Research</p>
+        <h2 className="display mt-3 text-4xl text-ice">What we&apos;re building next</h2>
+        <p className="mt-4 text-lg text-frost">In research. Nothing else is live, and this page does not promise capabilities or dates.</p>
+      </section>
+
+      <section className="chapter mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
+        <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-frost">Studio</p>
+        <h2 className="display mt-3 text-4xl text-ice">Coach Samuel</h2>
+        <p className="mt-4 text-lg text-frost">
+          ModGuard AI is Coach Samuel&apos;s AI safety studio. ScamCheck is the first live tool.
+        </p>
+      </section>
+
+      <section className="mx-auto w-full max-w-3xl px-4 pb-20 sm:px-6">
+        <div className="glass p-8">
+          <h2 className="display text-4xl text-ice">Get the weekly Scam Alert</h2>
+          <p className="mt-3 text-frost">One email a week from ScamCheck: scams going around and how to spot them. Free. Unsubscribe on ScamCheck.</p>
+          <a className="btn-accent mt-6 w-full sm:w-auto" href={SCAMCHECK_URL}>Subscribe on ScamCheck</a>
         </div>
       </section>
+
+      {activeFaq && (
+        <Modal title={activeFaq[0]} onClose={close}>
+          <p>{activeFaq[1]}</p>
+          <a className="btn-accent w-full sm:w-auto" href={SCAMCHECK_URL}>Open ScamCheck</a>
+          <button className="btn-ghost w-full sm:w-auto" type="button" onClick={close}>Close</button>
+        </Modal>
+      )}
+      {activeScam && (
+        <Modal title={activeScam[1]} onClose={close}>
+          <p>{activeScam[2]}</p>
+          <p>Example of a scam type listed on ScamCheck. It is not a live incident report from this site.</p>
+          <a className="btn-accent w-full sm:w-auto" href={SCAMCHECK_URL}>Check a message like this</a>
+          <button className="btn-ghost w-full sm:w-auto" type="button" onClick={close}>Close</button>
+        </Modal>
+      )}
     </div>
   );
 };
