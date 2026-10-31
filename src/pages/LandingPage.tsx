@@ -1,1065 +1,607 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState, type ChangeEvent, type CSSProperties, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import {
-  Shield,
-  Play,
-  Upload,
-  CheckCircle,
-  Star,
-  TrendingUp,
-  Globe,
-  Brain,
-  Eye,
-  Target,
-  Zap,
-  Users,
-  ArrowRight,
-  AlertTriangle,
-  Lock,
-  Award,
-  Clock,
-  BarChart3,
-  FileText,
-  Camera,
-  Mic,
-  Video,
-  Sparkles,
-  MessageCircle,
-  Calendar,
-  Download,
-  ExternalLink,
-  X,
-  Mail,
-  Phone,
-  Building,
-  Linkedin,
-  Twitter,
-  Home
-} from 'lucide-react';
-import { Header } from '../components/Header';
-import { DemoPresentation } from '../components/DemoPresentation';
-import { EnterpriseOnboarding } from '../components/EnterpriseOnboarding';
-import { StudentOnboarding } from '../components/StudentOnboarding';
+import { AlertTriangle, CheckCircle, Upload, X } from 'lucide-react';
+import { HeroStage } from '../components/marketing/HeroStage';
+import { useReveal } from '../components/marketing/useReveal';
+import { SCAMCHECK_LABEL, SCAMCHECK_URL } from '../components/marketing/site';
+
+const DemoPresentation = lazy(() =>
+  import('../components/DemoPresentation').then((module) => ({ default: module.DemoPresentation })),
+);
+const EnterpriseOnboarding = lazy(() =>
+  import('../components/EnterpriseOnboarding').then((module) => ({ default: module.EnterpriseOnboarding })),
+);
+const StudentOnboarding = lazy(() =>
+  import('../components/StudentOnboarding').then((module) => ({ default: module.StudentOnboarding })),
+);
 
 interface WaitlistFormData {
   email: string;
   name: string;
-  role: string;
-  company: string;
-  useCase: string;
-  updates: string;
 }
 
-const WaitlistForm = ({ location, variant = "default", onSubmit }: any) => {
-  const [formData, setFormData] = useState<WaitlistFormData>({
-    email: '',
-    name: '',
-    role: '',
-    company: '',
-    useCase: '',
-    updates: 'weekly'
-  });
+interface AnalysisResult {
+  isDeepfake: boolean;
+  confidence: number;
+  threats: number;
+  processingTime: number;
+}
+
+const MAX_FILE_BYTES = 100 * 1024 * 1024;
+
+function revealDelay(index: number): CSSProperties {
+  return { animationDelay: `${index * 70}ms` };
+}
+
+const technologies = [
+  {
+    icon: '🧠',
+    title: 'Neural Analysis',
+    description:
+      'Deep learning models trained on millions of samples detect subtle manipulation patterns invisible to human eyes.',
+  },
+  {
+    icon: '🎤',
+    title: 'Audio Forensics',
+    description:
+      'Analyze voice patterns, spectral inconsistencies, and audio-visual synchronization to detect voice cloning.',
+  },
+  {
+    icon: '👤',
+    title: 'Biometric Verification',
+    description:
+      'Advanced facial recognition and biometric analysis identify unnatural movements and expressions.',
+  },
+  {
+    icon: '🔬',
+    title: 'Pixel Forensics',
+    description:
+      'Microscopic analysis of pixel patterns reveals AI generation artifacts and manipulation traces.',
+  },
+  {
+    icon: '⚡',
+    title: 'Real-time Processing',
+    description: 'Lightning-fast analysis delivers results in under 100ms for immediate threat detection.',
+  },
+  {
+    icon: '🌐',
+    title: 'API Integration',
+    description: 'Seamless integration with existing security infrastructure through RESTful APIs and SDKs.',
+  },
+];
+
+const stats = [
+  { number: '99.7%', label: 'Detection Accuracy' },
+  { number: '<2s', label: 'Response Time' },
+  { number: '0', label: 'False Positives' },
+  { number: '24/7', label: 'Live Protection' },
+];
+
+const features = [
+  {
+    badge: 'Identity Security',
+    title: "Know who you're really talking to.",
+    description:
+      'Real-time biometric analysis with advanced deepfake detection. Verify identities instantly with 99.7% accuracy across video calls, authentication processes, and digital interactions.',
+    points: [
+      'Real-time facial recognition and analysis',
+      'Cross-reference validation against known patterns',
+      'Instant alerts for suspicious activity',
+      'Integration with existing security systems',
+    ],
+    status: 'AUTHENTIC',
+    statusTone: 'ok' as const,
+    detail: 'Confidence: 99.7% • Real Person Detected',
+    meter: '97%',
+    caption: 'Identity Verification',
+  },
+  {
+    badge: 'Document Security',
+    title: 'Every document. Every detail. Verified instantly.',
+    description:
+      'Advanced document analysis with metadata forensics and tampering detection. Protect against fraudulent documents, altered PDFs, and synthetic content in under 2 seconds.',
+    points: [
+      'PDF, image, and video document analysis',
+      'Metadata forensics and digital fingerprinting',
+      'Chain of custody validation',
+      'Compliance reporting and audit trails',
+    ],
+    status: 'VERIFIED',
+    statusTone: 'ok' as const,
+    detail: 'Metadata: Original • No tampering detected • Chain of custody intact',
+    meter: '95%',
+    caption: 'Contract_Final.pdf',
+  },
+  {
+    badge: 'Media Protection',
+    title: 'Stop synthetic media before it spreads.',
+    description:
+      'Multi-modal deepfake detection across video, audio, image, and text content. Real-time processing with explainable AI heatmaps showing exactly where manipulation occurs.',
+    points: [
+      'Video, audio, image, and text analysis',
+      'Real-time processing with <2s response',
+      'Explainable AI with visual heatmaps',
+      'Social media platform integration',
+    ],
+    status: 'DEEPFAKE DETECTED',
+    statusTone: 'bad' as const,
+    detail: 'Facial inconsistencies detected • Audio-visual mismatch • AI artifacts found',
+    meter: '94%',
+    caption: 'Video Analysis',
+  },
+];
+
+const testimonials = [
+  {
+    text: 'Finally, a solution that actually works. ModGuardAI caught deepfakes our previous system missed entirely. The API integration took minutes, not months. Our fraud prevention improved by 340%.',
+    author: 'Sarah Chen',
+    role: 'CISO, Fortune 100 Financial Services',
+  },
+  {
+    text: 'Game-changing accuracy. 99.7% detection rate with zero false positives in our testing environment. This is the future of digital security. Implementation was seamless.',
+    author: 'Marcus Rodriguez',
+    role: 'Head of Security, Major Social Platform',
+  },
+  {
+    text: 'The real-time video analysis saved us from a major fraud attempt during a board meeting. The ROI was immediate and the peace of mind is invaluable. Best security investment we\'ve made.',
+    author: 'Dr. Jennifer Walsh',
+    role: 'Chief Technology Officer, Global Bank',
+  },
+  {
+    text: "ModGuardAI's forensic analysis tools helped us uncover a sophisticated deepfake campaign targeting our executives. The explainable AI made it easy to present evidence to stakeholders.",
+    author: 'Alex Thompson',
+    role: 'VP of Cybersecurity, Tech Unicorn',
+  },
+  {
+    text: "As a journalist, verifying content authenticity is crucial. ModGuardAI's real-time analysis has become essential to our fact-checking process. Incredibly accurate and easy to use.",
+    author: 'Maria Santos',
+    role: 'Investigative Journalist, National News Network',
+  },
+  {
+    text: 'The team management features and compliance reporting made enterprise deployment effortless. Our entire organization is now protected with minimal IT overhead.',
+    author: 'David Kumar',
+    role: 'IT Director, Government Agency',
+  },
+];
+
+function scoreFiles(): AnalysisResult {
+  return {
+    isDeepfake: Math.random() > 0.6,
+    confidence: 85 + Math.random() * 15,
+    threats: Math.floor(Math.random() * 3),
+    processingTime: Math.floor(100 + Math.random() * 200),
+  };
+}
+
+function WaitlistForm() {
+  const [formData, setFormData] = useState<WaitlistFormData>({ email: '', name: '' });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setIsSubmitting(true);
-    
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsSubmitted(true);
     setIsSubmitting(false);
-    
-    if (onSubmit) {
-      onSubmit(formData);
-    }
   };
 
   if (isSubmitted) {
     return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="text-center p-8 bg-green-50 rounded-xl border border-green-200"
-      >
-        <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-        <h3 className="text-2xl font-bold text-green-800 mb-2">You're on the list!</h3>
-        <p className="text-green-700 mb-4">
+      <div className="rounded-[20px] border border-[#2fbf71]/40 bg-[#2fbf71]/10 p-8 text-center" role="status">
+        <CheckCircle className="mx-auto h-12 w-12 text-[#2fbf71]" aria-hidden="true" />
+        <h3 className="mt-4 text-2xl font-semibold text-ice">You're on the list!</h3>
+        <p className="mt-3 text-ice/80">
           Welcome to the ModGuard AI early access program. You'll receive weekly updates and be first to know when we launch.
         </p>
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid gap-4 md:grid-cols-2">
+        <label className="block text-left">
+          <span className="sr-only">Your full name</span>
           <input
             type="text"
             required
+            autoComplete="name"
             value={formData.name}
-            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+            onChange={(event) => setFormData((prev) => ({ ...prev, name: event.target.value }))}
+            className="field"
             placeholder="Your full name"
           />
-        </div>
-        <div>
+        </label>
+        <label className="block text-left">
+          <span className="sr-only">Email</span>
           <input
             type="email"
             required
+            autoComplete="email"
             value={formData.email}
-            onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+            onChange={(event) => setFormData((prev) => ({ ...prev, email: event.target.value }))}
+            className="field"
             placeholder="your.email@company.com"
           />
-        </div>
+        </label>
       </div>
-
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-6 rounded-xl font-bold text-lg hover:shadow-xl transition-all disabled:opacity-50"
-      >
+      <button type="submit" disabled={isSubmitting} className="btn-accent w-full">
         {isSubmitting ? 'Joining...' : 'Join Beta Waitlist'}
       </button>
-      
-      <p className="text-sm text-gray-500 text-center">
-        Join 12,000+ professionals waiting for early access
-      </p>
+      <p className="text-center text-sm text-ice/60">Join 12,000+ professionals waiting for early access</p>
     </form>
   );
-};
+}
 
-const FloatingCTA = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+function FloatingCta() {
+  const [expanded, setExpanded] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsVisible(window.scrollY > 1000);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setVisible(window.scrollY > 1000);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  if (!visible) return null;
+
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 100 }}
-          className="fixed bottom-6 right-6 z-50"
-        >
-          <AnimatePresence>
-            {isExpanded ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="bg-white rounded-xl shadow-xl p-6 w-80 border border-gray-200"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="font-bold text-gray-900">Join Beta Waitlist</h4>
-                  <button
-                    onClick={() => setIsExpanded(false)}
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                </div>
-                <WaitlistForm location="floating-cta" variant="compact" />
-              </motion.div>
-            ) : (
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setIsExpanded(true)}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-all flex items-center space-x-2"
-              >
-                <span>Join Beta</span>
-                <ArrowRight className="h-5 w-5" />
-              </motion.button>
-            )}
-          </AnimatePresence>
-        </motion.div>
+    <div className="fixed inset-x-4 bottom-4 z-30 sm:left-auto sm:right-6 sm:w-96">
+      {expanded ? (
+        <div className="glass p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">Join Beta Waitlist</h2>
+            <button type="button" className="hud-menu-button" onClick={() => setExpanded(false)} aria-label="Close waitlist">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <WaitlistForm />
+        </div>
+      ) : (
+        <button type="button" className="btn-accent w-full sm:w-auto" onClick={() => setExpanded(true)}>
+          Join Beta
+        </button>
       )}
-    </AnimatePresence>
+    </div>
   );
-};
+}
 
 export const LandingPage = () => {
+  const pageRef = useRef<HTMLDivElement>(null);
+  useReveal(pageRef);
+
   const [isDemoOpen, setIsDemoOpen] = useState(false);
   const [isEnterpriseModalOpen, setIsEnterpriseModalOpen] = useState(false);
   const [isFellowshipModalOpen, setIsFellowshipModalOpen] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisResults, setAnalysisResults] = useState<any>(null);
-  
-  const heroRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start end", "end start"]
-  });
-  
-  const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const [analysisResults, setAnalysisResults] = useState<AnalysisResult | null>(null);
+  const [analysisError, setAnalysisError] = useState('');
 
-  const handleWatchDemo = () => {
-    setIsDemoOpen(true);
-  };
-
-  const handleEnterpriseSignup = () => {
-    setIsEnterpriseModalOpen(true);
-  };
-
-  const handleFellowshipSignup = () => {
-    setIsFellowshipModalOpen(true);
-  };
-
-  const runDemo = () => {
-    const fillElement = document.getElementById('demo-confidence-fill');
-    const textElement = document.getElementById('demo-confidence-text');
-    
-    if (fillElement && textElement) {
-      fillElement.style.width = '0%';
-      textElement.textContent = 'Analyzing...';
-      textElement.style.color = '#16d9e3';
-      
-      setTimeout(() => {
-        fillElement.style.width = '15%';
-        textElement.textContent = 'Processing image data...';
-      }, 500);
-      
-      setTimeout(() => {
-        fillElement.style.width = '45%';
-        textElement.textContent = 'Running deepfake detection algorithms...';
-      }, 1200);
-      
-      setTimeout(() => {
-        fillElement.style.width = '78%';
-        textElement.textContent = 'Analyzing facial inconsistencies...';
-      }, 1800);
-      
-      setTimeout(() => {
-        fillElement.style.width = '94%';
-        fillElement.style.background = 'linear-gradient(90deg, #ff6b35, #ff8c00)';
-        textElement.textContent = 'DEEPFAKE DETECTED • Confidence: 94.2%';
-        textElement.style.color = '#ff6b35';
-      }, 2500);
+  const beginAnalysis = (files: File[]) => {
+    const oversized = files.find((file) => file.size > MAX_FILE_BYTES);
+    if (oversized) {
+      setUploadedFiles([]);
+      setAnalysisResults(null);
+      setIsAnalyzing(false);
+      setAnalysisError('Each file needs to be 100MB or smaller.');
+      return;
     }
+    setAnalysisError('');
+    setUploadedFiles(files);
+    setAnalysisResults(null);
+    setIsAnalyzing(true);
+    window.setTimeout(() => {
+      setAnalysisResults(scoreFiles());
+      setIsAnalyzing(false);
+    }, 3000);
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-    if (files.length > 0) {
-      setUploadedFiles(files);
-      setIsAnalyzing(true);
-      
-      // Simulate analysis
-      setTimeout(() => {
-        setAnalysisResults({
-          isDeepfake: Math.random() > 0.6,
-          confidence: 85 + Math.random() * 15,
-          threats: Math.floor(Math.random() * 3),
-          processingTime: Math.floor(100 + Math.random() * 200)
-        });
-        setIsAnalyzing(false);
-      }, 3000);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    const files = Array.from(e.dataTransfer.files);
-    if (files.length > 0) {
-      setUploadedFiles(files);
-      setIsAnalyzing(true);
-      
-      // Simulate analysis
-      setTimeout(() => {
-        setAnalysisResults({
-          isDeepfake: Math.random() > 0.6,
-          confidence: 85 + Math.random() * 15,
-          threats: Math.floor(Math.random() * 3),
-          processingTime: Math.floor(100 + Math.random() * 200)
-        });
-        setIsAnalyzing(false);
-      }, 3000);
-    }
+  const onFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files ?? []);
+    if (files.length > 0) beginAnalysis(files);
   };
 
   return (
-    <>
-      <Header 
-        onWatchDemo={handleWatchDemo}
-        onOpenEnterpriseModal={handleEnterpriseSignup}
-        onOpenFellowshipModal={handleFellowshipSignup}
-      />
-
-      {/* Hero Section - Exact Match to Screenshot */}
-      <section 
-        ref={heroRef}
-        className="bg-white"
-        style={{ marginTop: '100px', padding: '120px 0 200px 0', textAlign: 'center', position: 'relative' }}
-      >
-        <motion.div
-          style={{ y }}
-          className="relative z-10 max-w-7xl mx-auto px-8"
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full font-bold text-sm mb-8"
-          >
-            🏆 Trusted by Fortune 500 Companies
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="hero-title text-gray-900"
-            style={{
-              fontSize: 'clamp(60px, 10vw, 120px)',
-              fontWeight: 900,
-              lineHeight: 0.9,
-              marginBottom: '40px',
-              letterSpacing: '-3px'
-            }}
-          >
-            <span className="hero-word block">DEFEND.</span>
-            <span className="hero-word block">DETECT.</span>
-            <span className="hero-word block">VERIFY.</span>
-          </motion.h1>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-gray-900"
-            style={{
-              fontSize: '32px',
-              fontWeight: 700,
-              marginBottom: '30px',
-              maxWidth: '800px',
-              marginLeft: 'auto',
-              marginRight: 'auto'
-            }}
-          >
-            Your Digital Immune System Against AI-Generated Threats
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-gray-600"
-            style={{
-              fontSize: '20px',
-              marginBottom: '60px',
-              maxWidth: '700px',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              lineHeight: 1.7
-            }}
-          >
-            Enterprise-grade deepfake detection powered by Reality Defender's API. Protect your organization from synthetic media threats with 99.7% accuracy.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex flex-col sm:flex-row gap-6 justify-center mb-16"
-          >
-            <motion.button
-              whileHover={{ 
-                scale: 1.02, 
-                y: -4,
-                boxShadow: "0 15px 40px rgba(22, 217, 227, 0.4)"
-              }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleEnterpriseSignup}
-              className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-xl transition-all"
-            >
-              Join Beta Waitlist
-            </motion.button>
-            
-            <motion.button
-              whileHover={{ 
-                scale: 1.02, 
-                y: -4,
-                backgroundColor: '#16d9e3'
-              }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleWatchDemo}
-              className="border-2 border-gray-900 text-gray-900 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-cyan-400 hover:text-white hover:border-cyan-400 transition-all"
-            >
-              Try Live Demo
-            </motion.button>
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1 }}
-            className="text-gray-500 italic"
-          >
-            "Securing digital truth for government agencies and Fortune 500 companies worldwide"
-          </motion.p>
-        </motion.div>
-      </section>
-
-      {/* Scrolling Text Banner */}
-      {/* Live Demo Banner */}
-      <section className="bg-slate-800 py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-              <span className="text-white font-medium">LIVE: Experience real-time deepfake detection</span>
-            </div>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              onClick={() => window.location.href = '/demo'}
-              className="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-2 rounded-lg font-medium transition-all"
-            >
-              Try Demo Now
-            </motion.button>
-          </div>
-        </div>
-      </section>
-
-      {/* Cutting-Edge Detection Technology Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Cutting-Edge Detection Technology
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Powered by advanced AI and Reality Defender's API for unmatched accuracy
+    <div ref={pageRef}>
+      <section className="relative flex min-h-[calc(100svh-7.5rem)] items-start overflow-hidden lg:min-h-[calc(100svh-4.5rem)] lg:items-center">
+        <HeroStage />
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:py-16">
+          <div className="max-w-xl">
+            <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">
+              Trusted by Fortune 500 Companies
             </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {[
-              {
-                icon: '🧠',
-                title: 'Neural Analysis',
-                description: 'Deep learning models trained on millions of samples detect subtle manipulation patterns invisible to human eyes.'
-              },
-              {
-                icon: '🎤',
-                title: 'Audio Forensics',
-                description: 'Analyze voice patterns, spectral inconsistencies, and audio-visual synchronization to detect voice cloning.'
-              },
-              {
-                icon: '👤',
-                title: 'Biometric Verification',
-                description: 'Advanced facial recognition and biometric analysis identify unnatural movements and expressions.'
-              },
-              {
-                icon: '🔬',
-                title: 'Pixel Forensics',
-                description: 'Microscopic analysis of pixel patterns reveals AI generation artifacts and manipulation traces.'
-              },
-              {
-                icon: '⚡',
-                title: 'Real-time Processing',
-                description: 'Lightning-fast analysis delivers results in under 100ms for immediate threat detection.'
-              },
-              {
-                icon: '🌐',
-                title: 'API Integration',
-                description: 'Seamless integration with existing security infrastructure through RESTful APIs and SDKs.'
-              }
-            ].map((tech, index) => (
-              <motion.div
-                key={tech.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="bg-white rounded-xl p-8 shadow-lg border border-gray-100 text-center hover:shadow-xl transition-shadow"
-              >
-                <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full mx-auto mb-6 flex items-center justify-center text-2xl">
-                  {tech.icon}
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">{tech.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{tech.description}</p>
-              </motion.div>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* Scrolling Text Banner */}
-      <div className="scrolling-text-banner">
-        <motion.div
-          animate={{ x: [1400, -1400] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="scrolling-content"
-        >
-          STOP DEEPFAKES • PREVENT FRAUD • VERIFY IDENTITY • PROTECT TRUTH • DEFEND DEMOCRACY • SECURE FUTURE • 
-          STOP DEEPFAKES • PREVENT FRAUD • VERIFY IDENTITY • PROTECT TRUTH • DEFEND DEMOCRACY • SECURE FUTURE •
-        </motion.div>
-      </div>
-
-      {/* Features Section */}
-      <section className="features-section" id="platform">
-        <div className="container mx-auto px-8">
-          <div className="features-container">
-            {/* Sticky Sidebar */}
-            <div className="features-sidebar">
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-              >
-                <h2 className="section-title">
-                  Stop threats.<br />
-                  Stop fraud.<br />
-                  Stop impersonation.
-                </h2>
-                <p className="section-subtitle">
-                  Enterprise-grade AI detection that works in real-time, 
-                  protecting what matters most - truth, trust, and safety online.
-                </p>
-                
-                <div className="features-stats">
-                  {[
-                    { number: "99.7%", label: "Detection Accuracy" },
-                    { number: "<2s", label: "Response Time" },
-                    { number: "0", label: "False Positives" },
-                    { number: "24/7", label: "Live Protection" }
-                  ].map((stat, index) => (
-                    <motion.div
-                      key={stat.label}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                      className="stat"
-                    >
-                      <div className="stat-number">{stat.number}</div>
-                      <div className="stat-label">{stat.label}</div>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Features Grid */}
-            <div className="features-grid">
-              {[
-                {
-                  badge: "Identity Security",
-                  title: "Know who you're really talking to.",
-                  description: "Real-time biometric analysis with advanced deepfake detection. Verify identities instantly with 99.7% accuracy across video calls, authentication processes, and digital interactions.",
-                  features: [
-                    "Real-time facial recognition and analysis",
-                    "Cross-reference validation against known patterns",
-                    "Instant alerts for suspicious activity",
-                    "Integration with existing security systems"
-                  ],
-                  mockup: (
-                    <div className="feature-mockup">
-                      <div className="mockup-header">
-                        <div className="mockup-dot"></div>
-                        <div className="mockup-dot"></div>
-                        <div className="mockup-dot"></div>
-                      </div>
-                      <div className="confidence-display">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-                          <span style={{ fontWeight: 600 }}>Identity Verification</span>
-                          <span style={{ color: '#16d9e3', fontWeight: 700 }}>AUTHENTIC</span>
-                        </div>
-                        <div className="confidence-meter">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            whileInView={{ width: "97%" }}
-                            transition={{ duration: 2, delay: 0.5 }}
-                            className="confidence-fill"
-                          />
-                        </div>
-                        <div className="confidence-text">Confidence: 99.7% • Real Person Detected</div>
-                      </div>
-                    </div>
-                  )
-                },
-                {
-                  badge: "Document Security",
-                  title: "Every document. Every detail. Verified instantly.",
-                  description: "Advanced document analysis with metadata forensics and tampering detection. Protect against fraudulent documents, altered PDFs, and synthetic content in under 2 seconds.",
-                  features: [
-                    "PDF, image, and video document analysis",
-                    "Metadata forensics and digital fingerprinting",
-                    "Chain of custody validation",
-                    "Compliance reporting and audit trails"
-                  ],
-                  mockup: (
-                    <div className="feature-mockup">
-                      <div className="mockup-header">
-                        <div className="mockup-dot"></div>
-                        <div className="mockup-dot"></div>
-                        <div className="mockup-dot"></div>
-                      </div>
-                      <div style={{ background: '#f8f9ff', borderRadius: '8px', padding: '20px', margin: '20px 0' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
-                          <span style={{ fontWeight: 600 }}>📄 Contract_Final.pdf</span>
-                          <span style={{ color: '#00c851', fontWeight: 700 }}>✓ VERIFIED</span>
-                        </div>
-                        <div style={{ fontSize: '14px', color: '#666', marginBottom: '10px' }}>
-                          Metadata: Original • No tampering detected • Chain of custody intact
-                        </div>
-                        <div className="confidence-meter">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            whileInView={{ width: "95%" }}
-                            transition={{ duration: 2, delay: 0.5 }}
-                            className="confidence-fill"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )
-                },
-                {
-                  badge: "Media Protection",
-                  title: "Stop synthetic media before it spreads.",
-                  description: "Multi-modal deepfake detection across video, audio, image, and text content. Real-time processing with explainable AI heatmaps showing exactly where manipulation occurs.",
-                  features: [
-                    "Video, audio, image, and text analysis",
-                    "Real-time processing with <2s response",
-                    "Explainable AI with visual heatmaps",
-                    "Social media platform integration"
-                  ],
-                  mockup: (
-                    <div className="feature-mockup">
-                      <div className="mockup-header">
-                        <div className="mockup-dot"></div>
-                        <div className="mockup-dot"></div>
-                        <div className="mockup-dot"></div>
-                      </div>
-                      <div style={{ background: '#fff3f3', borderRadius: '8px', padding: '20px', margin: '20px 0' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-                          <span style={{ fontWeight: 600 }}>🎬 Video Analysis</span>
-                          <span style={{ color: '#ff6b35', fontWeight: 700 }}>⚠ DEEPFAKE DETECTED</span>
-                        </div>
-                        <div style={{ fontSize: '14px', color: '#666', marginBottom: '10px' }}>
-                          Facial inconsistencies detected • Audio-visual mismatch • AI artifacts found
-                        </div>
-                        <div className="confidence-meter">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            whileInView={{ width: "94%" }}
-                            transition={{ duration: 2, delay: 0.5 }}
-                            style={{ background: 'linear-gradient(90deg, #ff6b35, #ff8c00)' }}
-                            className="confidence-fill"
-                          />
-                        </div>
-                        <div style={{ fontWeight: 700, fontSize: '16px', color: '#ff6b35' }}>Deepfake Confidence: 94.2%</div>
-                      </div>
-                    </div>
-                  )
-                }
-              ].map((feature, index) => (
-                <motion.div
-                  key={feature.badge}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: index * 0.2 }}
-                  viewport={{ once: true }}
-                  className={`feature-item ${index % 2 === 1 ? 'reverse' : ''}`}
-                >
-                  <div className="feature-content">
-                    <div className="feature-badge">{feature.badge}</div>
-                    <h3 className="feature-title">{feature.title}</h3>
-                    <p className="feature-description">{feature.description}</p>
-                    <ul className="feature-list">
-                      {feature.features.map((item, idx) => (
-                        <li key={idx}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="feature-visual">
-                    {feature.mockup}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Demo Section - Functioning File Upload */}
-      <section className="demo-section">
-        <div className="container mx-auto px-8">
-          <div className="demo-content">
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="section-title text-white mb-16"
-            >
-              See Detection in Action
-            </motion.h2>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              viewport={{ once: true }}
-              className="demo-container"
-            >
-              <p style={{ marginBottom: '30px', fontSize: '20px', lineHeight: 1.6, color: 'white' }}>
-                Upload any image, video, or audio file to see our AI detection engine analyze it in real-time. 
-                Experience the power of enterprise-grade deepfake detection.
-              </p>
-              
-              <div 
-                className="demo-upload-area"
-                style={{
-                  border: '3px dashed rgba(255,255,255,0.3)',
-                  padding: '60px 40px',
-                  borderRadius: '16px',
-                  margin: '30px 0',
-                  background: 'rgba(255,255,255,0.05)',
-                  transition: 'all 0.3s',
-                  cursor: 'pointer'
-                }}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                onClick={() => document.getElementById('file-input')?.click()}
-              >
-                <input
-                  id="file-input"
-                  type="file"
-                  multiple
-                  accept="image/*,video/*,audio/*"
-                  onChange={handleFileUpload}
-                  style={{ display: 'none' }}
-                />
-                
-                {!uploadedFiles.length && !isAnalyzing && !analysisResults && (
-                  <div style={{ textAlign: 'center', color: 'white' }}>
-                    <Upload className="h-16 w-16 mx-auto mb-4 text-cyan-400" />
-                    <h3 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '12px' }}>
-                      Drop files here or click to upload
-                    </h3>
-                    <p style={{ fontSize: '16px', opacity: 0.8 }}>
-                      Supports images, videos, and audio files up to 100MB
-                    </p>
-                  </div>
-                )}
-
-                {isAnalyzing && (
-                  <div style={{ textAlign: 'center', color: 'white' }}>
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                      className="h-16 w-16 border-4 border-cyan-400 border-t-transparent rounded-full mx-auto mb-4"
-                    />
-                    <h3 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '12px' }}>
-                      Analyzing Content...
-                    </h3>
-                    <p style={{ fontSize: '16px', opacity: 0.8 }}>
-                      Running advanced AI detection algorithms
-                    </p>
-                  </div>
-                )}
-
-                {analysisResults && (
-                  <div style={{ textAlign: 'center', color: 'white' }}>
-                    <div className={`h-16 w-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
-                      analysisResults.isDeepfake ? 'bg-red-500' : 'bg-green-500'
-                    }`}>
-                      {analysisResults.isDeepfake ? (
-                        <AlertTriangle className="h-8 w-8 text-white" />
-                      ) : (
-                        <CheckCircle className="h-8 w-8 text-white" />
-                      )}
-                    </div>
-                    <h3 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '12px' }}>
-                      {analysisResults.isDeepfake ? 'Deepfake Detected' : 'Content Verified'}
-                    </h3>
-                    <p style={{ fontSize: '16px', opacity: 0.8, marginBottom: '20px' }}>
-                      Confidence: {analysisResults.confidence.toFixed(1)}% • 
-                      Processed in {analysisResults.processingTime}ms
-                    </p>
-                    <button
-                      onClick={() => {
-                        setUploadedFiles([]);
-                        setAnalysisResults(null);
-                      }}
-                      className="bg-cyan-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-cyan-600 transition-colors"
-                    >
-                      Analyze Another File
-                    </button>
-                  </div>
-                )}
+            <h1 className="mt-4 text-[2.6rem] font-semibold leading-[0.95] tracking-tight text-ice sm:text-6xl">
+              Defend.
+              <br />
+              Detect.
+              <br />
+              Verify.
+            </h1>
+            <p className="mt-5 text-xl font-medium leading-snug text-ice sm:text-2xl">
+              Your Digital Immune System Against AI-Generated Threats
+            </p>
+            <div className="mt-6 flex flex-col gap-3">
+              <a href={SCAMCHECK_URL} className="btn-accent w-full sm:w-auto">
+                {SCAMCHECK_LABEL}
+              </a>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <button type="button" className="btn-ghost w-full sm:w-auto" onClick={() => setIsEnterpriseModalOpen(true)}>
+                  Join Beta Waitlist
+                </button>
+                <button type="button" className="btn-ghost w-full sm:w-auto" onClick={() => setIsDemoOpen(true)}>
+                  Try Live Demo
+                </button>
               </div>
-                {uploadedFiles.length > 0 && !isAnalyzing && !analysisResults && (
-                  <div style={{ textAlign: 'center', color: 'white' }}>
-                    <div className="h-16 w-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-blue-500">
-                      <Eye className="h-8 w-8 text-white" />
-                    </div>
-                    <h3 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '12px' }}>
-                      {uploadedFiles.length} File{uploadedFiles.length > 1 ? 's' : ''} Ready
-                    </h3>
-                    <p style={{ fontSize: '16px', opacity: 0.8, marginBottom: '20px' }}>
-                      Click below to start AI-powered analysis
-                    </p>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => {
-                        setIsAnalyzing(true);
-                        setTimeout(() => {
-                          setAnalysisResults({
-                            isDeepfake: Math.random() > 0.6,
-                            confidence: 85 + Math.random() * 15,
-                            threats: Math.floor(Math.random() * 3),
-                            processingTime: Math.floor(100 + Math.random() * 200)
-                          });
-                          setIsAnalyzing(false);
-                        }, 3000);
-                      }}
-                      className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-8 py-4 rounded-xl font-bold text-xl hover:shadow-xl hover:shadow-cyan-500/25 transition-all"
-                    >
-                      ANALYZE NOW
-                    </motion.button>
-                  </div>
-                )}
-            </motion.div>
+            </div>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-ice/75">
+              Enterprise-grade deepfake detection powered by Reality Defender's API. Protect your organization from synthetic media threats with 99.7% accuracy.
+            </p>
+            <p className="mt-4 text-sm italic text-ice/55">
+              "Securing digital truth for government agencies and Fortune 500 companies worldwide"
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Social Proof Testimonials */}
-      <section className="social-proof-section">
-        <div className="container mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="section-title text-gray-900 mb-6">
-              Trusted by Security Leaders Worldwide
-            </h2>
-          </motion.div>
+      <section className="border-y border-ice/10 bg-ink/80">
+        <div className="mx-auto flex max-w-6xl flex-col items-stretch justify-between gap-3 px-4 py-4 sm:flex-row sm:items-center sm:px-6">
+          <p className="flex items-center gap-3 text-sm text-ice">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#ff4d5e]" aria-hidden="true" />
+            LIVE: Experience real-time deepfake detection
+          </p>
+          <Link to="/demo" className="btn-accent w-full sm:w-auto">
+            Try Demo Now
+          </Link>
+        </div>
+      </section>
 
-          <div className="testimonials">
-            {[
-              {
-                rating: 5,
-                text: "Finally, a solution that actually works. ModGuardAI caught deepfakes our previous system missed entirely. The API integration took minutes, not months. Our fraud prevention improved by 340%.",
-                author: "Sarah Chen",
-                role: "CISO, Fortune 100 Financial Services"
-              },
-              {
-                rating: 5,
-                text: "Game-changing accuracy. 99.7% detection rate with zero false positives in our testing environment. This is the future of digital security. Implementation was seamless.",
-                author: "Marcus Rodriguez",
-                role: "Head of Security, Major Social Platform"
-              },
-              {
-                rating: 5,
-                text: "The real-time video analysis saved us from a major fraud attempt during a board meeting. The ROI was immediate and the peace of mind is invaluable. Best security investment we've made.",
-                author: "Dr. Jennifer Walsh",
-                role: "Chief Technology Officer, Global Bank"
-              },
-              {
-                rating: 5,
-                text: "ModGuardAI's forensic analysis tools helped us uncover a sophisticated deepfake campaign targeting our executives. The explainable AI made it easy to present evidence to stakeholders.",
-                author: "Alex Thompson",
-                role: "VP of Cybersecurity, Tech Unicorn"
-              },
-              {
-                rating: 5,
-                text: "As a journalist, verifying content authenticity is crucial. ModGuardAI's real-time analysis has become essential to our fact-checking process. Incredibly accurate and easy to use.",
-                author: "Maria Santos",
-                role: "Investigative Journalist, National News Network"
-              },
-              {
-                rating: 5,
-                text: "The team management features and compliance reporting made enterprise deployment effortless. Our entire organization is now protected with minimal IT overhead.",
-                author: "David Kumar",
-                role: "IT Director, Government Agency"
-              }
-            ].map((testimonial, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="testimonial"
-              >
-                <div className="testimonial-rating">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <span key={i} className="star">★</span>
-                  ))}
-                </div>
-                <p className="testimonial-text">
-                  "{testimonial.text}"
-                </p>
-                <p className="testimonial-author">{testimonial.author}</p>
-                <p className="testimonial-role">{testimonial.role}</p>
-              </motion.div>
+      <section id="scamcheck" className="chapter mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
+        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">01 / Paste</p>
+        <h2 className="mt-3 max-w-2xl text-3xl font-semibold tracking-tight text-ice sm:text-5xl">
+          {SCAMCHECK_LABEL}
+        </h2>
+        <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ice/75">
+          Check a message, link, or screenshot before you reply, pay, or tap. ScamCheck is free and opens in one step.
+        </p>
+        <ol className="mt-8 grid gap-4 md:grid-cols-3">
+          {[
+            ['01', 'Paste', 'Bring the text, link, or screenshot you are unsure about.'],
+            ['02', 'Analyze', 'ScamCheck reads it and returns a plain-language result.'],
+            ['03', 'Act', 'Decide whether to ignore it, report it, or get a second look in ModGuard.'],
+          ].map(([index, title, copy], step) => (
+            <li key={index} className="glass reveal p-6" style={revealDelay(step)}>
+              <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">{index} / {title}</p>
+              <p className="mt-3 text-ice/80">{copy}</p>
+            </li>
+          ))}
+        </ol>
+        <a href={SCAMCHECK_URL} className="btn-accent mt-8 w-full sm:w-auto">
+          {SCAMCHECK_LABEL}
+        </a>
+      </section>
+
+      <section id="technology" className="chapter border-t border-ice/10">
+        <div className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
+          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">02 / Analyze</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-ice sm:text-5xl">Cutting-Edge Detection Technology</h2>
+          <p className="mt-4 max-w-3xl text-lg text-ice/75">
+            Powered by advanced AI and Reality Defender's API for unmatched accuracy
+          </p>
+          <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {technologies.map((tech, index) => (
+              <article key={tech.title} className="glass reveal p-6" style={revealDelay(index)}>
+                <p className="text-2xl" aria-hidden="true">{tech.icon}</p>
+                <h3 className="mt-4 text-xl font-semibold text-ice">{tech.title}</h3>
+                <p className="mt-3 leading-relaxed text-ice/75">{tech.description}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Beta Waitlist Section */}
-      <section style={{ padding: '150px 0', background: 'linear-gradient(135deg, #16d9e3, #1a1a2e)' }}>
-        <div className="container mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 style={{ fontSize: 'clamp(48px, 8vw, 80px)', fontWeight: 900, color: 'white', marginBottom: '24px' }}>
-              Join Beta Waitlist
-            </h2>
-            <p style={{ fontSize: '24px', color: 'rgba(255,255,255,0.8)', marginBottom: '32px' }}>
-              Be among the first to access ModGuard AI's revolutionary detection technology
-            </p>
-          </motion.div>
+      <p className="border-y border-ice/10 px-4 py-6 text-center font-mono text-[11px] uppercase tracking-[0.14em] text-frost">
+        Stop deepfakes · Prevent fraud · Verify identity · Protect truth · Defend democracy · Secure future
+      </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            viewport={{ once: true }}
-            style={{
-              background: 'rgba(255,255,255,0.1)',
-              backdropFilter: 'blur(20px)',
-              borderRadius: '24px',
-              padding: '60px',
-              border: '1px solid rgba(255,255,255,0.2)',
-              maxWidth: '800px',
-              margin: '0 auto'
-            }}
-          >
-            <WaitlistForm location="homepage-main" />
-          </motion.div>
+      <section id="platform" className="chapter mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
+        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">03 / Act</p>
+        <div className="mt-6 grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
+          <div>
+            <h2 className="text-3xl font-semibold leading-tight tracking-tight text-ice sm:text-5xl">
+              Stop threats.
+              <br />
+              Stop fraud.
+              <br />
+              Stop impersonation.
+            </h2>
+            <p className="mt-5 text-lg leading-relaxed text-ice/75">
+              Enterprise-grade AI detection that works in real-time, protecting what matters most - truth, trust, and safety online.
+            </p>
+            <dl className="mt-8 space-y-5">
+              {stats.map((stat, index) => (
+                <div key={stat.label} className="reveal border-l border-accent pl-4" style={revealDelay(index)}>
+                  <dt className="font-mono text-3xl text-ice">{stat.number}</dt>
+                  <dd className="mt-1 text-sm text-ice/65">{stat.label}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <div className="space-y-8">
+            {features.map((feature, index) => (
+              <article key={feature.badge} className="reveal grid gap-6 border-t border-ice/10 pt-8 lg:grid-cols-2" style={revealDelay(index)}>
+                <div>
+                  <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">{feature.badge}</p>
+                  <h3 className="mt-3 text-2xl font-semibold text-ice">{feature.title}</h3>
+                  <p className="mt-3 leading-relaxed text-ice/75">{feature.description}</p>
+                  <ul className="mt-4 space-y-2 text-ice/80">
+                    {feature.points.map((point) => (
+                      <li key={point} className="flex gap-2">
+                        <span className="text-accent" aria-hidden="true">✓</span>
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="glass p-5">
+                  <div className="mb-4 flex items-center justify-between gap-3 text-sm">
+                    <span>{feature.caption}</span>
+                    <span className={feature.statusTone === 'ok' ? 'text-[#2fbf71]' : 'text-[#ff4d5e]'}>
+                      {feature.status}
+                    </span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-white/10">
+                    <div
+                      className={feature.statusTone === 'ok' ? 'h-full bg-[#2fbf71]' : 'h-full bg-[#ff4d5e]'}
+                      style={{ width: feature.meter }}
+                    />
+                  </div>
+                  <p className="mt-3 text-sm text-ice/70">{feature.detail}</p>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer style={{ background: '#1a1a2e', color: 'white', padding: '80px 0 40px 0' }}>
-        <div className="container mx-auto px-8">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
-            {/* Company Info */}
-            <div>
-              <Link to="/" className="flex items-center space-x-2 mb-6">
-                <Shield className="h-8 w-8 text-cyan-400" />
-                <span className="text-2xl font-bold">ModGuard AI</span>
-              </Link>
-              <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-                Defending digital truth with AI-powered content moderation and deepfake detection.
-              </p>
-            </div>
-            
-            {/* Platform */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Technology</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link to="/" className="text-gray-400 hover:text-white transition-colors">Home</Link></li>
-                <li><Link to="/features" className="text-gray-400 hover:text-white transition-colors">Features</Link></li>
-                <li><Link to="/solutions" className="text-gray-400 hover:text-white transition-colors">Solutions</Link></li>
-                <li><Link to="/demo" className="text-gray-400 hover:text-white transition-colors">Live Demo</Link></li>
-                <li><Link to="/earlyaccess" className="text-gray-400 hover:text-white transition-colors">Early Access</Link></li>
-              </ul>
-            </div>
-            
-            {/* Community */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Community</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link to="/student-portal" className="text-gray-400 hover:text-white transition-colors">AI Fellowship</Link></li>
-                <li><Link to="/leaderboard" className="text-gray-400 hover:text-white transition-colors">Deepfake Challenge</Link></li>
-                <li><Link to="/events" className="text-gray-400 hover:text-white transition-colors">Events & Webinars</Link></li>
-                <li><Link to="/threat-map" className="text-gray-400 hover:text-white transition-colors">Research Network</Link></li>
-              </ul>
-            </div>
-            
-            {/* Resources */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Resources</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link to="/media" className="text-gray-400 hover:text-white transition-colors">Press & Media</Link></li>
-                <li><Link to="/blog" className="text-gray-400 hover:text-white transition-colors">Blog</Link></li>
-                <li><Link to="/case-studies" className="text-gray-400 hover:text-white transition-colors">Case Studies</Link></li>
-                <li><Link to="/dashboard" className="text-gray-400 hover:text-white transition-colors">Transparency Dashboard</Link></li>
-              </ul>
-            </div>
-            
-            {/* Developers */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Developers</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link to="/api" className="text-gray-400 hover:text-white transition-colors">API Documentation</Link></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">SDKs & Libraries</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Integration Guides</a></li>
-                <li><Link to="/demo" className="text-gray-400 hover:text-white transition-colors">API Sandbox</Link></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">
-              © 2025 ModGuard AI. All rights reserved.
+      <section id="demo" className="chapter border-t border-ice/10">
+        <div className="mx-auto w-full max-w-3xl px-4 py-20 sm:px-6">
+          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">04 / Verify</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-ice sm:text-5xl">See Detection in Action</h2>
+          <div className="glass mt-8 p-6 sm:p-10" aria-live="polite">
+            <p className="text-lg leading-relaxed text-ice/80">
+              Upload any image, video, or audio file to see our AI detection engine analyze it in real-time. Experience the power of enterprise-grade deepfake detection.
             </p>
-            <div className="flex items-center space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Contact</a>
-            </div>
+            {!analysisResults && (
+            <label
+              className="mt-6 block cursor-pointer rounded-[20px] border border-dashed border-ice/25 px-6 py-12 text-center"
+              onDragOver={(event) => event.preventDefault()}
+              onDrop={(event) => {
+                event.preventDefault();
+                const files = Array.from(event.dataTransfer.files);
+                if (files.length > 0) beginAnalysis(files);
+              }}
+            >
+              <input
+                type="file"
+                multiple
+                accept="image/*,video/*,audio/*"
+                className="sr-only"
+                onChange={onFileChange}
+              />
+              {!uploadedFiles.length && !isAnalyzing && !analysisResults && !analysisError && (
+                <>
+                  <Upload className="mx-auto h-10 w-10 text-accent" aria-hidden="true" />
+                  <p className="mt-4 text-xl font-semibold">Drop files here or click to upload</p>
+                  <p className="mt-2 text-ice/65">Supports images, videos, and audio files up to 100MB</p>
+                </>
+              )}
+              {isAnalyzing && (
+                <>
+                  <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">02 / Analyze</p>
+                  <p className="mt-3 text-xl font-semibold">Analyzing Content...</p>
+                  <p className="mt-2 text-ice/65">Running advanced AI detection algorithms</p>
+                </>
+              )}
+              {analysisError && (
+                <p className="text-lg text-[#ff4d5e]">{analysisError}</p>
+              )}
+            </label>
+            )}
+
+            {analysisResults && (
+              <div className={`mt-6 rounded-[20px] p-8 text-center ${analysisResults.isDeepfake ? 'bg-[#ff4d5e] text-white' : 'bg-[#2fbf71] text-[#04140c]'}`}>
+                {analysisResults.isDeepfake ? (
+                  <AlertTriangle className="mx-auto h-10 w-10" aria-hidden="true" />
+                ) : (
+                  <CheckCircle className="mx-auto h-10 w-10" aria-hidden="true" />
+                )}
+                <h3 className="mt-4 text-2xl font-semibold">
+                  {analysisResults.isDeepfake ? 'Deepfake Detected' : 'Content Verified'}
+                </h3>
+                <p className="mt-2">
+                  Confidence: {analysisResults.confidence.toFixed(1)}% • Processed in {analysisResults.processingTime}ms
+                </p>
+                <button
+                  type="button"
+                  className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full border border-current px-5 font-mono text-sm"
+                  onClick={() => {
+                    setUploadedFiles([]);
+                    setAnalysisResults(null);
+                    setAnalysisError('');
+                  }}
+                >
+                  Analyze Another File
+                </button>
+              </div>
+            )}
           </div>
         </div>
-      </footer>
+      </section>
 
-      {/* Floating CTA */}
-      <FloatingCTA />
+      <section className="chapter border-t border-ice/10">
+        <div className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
+          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">05 / Proof</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-ice sm:text-5xl">Trusted by Security Leaders Worldwide</h2>
+          <div className="mt-10 grid gap-4 lg:grid-cols-2">
+            {testimonials.map((testimonial, index) => (
+              <figure key={testimonial.author} className="glass reveal p-6" style={revealDelay(index % 2)}>
+                <p className="text-[#f5a524]" aria-label="5 stars">★★★★★</p>
+                <blockquote className="mt-4 text-lg leading-relaxed text-ice">"{testimonial.text}"</blockquote>
+                <figcaption className="mt-5">
+                  <p className="font-semibold">{testimonial.author}</p>
+                  <p className="text-sm text-ice/60">{testimonial.role}</p>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      {/* Modals */}
-      <DemoPresentation isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
-      <EnterpriseOnboarding 
-        isOpen={isEnterpriseModalOpen} 
-        onClose={() => setIsEnterpriseModalOpen(false)}
-        onComplete={() => {
-          setIsEnterpriseModalOpen(false);
-          window.location.href = '/dashboard';
-        }}
-      />
-      <StudentOnboarding 
-        isOpen={isFellowshipModalOpen} 
-        onClose={() => setIsFellowshipModalOpen(false)}
-      />
-    </>
+      <section id="access" className="chapter border-t border-ice/10">
+        <div className="mx-auto w-full max-w-3xl px-4 py-20 sm:px-6">
+          <p className="text-center font-mono text-[11px] uppercase tracking-[0.14em] text-frost">06 / Access</p>
+          <h2 className="mt-3 text-center text-3xl font-semibold tracking-tight text-ice sm:text-5xl">Join Beta Waitlist</h2>
+          <p className="mt-4 text-center text-lg text-ice/75">
+            Be among the first to access ModGuard AI's revolutionary detection technology
+          </p>
+          <div className="glass mt-8 p-6 sm:p-10">
+            <WaitlistForm />
+          </div>
+          <p className="mt-6 text-center">
+            <button type="button" className="btn-ghost" onClick={() => setIsFellowshipModalOpen(true)}>
+              Apply to the AI Fellowship
+            </button>
+          </p>
+        </div>
+      </section>
+
+      <FloatingCta />
+
+      {isDemoOpen && (
+        <Suspense fallback={null}>
+          <DemoPresentation isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
+        </Suspense>
+      )}
+      {isEnterpriseModalOpen && (
+        <Suspense fallback={null}>
+          <EnterpriseOnboarding
+            isOpen={isEnterpriseModalOpen}
+            onClose={() => setIsEnterpriseModalOpen(false)}
+            onComplete={() => {
+              setIsEnterpriseModalOpen(false);
+              window.location.href = '/dashboard';
+            }}
+          />
+        </Suspense>
+      )}
+      {isFellowshipModalOpen && (
+        <Suspense fallback={null}>
+          <StudentOnboarding isOpen={isFellowshipModalOpen} onClose={() => setIsFellowshipModalOpen(false)} />
+        </Suspense>
+      )}
+    </div>
   );
 };

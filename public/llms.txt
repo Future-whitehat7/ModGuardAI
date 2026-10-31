@@ -1,0 +1,37 @@
+# ModGuard AI
+
+> Enterprise AI content moderation and deepfake detection. ScamCheck is the free AI scam checker.
+
+ModGuard AI (https://modguardai.org) publishes the product site for an enterprise content moderation and deepfake detection suite. ScamCheck (https://scamcheck.modguardai.org) is the free AI scam checker.
+
+## Products
+
+- [ScamCheck](https://scamcheck.modguardai.org): Free AI scam checker
+- [Home](https://modguardai.org/): Defend, detect, and verify synthetic media
+- [Live demo](https://modguardai.org/demo): Upload image, video, or audio for a detection demo
+- [API](https://modguardai.org/api): API documentation and sandbox
+- [Pricing](https://modguardai.org/pricing): Starter $49/month, Professional $199/month, Enterprise custom
+
+## Claims published on the site
+
+- Homepage: deepfake detection powered by Reality Defender's API, 99.7% detection accuracy, response under 2 seconds, 24/7 live protection
+- Homepage technology cards also describe real-time processing under 100ms
+- Feature pages publish separate accuracy and speed figures per capability (deepfake detection is listed at 99.2%)
+- Early access copy refers to 12,000+ professionals waiting
+- Professional plan includes cultural context filtering
+- Founder: Samuel Fagbamigbe, CEO and co-founder (samuel@modguardai.com)
+
+## Pages
+
+- [Features](https://modguardai.org/features): Deepfake detection, identity verification, documents, live video, voice analysis
+- [Solutions](https://modguardai.org/solutions): Creators, brands and enterprises, policy makers, journalists
+- [About](https://modguardai.org/about): Origin story and founder
+- [Blog](https://modguardai.org/blog)
+- [Case studies](https://modguardai.org/case-studies)
+- [AI Fellowship](https://modguardai.org/student-portal)
+- [Early access](https://modguardai.org/earlyaccess)
+
+## Optional
+
+- [Sitemap](https://modguardai.org/sitemap.xml)
+- [Robots](https://modguardai.org/robots.txt)

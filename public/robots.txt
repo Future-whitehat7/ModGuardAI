@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# https://modguardai.org/llms.txt
+Sitemap: https://modguardai.org/sitemap.xml

@@ -26,31 +26,6 @@ import {
 export const About = () => {
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <Link to="/" className="flex items-center space-x-2">
-                <Home className="h-5 w-5 text-gray-600 hover:text-blue-600 transition-colors" />
-                <span className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Home</span>
-              </Link>
-              <span className="text-gray-400">|</span>
-              <div className="flex items-center space-x-2">
-                <Shield className="h-6 w-6 text-blue-600" />
-                <span className="text-xl font-bold text-gray-900">Origin Story & Founder Insights</span>
-              </div>
-            </div>
-            
-            <Link
-              to="/earlyaccess"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transition-all"
-            >
-              Join Beta Waitlist
-            </Link>
-          </div>
-        </div>
-      </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Hero Section */}

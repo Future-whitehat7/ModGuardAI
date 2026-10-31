@@ -16,7 +16,6 @@ import {
   Users,
   Home,
   Gift,
-  PenTool,
   BookOpen,
   Calendar
 } from 'lucide-react';
@@ -59,8 +58,10 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <button
-                className="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:shadow-lg mx-2"
-                className="lg:hidden text-gray-500 hover:text-gray-700 mr-4"
+                type="button"
+                onClick={() => setIsSidebarOpen(true)}
+                className="lg:hidden mr-4 inline-flex min-h-12 min-w-12 items-center justify-center text-gray-500 hover:text-gray-700"
+                aria-label="Open menu"
               >
                 <Menu className="h-6 w-6" />
               </button>
@@ -127,6 +128,15 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               Platform
             </h3>
             <ul className="space-y-2">
+              <li>
+                <a
+                  href="https://scamcheck.modguardai.org"
+                  className="flex min-h-12 items-center rounded-lg bg-sky-400 px-4 py-3 text-sm font-medium text-slate-950"
+                  onClick={() => setIsSidebarOpen(false)}
+                >
+                  ScamCheck: free AI scam checker
+                </a>
+              </li>
               {navigation.map((item) => (
                 <li key={item.name}>
                   <Link

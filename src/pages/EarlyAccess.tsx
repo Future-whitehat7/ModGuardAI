@@ -188,23 +188,6 @@ export const EarlyAccess = () => {
         <div className="absolute bottom-40 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
       </div>
 
-      {/* Header */}
-      <header className="relative z-10 p-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2">
-            <Shield className="h-8 w-8 text-cyan-400" />
-            <span className="text-2xl font-bold text-white">ModGuard AI</span>
-          </Link>
-          
-          <Link
-            to="/"
-            className="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors"
-          >
-            <Home className="h-5 w-5" />
-            <span>Back to Home</span>
-          </Link>
-        </div>
-      </header>
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
         {/* Hero Section */}

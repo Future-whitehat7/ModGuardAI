@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, AlertTriangle, X, Info, AlertCircle } from 'lucide-react';
 
 export interface ToastProps {
@@ -71,61 +70,32 @@ export const Toast: React.FC<ToastProps> = ({
   const style = styles[type];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 50, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, x: 300, scale: 0.95 }}
-      transition={{ duration: 0.3, type: "spring", stiffness: 300, damping: 30 }}
-      className={`${style.bg} ${style.border} border rounded-lg p-4 shadow-lg max-w-sm w-full relative overflow-hidden`}
-    >
-      {/* Progress bar */}
+    <div className={`toast-in ${style.bg} ${style.border} border rounded-lg p-4 shadow-lg max-w-sm w-full relative overflow-hidden`}>
       {duration > 0 && (
-        <motion.div
-          initial={{ width: '100%' }}
-          animate={{ width: '0%' }}
-          transition={{ duration: duration / 1000, ease: "linear" }}
-          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-current to-transparent opacity-30"
+        <div
+          className="toast-bar absolute bottom-0 left-0 h-1 bg-current opacity-30"
+          style={{ animationDuration: `${duration}ms` }}
         />
       )}
 
       <div className="flex items-start space-x-3">
-        <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ delay: 0.1, type: "spring", stiffness: 300 }}
-        >
-          <Icon className={`h-5 w-5 ${style.icon} flex-shrink-0 mt-0.5`} />
-        </motion.div>
-        
+        <Icon className={`h-5 w-5 ${style.icon} flex-shrink-0 mt-0.5`} />
         <div className="flex-1 min-w-0">
-          <motion.h4
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.15 }}
-            className={`text-sm font-medium ${style.title}`}
-          >
-            {title}
-          </motion.h4>
+          <h4 className={`text-sm font-medium ${style.title}`}>{title}</h4>
           {description && (
-            <motion.p
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className={`text-sm ${style.description} mt-1`}
-            >
-              {description}
-            </motion.p>
+            <p className={`text-sm ${style.description} mt-1`}>{description}</p>
           )}
         </div>
-        
         <button
+          type="button"
           onClick={() => onClose(id)}
-          className={`${style.icon} hover:bg-white/50 rounded-md p-1 transition-colors flex-shrink-0`}
+          className={`${style.icon} hover:bg-white/50 rounded-md p-1 transition-colors flex-shrink-0 min-h-12 min-w-12`}
+          aria-label="Dismiss notification"
         >
           <X className="h-4 w-4" />
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -135,11 +105,9 @@ export const ToastContainer: React.FC<{ toasts: ToastProps[]; onClose: (id: stri
 }) => {
   return (
     <div className="fixed top-4 right-4 z-50 space-y-2">
-      <AnimatePresence>
-        {toasts.map((toast) => (
-          <Toast key={toast.id} {...toast} onClose={onClose} />
-        ))}
-      </AnimatePresence>
+      {toasts.map((toast) => (
+        <Toast key={toast.id} {...toast} onClose={onClose} />
+      ))}
     </div>
   );
 };
