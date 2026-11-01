@@ -14,7 +14,7 @@ const stats = [
 
 const checks = [
   ['Messages', 'A text, email, or DM that is pushing you to pay or to click.'],
-  ['Statements', 'A call or a transcript that sounds like someone you know.'],
+  ['Statements', 'Step 2 of the same ScamCheck tool: lines from a bank or card statement.'],
   ['Fake accounts', 'A profile using a real person’s name, face, or handle.'],
 ];
 

@@ -998,6 +998,18 @@ html.motion-js .reveal.is-in {
   }
 }
 
+.step-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.step-switch .btn-ghost[aria-pressed='true'] {
+  border-color: #0e0f12;
+  background: #0e0f12;
+  color: #ffffff;
+}
+
 .tool-frame {
   overflow: hidden;
   border: 1px solid #e6e6e1;
@@ -1058,6 +1070,101 @@ html.motion-js .reveal.is-in {
 
 .verdict-fake {
   color: #9f1239;
+}
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.progress-line {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #4a4e57;
+}
+
+.progress-track {
+  flex: 1;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e6e6e1;
+}
+
+.progress-track span {
+  display: block;
+  height: 100%;
+  background: #2b4bff;
+}
+
+.intake-step {
+  margin: 0;
+  padding: 1.5rem 0;
+  border: 0;
+  border-top: 1px solid #e6e6e1;
+}
+
+.intake-step legend {
+  padding: 0;
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: 1.75rem;
+  color: #0e0f12;
+}
+
+.choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-height: 48px;
+  margin-top: 0.5rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #e6e6e1;
+  border-radius: 12px;
+  color: #0e0f12;
+}
+
+.choice input {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.15rem;
+  accent-color: #2b4bff;
+}
+
+.hint,
+.opt {
+  color: #4a4e57;
+  font-size: 0.875rem;
+}
+
+.opt {
+  font-weight: 500;
+}
+
+.hint {
+  margin-top: 0.4rem;
+}
+
+.form-err {
+  margin-top: 1rem;
+  color: #0e0f12;
+  font-weight: 600;
+}
+
+.form-foot {
+  text-align: center;
+}
+
+.intake-form [aria-invalid='true'] {
+  border-color: #0e0f12;
 }
 
 @media (min-width: 768px) {

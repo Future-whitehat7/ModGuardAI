@@ -1,192 +1,261 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { Link } from 'react-router-dom';
-import { intakeTierRadios, type IntakeTierValue } from '../../config/platform';
 
-type Status = 'editing' | 'sending' | 'done' | 'error';
+const sections = 5;
 
-const steps = ['About you', 'Official accounts', 'What to look for', 'Priorities', 'Consent'] as const;
+function fieldValue(field: HTMLInputElement | HTMLTextAreaElement) {
+  return field.value.trim();
+}
 
-export function IntakeForm() {
-  const [step, setStep] = useState(0);
-  const [status, setStatus] = useState<Status>('editing');
-  const [error, setError] = useState('');
-  const [tier, setTier] = useState<IntakeTierValue>(intakeTierRadios[0].value);
-
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const panels = [...form.querySelectorAll<HTMLElement>('[data-step]')];
-    const current = panels[step];
-    const fields = current
-      ? [...current.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea, select')]
-      : [];
-    const invalid = fields.find((field) => !field.checkValidity());
-    if (invalid) {
-      invalid.reportValidity();
-      return;
-    }
-    if (step < steps.length - 1) {
-      setStep((value) => value + 1);
-      return;
-    }
-    setStatus('sending');
-    setError('');
-    const body = new URLSearchParams();
-    new FormData(form).forEach((value, key) => {
-      if (typeof value === 'string') body.append(key, value);
-    });
-    body.set('form-name', 'impersonation-check');
-    try {
-      const response = await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: body.toString(),
-      });
-      if (!response.ok) throw new Error('form');
-      setStatus('done');
-    } catch {
-      setStatus('error');
-      setError('The form did not go through. Try again in a moment.');
-    }
-  };
-
-  if (status === 'done') {
-    return (
-      <div className="glass p-6" role="status">
-        <p className="eyebrow">Intake complete</p>
-        <h2 className="display mt-3 text-3xl text-ice">The 48-hour clock has started.</h2>
-        <p className="measure mt-4 text-ice">
-          We have your name, email, accounts, and the three consents. We email you within 48 hours of this completed intake.
-        </p>
-        <Link className="btn-ghost mt-6" to="/">
-          Back home
-        </Link>
-      </div>
+function sectionDone(section: HTMLElement) {
+  if (section.dataset.step === '2') {
+    return [...section.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea')].some(
+      (field) => fieldValue(field).length > 0,
     );
   }
+  const required = [...section.querySelectorAll<HTMLInputElement>('[required]')];
+  if (required.length === 0) {
+    return [...section.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea')].some(
+      (field) => field.type !== 'radio' && field.type !== 'checkbox' && fieldValue(field).length > 0,
+    );
+  }
+  return required.every((field) => {
+    if (field.type === 'radio') {
+      return Boolean(section.querySelector(`input[name="${field.name}"]:checked`));
+    }
+    if (field.type === 'checkbox') return field.checked;
+    return fieldValue(field).length > 0 && field.checkValidity();
+  });
+}
+
+export function IntakeForm() {
+  const [done, setDone] = useState(0);
+  const [error, setError] = useState('');
+
+  const refresh = (form: HTMLFormElement) => {
+    const count = [...form.querySelectorAll<HTMLElement>('[data-step]')].filter(sectionDone).length;
+    setDone(count);
+  };
+
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const form = event.currentTarget;
+    form.querySelectorAll('[aria-invalid]').forEach((field) => field.removeAttribute('aria-invalid'));
+    const invalid = [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[required]')].filter(
+      (field) => !field.checkValidity(),
+    );
+    const accounts = form.querySelector<HTMLElement>('[data-step="2"]');
+    const hasLink = accounts ? sectionDone(accounts) : false;
+    const badUrls = [...form.querySelectorAll<HTMLInputElement>('input[type="url"]')].filter(
+      (field) => field.value.trim() !== '' && !field.checkValidity(),
+    );
+    if (invalid.length > 0 || !hasLink || badUrls.length > 0) {
+      event.preventDefault();
+      [...invalid, ...badUrls].forEach((field) => field.setAttribute('aria-invalid', 'true'));
+      const firstAccount = accounts?.querySelector<HTMLInputElement>('input');
+      if (!hasLink && firstAccount) firstAccount.setAttribute('aria-invalid', 'true');
+      setError(
+        badUrls.length > 0
+          ? 'Use a full https link for each account you add.'
+          : !hasLink && invalid.length === 0
+            ? 'Add at least one official account link in section 2.'
+            : `Please complete the highlighted fields${!hasLink ? ' and add at least one official account link' : ''}.`,
+      );
+      (invalid[0] ?? badUrls[0] ?? firstAccount)?.focus();
+      return;
+    }
+    setError('');
+  };
 
   return (
     <form
       className="glass intake-form"
+      id="intake-form"
       name="impersonation-check"
       method="POST"
+      action="/impersonation-check/thanks"
+      encType="multipart/form-data"
       data-netlify="true"
       data-netlify-honeypot="bot-field"
       noValidate
+      onInput={(event) => refresh(event.currentTarget)}
+      onChange={(event) => refresh(event.currentTarget)}
       onSubmit={onSubmit}
     >
       <input type="hidden" name="form-name" value="impersonation-check" />
-      <p className="hidden">
+      <p className="honeypot">
         <label>
-          Do not fill this in
-          <input name="bot-field" />
+          Leave this empty
+          <input name="bot-field" tabIndex={-1} autoComplete="off" />
         </label>
       </p>
-      <p className="eyebrow">
-        Step {step + 1} of {steps.length}: {steps[step]}
+
+      <p className="progress-line" aria-live="polite">
+        <span className="progress-track" aria-hidden="true">
+          <span style={{ width: `${(done / sections) * 100}%` }} />
+        </span>
+        {done} of {sections} sections complete
       </p>
 
-      <div data-step="0" hidden={step !== 0}>
+      <fieldset className="intake-step" data-step="1">
+        <legend>1. About you</legend>
         <label className="mt-4 block text-sm text-frost" htmlFor="intake-name">
-          Name
+          Full name or public name
         </label>
         <input id="intake-name" name="name" className="field mt-2" required autoComplete="name" />
         <label className="mt-4 block text-sm text-frost" htmlFor="intake-email">
           Email
         </label>
-        <input id="intake-email" name="email" type="email" className="field mt-2" required autoComplete="email" />
-        <label className="mt-4 block text-sm text-frost" htmlFor="intake-receipt">
-          Stripe receipt email, if it is different
-        </label>
-        <input id="intake-receipt" name="stripe-receipt-email" type="email" className="field mt-2" autoComplete="off" />
-      </div>
-
-      <div data-step="1" hidden={step !== 1}>
-        <p className="measure mt-4 text-frost" id="accounts-hint">
-          At least one official profile link. Add the accounts you want compared with copies.
+        <input
+          id="intake-email"
+          name="email"
+          type="email"
+          className="field mt-2"
+          required
+          autoComplete="email"
+          aria-describedby="email-hint"
+          placeholder="you@example.com"
+        />
+        <p className="hint" id="email-hint">
+          We send your slot date and report here.
         </p>
-        <label className="mt-4 block text-sm text-frost" htmlFor="account-1">
-          Official account link
-        </label>
-        <input id="account-1" name="account-1" type="url" className="field mt-2" required placeholder="https://" aria-describedby="accounts-hint" />
-        <label className="mt-4 block text-sm text-frost" htmlFor="account-2">
-          Another official link, if you have one
-        </label>
-        <input id="account-2" name="account-2" type="url" className="field mt-2" placeholder="https://" />
-        <label className="mt-4 block text-sm text-frost" htmlFor="account-3">
-          A third official link, if you have one
-        </label>
-        <input id="account-3" name="account-3" type="url" className="field mt-2" placeholder="https://" />
-      </div>
-
-      <div data-step="2" hidden={step !== 2}>
-        <label className="mt-4 block text-sm text-frost" htmlFor="look-for">
-          What should we look for?
-        </label>
-        <textarea id="look-for" name="look-for" className="field mt-2 min-h-28 py-3" required />
-      </div>
-
-      <div data-step="3" hidden={step !== 3}>
-        <label className="mt-4 block text-sm text-frost" htmlFor="priorities">
-          What should come first?
-        </label>
-        <textarea id="priorities" name="priorities" className="field mt-2 min-h-28 py-3" required />
-        <fieldset className="mt-6">
-          <legend className="text-sm text-frost">Which payment choice matches you?</legend>
-          <p className="measure mt-2 text-sm text-frost">
-            These two choices are the intake radios. Starter, under 100K followers at $49 a week or $99 a month, is not one of them. The $499 choice says public figures and manager bookings. It does not say accounts over 1 million followers.
-          </p>
-          {intakeTierRadios.map((radio) => (
-            <label key={radio.value} className="mt-3 flex min-h-12 items-start gap-3 text-ice">
-              <input
-                type="radio"
-                name="tier"
-                value={radio.value}
-                checked={tier === radio.value}
-                onChange={() => setTier(radio.value)}
-                required
-              />
-              <span>{radio.label}</span>
-            </label>
-          ))}
-        </fieldset>
-      </div>
-
-      <div data-step="4" hidden={step !== 4}>
         <fieldset className="mt-4">
-          <legend className="text-sm text-frost">Consent</legend>
-          <label className="mt-3 flex min-h-12 items-start gap-3 text-ice">
-            <input type="checkbox" name="consent-permission" required />
-            <span>I am the account holder, or I have their permission to request this check.</span>
+          <legend className="text-sm text-frost">Who is filling this in?</legend>
+          <label className="choice">
+            <input type="radio" name="role" value="creator" required />
+            <span>I’m the creator</span>
           </label>
-          <label className="mt-3 flex min-h-12 items-start gap-3 text-ice">
-            <input type="checkbox" name="consent-manual" required />
-            <span>I understand this is a manual sweep, not a guarantee.</span>
-          </label>
-          <label className="mt-3 flex min-h-12 items-start gap-3 text-ice">
-            <input type="checkbox" name="consent-clock" required />
-            <span>I understand the 48-hour clock starts when this intake is complete, not when I pay.</span>
+          <label className="choice">
+            <input type="radio" name="role" value="manager" />
+            <span>A manager or agent for the creator</span>
           </label>
         </fieldset>
-      </div>
+        <fieldset className="mt-4">
+          <legend className="text-sm text-frost">Which check?</legend>
+          <label className="choice">
+            <input type="radio" name="tier" value="199" required defaultChecked />
+            <span>$199. Creators with 100K to 1 million followers</span>
+          </label>
+          <label className="choice">
+            <input type="radio" name="tier" value="499" />
+            <span>$499. Public figure, or booked through a manager</span>
+          </label>
+        </fieldset>
+      </fieldset>
+
+      <fieldset className="intake-step" data-step="2">
+        <legend>2. Your real accounts</legend>
+        <p className="hint" id="accounts-hint">
+          Official links only. Add at least one.
+        </p>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <label className="block text-sm text-frost">
+            TikTok <span className="opt">Optional</span>
+            <input className="field mt-2" type="url" name="tiktok" placeholder="https://www.tiktok.com/@" aria-describedby="accounts-hint" />
+          </label>
+          <label className="block text-sm text-frost">
+            Instagram <span className="opt">Optional</span>
+            <input className="field mt-2" type="url" name="instagram" placeholder="https://instagram.com/" />
+          </label>
+          <label className="block text-sm text-frost">
+            YouTube <span className="opt">Optional</span>
+            <input className="field mt-2" type="url" name="youtube" placeholder="https://youtube.com/@" />
+          </label>
+          <label className="block text-sm text-frost">
+            X <span className="opt">Optional</span>
+            <input className="field mt-2" type="url" name="x" placeholder="https://x.com/" />
+          </label>
+          <label className="block text-sm text-frost">
+            Facebook <span className="opt">Optional</span>
+            <input className="field mt-2" type="url" name="facebook" placeholder="https://facebook.com/" />
+          </label>
+          <label className="block text-sm text-frost">
+            Website or link-in-bio <span className="opt">Optional</span>
+            <input className="field mt-2" type="url" name="website" placeholder="https://" />
+          </label>
+        </div>
+        <label className="mt-4 block text-sm text-frost" htmlFor="other-accounts">
+          Other accounts <span className="opt">Optional</span>
+        </label>
+        <input id="other-accounts" className="field mt-2" type="text" name="other" placeholder="Threads, LinkedIn, Telegram" />
+      </fieldset>
+
+      <fieldset className="intake-step" data-step="3">
+        <legend>3. What to look for</legend>
+        <label className="mt-4 block text-sm text-frost" htmlFor="name-variations">
+          Name variations, nicknames, common misspellings <span className="opt">Optional</span>
+        </label>
+        <textarea id="name-variations" className="field mt-2 min-h-24 py-3" name="name_variations" rows={3} />
+        <fieldset className="mt-4">
+          <legend className="text-sm text-frost">Do you ever DM fans asking for money, investments, or giveaways?</legend>
+          <label className="choice">
+            <input type="radio" name="dms_for_money" value="no" required />
+            <span>No, never</span>
+          </label>
+          <label className="choice">
+            <input type="radio" name="dms_for_money" value="yes" />
+            <span>Yes, sometimes</span>
+          </label>
+        </fieldset>
+        <label className="mt-4 block text-sm text-frost" htmlFor="real-offers">
+          What you actually sell <span className="opt">Optional</span>
+        </label>
+        <textarea id="real-offers" className="field mt-2 min-h-24 py-3" name="real_offers" rows={3} aria-describedby="offers-hint" />
+        <p className="hint" id="offers-hint">
+          Products, courses, or offers, so a fake one stands out.
+        </p>
+        <label className="mt-4 block text-sm text-frost" htmlFor="known-fakes">
+          Fakes you already know about <span className="opt">Optional</span>
+        </label>
+        <textarea id="known-fakes" className="field mt-2 min-h-24 py-3" name="known_fakes" rows={3} placeholder="Paste links, one per line" />
+        <label className="mt-4 block text-sm text-frost" htmlFor="screenshots">
+          Screenshots of known fakes <span className="opt">Optional</span>
+        </label>
+        <input id="screenshots" className="mt-2 block min-h-12" type="file" name="screenshots" accept="image/*" />
+        <label className="mt-4 block text-sm text-frost" htmlFor="fan-reports">
+          Have fans reported scams using your name? <span className="opt">Optional</span>
+        </label>
+        <textarea id="fan-reports" className="field mt-2 min-h-24 py-3" name="fan_reports" rows={3} />
+      </fieldset>
+
+      <fieldset className="intake-step" data-step="4">
+        <legend>4. Priorities <span className="opt">Optional</span></legend>
+        <label className="mt-4 block text-sm text-frost" htmlFor="priority-platforms">
+          Platforms that matter most
+        </label>
+        <input id="priority-platforms" className="field mt-2" type="text" name="priority_platforms" placeholder="Instagram first, then TikTok" />
+        <label className="mt-4 block text-sm text-frost" htmlFor="sensitive">
+          Anything we should handle discreetly
+        </label>
+        <textarea id="sensitive" className="field mt-2 min-h-24 py-3" name="sensitive" rows={3} />
+      </fieldset>
+
+      <fieldset className="intake-step" data-step="5">
+        <legend>5. Consent</legend>
+        <label className="choice mt-4">
+          <input type="checkbox" name="consent_accounts" value="yes" required />
+          <span>I confirm these are my accounts, or I’m authorized to act for the creator.</span>
+        </label>
+        <label className="choice">
+          <input type="checkbox" name="consent_deliverable" value="yes" required />
+          <span>I understand the deliverable is a findings report and a ready-to-file takedown list, not guaranteed removals. Each platform decides on removals.</span>
+        </label>
+        <label className="choice">
+          <input type="checkbox" name="consent_limits" value="yes" required />
+          <span>I understand a search can miss copies, and ModGuard provides risk-reduction guidance, not a guarantee.</span>
+        </label>
+      </fieldset>
 
       {error && (
-        <p className="mt-4 text-ice" role="alert">
+        <p className="form-err" role="alert">
           {error}
         </p>
       )}
-
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-        {step > 0 && (
-          <button className="btn-ghost" type="button" onClick={() => setStep((value) => value - 1)}>
-            Back
-          </button>
-        )}
-        <button className="btn-accent" type="submit" disabled={status === 'sending'}>
-          {step < steps.length - 1 ? 'Continue' : status === 'sending' ? 'Sending…' : 'Submit intake'}
-        </button>
-      </div>
+      <button className="btn-accent mt-4 w-full" type="submit">
+        Start my $199 check
+      </button>
+      <p className="hint form-foot">
+        Submitting this form does not charge you. The 48-hour clock starts once this intake is complete and payment is received.
+      </p>
     </form>
   );
 }

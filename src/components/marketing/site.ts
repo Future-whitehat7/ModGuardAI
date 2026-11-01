@@ -27,20 +27,21 @@ export function metaForPath(pathname: string): RouteMeta {
   if (pathname === '/scamcheck') {
     return {
       title: 'ScamCheck | ModGuard AI',
-      description: 'Paste a message into ScamCheck, the free checker, before you pay or click.',
+      description:
+        'One free tool. Check a message, then a bank or card statement. Both steps stay in ScamCheck.',
     };
   }
   if (pathname === '/impersonation-check') {
     return {
       title: 'Impersonation Check | ModGuard AI',
       description:
-        'Check a suspicious handle for free, then pay $199 for a manual sweep if you have 100K to 1 million followers.',
+        'A manual sweep for fake profiles, cloned pages, and scam ads. Findings and a ready-to-file takedown list. $199. The 48-hour clock starts after intake and payment.',
     };
   }
   if (pathname === '/impersonation-check/thanks') {
     return {
       title: 'Intake | Impersonation Check',
-      description: 'The 48-hour clock starts when this intake is complete.',
+      description: 'Intake received. The 48-hour clock starts once intake is complete and payment is received.',
       robots: 'noindex, follow',
     };
   }
