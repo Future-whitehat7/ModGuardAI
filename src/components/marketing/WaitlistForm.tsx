@@ -56,7 +56,7 @@ export function WaitlistForm() {
         <input id="waitlist-email" className="field" name="email" type="email" autoComplete="email" required />
       </label>
       <label className="grid gap-2 text-sm text-frost" htmlFor="waitlist-protect">
-        What do you want protected? <span className="text-frost/70">Optional</span>
+        What do you want protected? <span className="text-frost">Optional</span>
         <textarea id="waitlist-protect" className="field min-h-28 py-3" name="protect" />
       </label>
       <button className="btn-accent w-full sm:w-auto" type="submit" disabled={status === 'sending'}>

@@ -691,7 +691,27 @@ body {
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #8a7355;
+  color: #4a4e57;
+}
+
+@media (max-width: 600px) {
+  .hud-row {
+    flex-wrap: nowrap;
+  }
+
+  .hud-pill {
+    width: auto;
+    min-height: 36px;
+    padding: 0.2rem 0.7rem;
+    font-size: 11px;
+  }
+
+  .hero {
+    align-items: flex-start;
+    min-height: 0;
+    padding-top: 24px;
+    padding-bottom: 3.5rem;
+  }
 }
 
 .page-section {

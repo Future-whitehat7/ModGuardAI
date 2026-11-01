@@ -123,7 +123,7 @@ export function ThreatPulse() {
           {fresh ?? 'Live feed'}
         </p>
         <h2 className="rise display mt-4 text-4xl text-white sm:text-6xl">Global threat pulse</h2>
-        <p className="rise mt-5 max-w-2xl text-lg text-white/70">
+        <p className="rise mt-5 max-w-2xl text-lg text-[#E6E6E1]">
           AI-powered scams move quickly. These counts and headlines come from public sources, refreshed about every 15 minutes.
         </p>
         {stats.length > 0 && (
@@ -163,7 +163,7 @@ export function ThreatPulse() {
                     {item.tag && <span className="mr-3 font-mono text-[11px] uppercase tracking-[0.12em] text-[#c6b48a]">{item.tag}</span>}
                     {item.title}
                   </span>
-                  <span className="shrink-0 font-mono text-[11px] uppercase tracking-[0.08em] text-white/55">
+                  <span className="shrink-0 font-mono text-[11px] uppercase tracking-[0.08em] text-[#E6E6E1]">
                     {item.source} · {item.date || 'Date not in source'}
                   </span>
                 </button>
@@ -172,14 +172,14 @@ export function ThreatPulse() {
           </ul>
         )}
         {filter !== 'all' && !shown.length && (
-          <p className="mt-4 text-sm text-white/60">No {filter.toLowerCase()} headlines in this pull.</p>
+          <p className="mt-4 text-sm text-[#E6E6E1]">No {filter.toLowerCase()} headlines in this pull.</p>
         )}
         {!stats.length && !items.length && (
-          <p className="mt-10 text-sm text-white/60">
+          <p className="mt-10 text-sm text-[#E6E6E1]">
             {failed || data ? 'No public threat data was available.' : 'Loading public threat data.'}
           </p>
         )}
-        <p className="mt-8 text-sm text-white/50">
+        <p className="mt-8 text-sm text-[#E6E6E1]">
           URLhaus, ThreatFox, VentureBeat, and Reuters did not return a keyless feed, so they are not shown.
         </p>
       </div>
