@@ -61,10 +61,13 @@ function feedItems(xml, source) {
     const url = linkOf(block);
     const rawDate = tag(block, 'pubDate') || tag(block, 'updated') || tag(block, 'published');
     const time = Date.parse(rawDate);
+    const summaryText = tag(block, 'description') || tag(block, 'summary') || tag(block, 'content');
+    const summary = summaryText.length > 420 ? `${summaryText.slice(0, 417).trim()}…` : summaryText;
     return {
       title,
       url,
       source,
+      summary,
       date: Number.isNaN(time) ? rawDate : new Date(time).toISOString().slice(0, 10),
       time: Number.isNaN(time) ? null : time,
       ai: AI_TITLE.test(title),
