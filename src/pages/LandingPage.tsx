@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { brandImages } from '../components/marketing/brandImages';
 import { ImageSlot } from '../components/marketing/ImageSlot';
 import { SponsorSlot } from '../components/marketing/SponsorSlot';
 
@@ -18,9 +19,9 @@ const checks = [
 ];
 
 const audiences = [
-  ['People', 'Check the message before the transfer leaves the account.'],
-  ['Creators', 'A copy of the account can ask the audience for money.'],
-  ['Brands', 'A labeled placement sits next to people who are already checking.'],
+  { title: 'People', copy: 'Check the message before the transfer leaves the account.', image: brandImages.whoPeople },
+  { title: 'Creators', copy: 'A copy of the account can ask the audience for money.', image: brandImages.whoCreators },
+  { title: 'Brands', copy: 'A labeled placement sits next to people who are already checking.', image: brandImages.whoBrands },
 ];
 
 export const LandingPage = () => {
@@ -38,7 +39,7 @@ export const LandingPage = () => {
             Open the tools
           </Link>
         </div>
-        <ImageSlot file="hero-home.svg" label="Homepage hero" />
+        <ImageSlot image={brandImages.hero} priority />
         <ul className="stat-row">
           {stats.map((stat) => (
             <li key={stat.value}>
@@ -76,10 +77,11 @@ export const LandingPage = () => {
           <p className="eyebrow">Who it is for</p>
           <h2 className="display mt-4 text-4xl text-ice">People, creators, brands.</h2>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {audiences.map(([title, copy]) => (
-              <article key={title} className="glass p-6">
-                <h3 className="display text-3xl text-ice">{title}</h3>
-                <p className="mt-3 text-frost">{copy}</p>
+            {audiences.map((audience) => (
+              <article key={audience.title} className="glass who-card p-6">
+                <ImageSlot image={audience.image} />
+                <h3 className="display text-3xl text-ice">{audience.title}</h3>
+                <p className="mt-3 text-frost">{audience.copy}</p>
               </article>
             ))}
           </div>

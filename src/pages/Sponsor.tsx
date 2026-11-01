@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { brandImages } from '../components/marketing/brandImages';
 import { ImageSlot } from '../components/marketing/ImageSlot';
 import { SponsorInquiry } from '../components/marketing/SponsorInquiry';
 import { TierColumns } from '../components/marketing/TierColumns';
@@ -10,7 +11,7 @@ export const Sponsor = () => {
   return (
     <article className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
       <p className="measure text-xl text-ice">The audience is already deciding whether to trust something.</p>
-      <ImageSlot file="sponsor-tiers.svg" label="Sponsor tiers" />
+      <ImageSlot image={brandImages.sponsor} priority />
       <div className="mt-8">
         <TierColumns onAsk={(tier) => {
           setAsked(tier);

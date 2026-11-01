@@ -1,17 +1,24 @@
+import type { BrandImageSource } from './brandImages';
+
 interface ImageSlotProps {
-  file: string;
-  label: string;
+  image: BrandImageSource;
+  priority?: boolean;
+  className?: string;
 }
 
-/** Reserved frame. Replace the file in public/images when the photograph is ready. */
-export function ImageSlot({ file, label }: ImageSlotProps) {
-  const src = `/images/${file}`;
+export function ImageSlot({ image, priority = false, className }: ImageSlotProps) {
   return (
-    <figure className="image-slot">
-      <img src={src} alt="" width={1200} height={320} />
-      <figcaption>
-        {label}. File: public/images/{file}
-      </figcaption>
-    </figure>
+    <picture className={className ? `brand-picture ${className}` : 'brand-picture'}>
+      <source srcSet={image.webp} type="image/webp" />
+      <img
+        src={image.png}
+        alt={image.alt}
+        width={image.width}
+        height={image.height}
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : 'auto'}
+        decoding="async"
+      />
+    </picture>
   );
 }

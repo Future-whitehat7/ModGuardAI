@@ -1014,25 +1014,27 @@ html.motion-js .reveal.is-in {
   background: #ffffff;
 }
 
-.image-slot {
+.brand-picture {
+  display: block;
   margin-top: 1.5rem;
 }
 
-.image-slot img {
+.brand-picture img {
+  display: block;
   width: 100%;
-  height: 160px;
-  object-fit: cover;
+  height: auto;
   border: 1px solid #e6e6e1;
   border-radius: 20px;
+  background: #f6f6f3;
 }
 
-.image-slot figcaption {
-  margin-top: 0.5rem;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #4a4e57;
+.brand-card {
+  max-width: 28rem;
+}
+
+.who-card .brand-picture {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
 }
 
 .sponsor-slot,

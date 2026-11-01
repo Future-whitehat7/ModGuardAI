@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { brandImages } from '../components/marketing/brandImages';
 import { ImageSlot } from '../components/marketing/ImageSlot';
 import { SCAMCHECK_FAQ_URL, SCAMCHECK_URL } from '../config/platform';
 
@@ -15,7 +16,7 @@ export const ScamCheckTool = () => {
         We don’t store your messages.{' '}
         <a href={SCAMCHECK_FAQ_URL}>ScamCheck’s own FAQ</a> says messages are analyzed for the result and are not saved to a database.
       </p>
-      <ImageSlot file="scamcheck-card.svg" label="ScamCheck card" />
+      <ImageSlot className="brand-card" image={brandImages.scamcheck} />
       <Link className="btn-accent mt-8" to="/impersonation-check">
         If the account itself is the problem, check it
       </Link>

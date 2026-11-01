@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { brandImages } from '../components/marketing/brandImages';
 import { ImageSlot } from '../components/marketing/ImageSlot';
 import { ImpersonationChecker } from '../components/marketing/ImpersonationChecker';
 import { IntakeForm } from '../components/marketing/IntakeForm';
@@ -11,7 +12,7 @@ export const ImpersonationCheck = () => {
       <div className="mt-6 max-w-3xl">
         <ImpersonationChecker />
       </div>
-      <ImageSlot file="impersonation-tab.svg" label="Impersonation Check" />
+      <ImageSlot image={brandImages.impersonation} />
 
       <section className="measure mt-12" id="offer">
         <p className="eyebrow">Growth · $199/month</p>

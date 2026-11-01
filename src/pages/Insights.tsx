@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom';
+import { brandImages } from '../components/marketing/brandImages';
+import { ImageSlot } from '../components/marketing/ImageSlot';
 import { insightPosts } from '../content/insights';
 
 export const Insights = () => {
   return (
     <article className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
-      <p className="measure text-xl text-ice">The patterns change. The public record is the place to read them.</p>
+      <ImageSlot image={brandImages.insights} priority />
+      <p className="measure mt-8 text-xl text-ice">The patterns change. The public record is the place to read them.</p>
       <ul className="mt-8 divide-y divide-[#E6E6E1] border-y border-[#E6E6E1]">
         {insightPosts.map((post) => (
           <li key={post.slug}>
