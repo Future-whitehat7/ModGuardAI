@@ -2,6 +2,9 @@ export const SITE_URL = 'https://modguardai.org';
 export const SCAMCHECK_URL = 'https://scamcheck.modguardai.org';
 export const SCAMCHECK_LABEL = 'ScamCheck ↗';
 
+/** Set to an https checkout URL to show the playbook Buy button. Empty hides it. */
+export const PLAYBOOK_CHECKOUT_URL = '';
+
 export const DEFAULT_TITLE = 'ModGuard AI — Free AI Scam Checker | ScamCheck';
 
 export const DEFAULT_DESCRIPTION =
