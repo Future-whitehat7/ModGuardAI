@@ -19,7 +19,7 @@ Other ModGuard work is in research. This site does not describe unreleased capab
 ## Pages
 
 - [Home](https://modguardai.org/): One headline, then the tools
-- [ScamCheck](https://modguardai.org/scamcheck): Free message checker, embedded from https://modguard-scamcheck.vercel.app
+- [ScamCheck](https://modguardai.org/scamcheck): Free message checker, embedded from https://scamcheck.modguardai.org
 - [Impersonation Check](https://modguardai.org/impersonation-check): Free handle check, then the $199 manual sweep
 - [Insights](https://modguardai.org/insights): Sourced notes on fraud, impersonation, passkeys, breaches, and labeling rules
 - [Sponsors](https://modguardai.org/sponsor): Starter, Growth, and Elite

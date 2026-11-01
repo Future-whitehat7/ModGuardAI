@@ -1,22 +1,17 @@
 /** Shared platform URLs and the three audience tiers. One file on purpose. */
 
-export const SCAMCHECK_URL = 'https://modguard-scamcheck.vercel.app';
-export const SCAMCHECK_FAQ_URL = 'https://modguard-scamcheck.vercel.app/faq';
+export const SCAMCHECK_URL = 'https://scamcheck.modguardai.org';
+export const SCAMCHECK_FAQ_URL = 'https://scamcheck.modguardai.org/faq';
 export const PLAYBOOK_URL = 'https://scamcheck.modguardai.org/playbook';
 export const PLAYBOOK_CHECKOUT_URL = 'https://buy.stripe.com/14AcN60EMdcW9Rj8gj4ZG05';
 
 /** Live $199 Stripe payment. Product text: manual impersonation sweep for creators with 100K to 1 million followers. */
 export const IMPERSONATION_CHECKOUT_URL = 'https://buy.stripe.com/28E6oIgDKc8S8NfdAD4ZG07';
 
-/**
- * Free impersonation checker.
- * After the production deploy, point this at
- * https://modguard-scamcheck.vercel.app/api/impersonation-check
- */
-export const CHECKER_ENDPOINT =
-  'https://modguard-scamcheck-4ncc6kld0-digitalwealtai-9617.vercel.app/api/impersonation-check';
+/** Free impersonation checker. CORS allows modguardai.org and *.netlify.app. */
+export const CHECKER_ENDPOINT = 'https://scamcheck.modguardai.org/api/impersonation-check';
 
-export const INQUIRY_API_URL = 'https://modguard-scamcheck.vercel.app/api/inquiry';
+export const INQUIRY_API_URL = 'https://scamcheck.modguardai.org/api/inquiry';
 
 export type TierId = 'starter' | 'growth' | 'elite';
 
