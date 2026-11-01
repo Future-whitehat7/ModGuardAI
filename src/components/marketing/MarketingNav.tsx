@@ -73,7 +73,7 @@ export function MarketingNav() {
       </a>
       <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2 sm:px-6">
         <Link to="/" className="hud-logo order-1" aria-label="ModGuard AI home">
-          <span className="logo-slot" data-logo-slot="angel-shield" aria-hidden="true" />
+          <img className="brand-mark" src="/brand/modguard-mark.png" alt="" width="48" height="48" />
           ModGuard
         </Link>
 
