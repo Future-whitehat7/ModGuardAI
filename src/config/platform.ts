@@ -65,7 +65,7 @@ export const protectionTiers: ProtectionTier[] = [
     prices: [{ label: 'From $499/month', detail: 'month' }],
     includes: [
       'Checkout is not open. The listed price starts at $499 a month.',
-      'The intake form also offers $499 for public figures and manager bookings. That wording is not this audience.',
+      'The Impersonation Check $499 choice is this tier: over 1 million followers, or public figures booked through a manager.',
     ],
     checkout: { kind: 'pending-stripe' },
   },
@@ -87,7 +87,7 @@ export const intakeTierRadios = [
   },
   {
     value: '499-public-figures',
-    label: '$499 for public figures and manager bookings',
+    label: '$499. Over 1 million followers, or public figures booked through a manager',
   },
 ] as const;
 

@@ -137,7 +137,7 @@ export function IntakeForm() {
           </label>
           <label className="choice">
             <input type="radio" name="tier" value="499" />
-            <span>$499. Public figure, or booked through a manager</span>
+            <span>$499. Over 1 million followers, or public figures booked through a manager</span>
           </label>
         </fieldset>
       </fieldset>

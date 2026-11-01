@@ -57,7 +57,7 @@ export const ImpersonationCheck = () => {
             <li>Findings report and a ready-to-file takedown list</li>
             <li>One follow-up re-check</li>
           </ul>
-          <p className="mt-4 text-sm text-frost">$499 for public figures, or bookings through a manager.</p>
+          <p className="mt-4 text-sm text-frost">$499 for over 1 million followers, or public figures booked through a manager.</p>
           <a className="btn-accent mt-6 w-full" href={IMPERSONATION_CHECKOUT_URL}>
             Buy now
           </a>
@@ -142,7 +142,7 @@ export const ImpersonationCheck = () => {
         <dl className="mt-8 grid gap-4 sm:grid-cols-2">
           <div className="glass p-6">
             <dt className="eyebrow">Price</dt>
-            <dd className="mt-3 text-ice">$199 for creators with 100K to 1 million followers. $499 for public figures or via a manager.</dd>
+            <dd className="mt-3 text-ice">$199 for creators with 100K to 1 million followers. $499 for over 1 million followers, or public figures booked through a manager.</dd>
           </div>
           <div className="glass p-6">
             <dt className="eyebrow">Turnaround</dt>
