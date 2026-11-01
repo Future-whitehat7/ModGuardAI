@@ -15,7 +15,7 @@ export function MarketingFooter() {
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2">
         <div>
           <Link to="/" className="hud-logo">
-            <span className="hud-mark" aria-hidden="true" />
+            <span className="logo-slot" data-logo-slot="angel-shield" aria-hidden="true" />
             ModGuard
           </Link>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-ice/70">

@@ -83,7 +83,6 @@ export function SpaceSky() {
 
   return (
     <div className="space-sky" aria-hidden="true">
-      <div className="space-nebula" />
       <div ref={farRef} className="space-parallax">
         <div className="space-drift space-drift-far" />
       </div>

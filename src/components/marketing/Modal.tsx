@@ -3,11 +3,12 @@ import type { ReactNode } from 'react';
 
 interface ModalProps {
   title: string;
+  kicker?: string;
   onClose: () => void;
   children: ReactNode;
 }
 
-export function Modal({ title, onClose, children }: ModalProps) {
+export function Modal({ title, kicker = 'ScamCheck', onClose, children }: ModalProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -51,7 +52,7 @@ export function Modal({ title, onClose, children }: ModalProps) {
         aria-labelledby="modal-title"
         onMouseDown={(event) => event.stopPropagation()}
       >
-        <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-frost">ScamCheck</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-frost">{kicker}</p>
         <h3 id="modal-title" className="display mt-2 text-3xl text-ice">{title}</h3>
         <div className="mt-4 space-y-4 text-base leading-relaxed text-frost">{children}</div>
       </div>
