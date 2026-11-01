@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import type { FormEvent } from 'react';
 import { Modal } from '../components/marketing/Modal';
 import { ThreatPulse } from '../components/marketing/ThreatPulse';
 import { WaitlistForm } from '../components/marketing/WaitlistForm';
@@ -36,10 +37,16 @@ export const LandingPage = () => {
   const close = useCallback(() => setOpen(null), []);
   const activeFaq = open?.kind === 'faq' ? faqs[open.index] : null;
   const activeScam = open?.kind === 'scam' ? scams[open.index] : null;
+  const onPaste = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const text = new FormData(event.currentTarget).get('q');
+    const value = typeof text === 'string' ? text : '';
+    window.location.assign(`${SCAMCHECK_URL}/?q=${encodeURIComponent(value)}#check`);
+  };
 
   return (
     <div>
-      <section className="relative mx-auto flex min-h-[calc(100svh-7.5rem)] w-full max-w-6xl items-end px-4 py-24 sm:px-6 lg:items-center">
+      <section className="hero relative mx-auto flex min-h-[calc(100svh-7.5rem)] w-full max-w-6xl items-end px-4 py-24 sm:px-6 lg:items-center">
         <div className="max-w-3xl">
           <p className="eyebrow">AI-powered scams</p>
           <h1 className="rise display mt-5 text-5xl leading-[0.95] text-ice sm:text-7xl">
@@ -60,11 +67,11 @@ export const LandingPage = () => {
           <p className="eyebrow">Check a message</p>
           <h2 className="rise display mt-4 text-4xl text-ice">Paste it. Read the verdict.</h2>
           <p className="rise mt-4 max-w-xl text-lg text-frost">Nothing to install. Checking opens ScamCheck, where the verdict is written in plain language.</p>
-          <form className="glass mt-8 p-6" action={SCAMCHECK_URL}>
+          <form className="glass mt-8 p-6" action={`${SCAMCHECK_URL}/#check`} method="GET" onSubmit={onPaste}>
             <label className="block text-sm text-frost" htmlFor="paste">
               Paste a message or link.
             </label>
-            <textarea id="paste" className="field mt-3 min-h-28 py-3" placeholder="Paste a text, email, or link" />
+            <textarea id="paste" name="q" className="field mt-3 min-h-28 py-3" placeholder="Paste a text, email, or link" />
             <button className="btn-accent mt-4 w-full sm:w-auto" type="submit">Check a message — free</button>
           </form>
           <aside className="glass mt-4 p-6">
@@ -82,12 +89,25 @@ export const LandingPage = () => {
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             {checks.map(([index, title, copy]) => (
               <article key={index} className="rise glass p-6">
-                <p className="font-mono text-[11px] text-[#8a7355]">{index}</p>
+                <p className="font-mono text-[11px] text-frost">{index}</p>
                 <h3 className="display mt-3 text-4xl text-ice">{title}</h3>
                 <p className="mt-3 text-frost">{copy}</p>
               </article>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="page-section" id="sponsor">
+        <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
+          <p className="eyebrow">Sponsor or partner</p>
+          <h2 className="rise display mt-4 text-4xl text-ice">Placements for security and privacy products</h2>
+          <p className="rise mt-4 max-w-xl text-lg text-frost">
+            A sponsorship on ScamCheck is a labelled placement. It is for security and privacy products only.
+          </p>
+          <a className="mt-6 inline-flex min-h-12 items-center text-sm text-accent" href={`${SCAMCHECK_URL}/#sponsor`}>
+            Sponsor or partner
+          </a>
         </div>
       </section>
 
@@ -106,7 +126,7 @@ export const LandingPage = () => {
           <div className="mt-10 grid gap-px overflow-hidden rounded-[20px] border border-[#E6E6E1] bg-[#E6E6E1] sm:grid-cols-2 lg:grid-cols-4">
             {scams.map(([index, title, quote], item) => (
               <button key={index} type="button" className="scam-tile min-h-40 bg-white p-5" onClick={() => setOpen({ kind: 'scam', index: item })}>
-                <span className="font-mono text-[11px] text-[#8a7355]">{index}</span>
+                <span className="font-mono text-[11px] text-frost">{index}</span>
                 <span className="mt-3 block text-lg text-ice">{title}</span>
                 <span className="mt-2 block text-sm text-frost">{quote}</span>
               </button>
