@@ -475,13 +475,13 @@ body {
   color: #0e0f12;
 }
 
-.logo-slot {
-  width: 32px;
-  height: 32px;
+.brand-mark {
+  width: 48px;
+  height: 48px;
   flex: none;
-  border: 1px solid #c6b48a;
-  border-radius: 6px;
-  background: transparent;
+  display: block;
+  object-fit: contain;
+  border-radius: 10px;
 }
 
 .hud-link,
