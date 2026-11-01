@@ -1,96 +1,65 @@
-import { useCallback, useState } from 'react';
-import type { FormEvent } from 'react';
-import { Modal } from '../components/marketing/Modal';
-import { ThreatPulse } from '../components/marketing/ThreatPulse';
-import { WaitlistForm } from '../components/marketing/WaitlistForm';
-import { PLAYBOOK_CHECKOUT_URL, SCAMCHECK_URL } from '../components/marketing/site';
+import { Link } from 'react-router-dom';
+import { ImageSlot } from '../components/marketing/ImageSlot';
+import { SponsorSlot } from '../components/marketing/SponsorSlot';
+
+const fbi = 'https://www.fbi.gov/news/press-releases/cryptocurrency-and-ai-scams-bilk-americans-of-billions';
+const ftc = 'https://www.ftc.gov/news-events/news/press-releases/2026/10/ftc-issues-annual-report-congress-agencys-actions-protect-older-adults';
+
+const stats = [
+  { value: 'Nearly $21B', label: '2025 IC3 reported losses', href: fbi, source: 'FBI, 6 April 2026' },
+  { value: 'About $3B', label: '2025 fraud losses reported by adults 60 and over', href: ftc, source: 'FTC, 19 October 2026' },
+  { value: '22,364', label: '2025 AI-related IC3 complaints', href: fbi, source: 'FBI, 6 April 2026' },
+];
 
 const checks = [
-  ['01', 'Paste', 'A message, a link, or a screenshot of a text or email.'],
-  ['02', 'Read', 'You get a plain-language verdict, plus OpenPhish and Phishing Army checks on links.'],
-  ['03', 'Decide', 'The reason is on the page, so you can judge it before you act.'],
+  ['Messages', 'A text, email, or DM that is pushing you to pay or to click.'],
+  ['Statements', 'A call or a transcript that sounds like someone you know.'],
+  ['Fake accounts', 'A profile using a real person’s name, face, or handle.'],
 ];
 
-const faqs = [
-  ['What is ModGuard ScamCheck?', 'ScamCheck is a free AI scam checker for messages, links, and screenshots of texts or emails. It returns an AI verdict and checks links against known-phishing lists from OpenPhish and Phishing Army.'],
-  ['Is ScamCheck free? Do I need an account?', 'ScamCheck is free. This site does not say whether an account is required. Open ScamCheck to use it.'],
-  ['How does ScamCheck decide if something is a scam?', 'It returns an AI verdict in plain language. Links are also checked against OpenPhish and Phishing Army. This site does not publish an accuracy rate.'],
-  ['Can it detect AI voice-clone scam calls?', 'This site does not claim phone-call or voice-clone detection. What is published is checks of messages, links, and screenshots of texts or emails.'],
-  ['Is my message stored?', 'This site does not state a retention policy. ScamCheck is where a check is handled.'],
-  ['What should I do if ScamCheck says Scam?', 'Do not reply, pay, or open the link. Review the check on ScamCheck before you act.'],
-  ['Is the verdict guaranteed?', 'No. A verdict is a check, not a guarantee.'],
+const audiences = [
+  ['People', 'Check the message before the transfer leaves the account.'],
+  ['Creators', 'A copy of the account can ask the audience for money.'],
+  ['Brands', 'A labeled placement sits next to people who are already checking.'],
 ];
-
-const scams = [
-  ['01', 'Fake bank text messages', '“Your account is locked. Verify now.”'],
-  ['02', 'Crypto investment DMs', '“I turned $500 into $12,000 in two weeks.”'],
-  ['03', 'AI voice-clone family emergency calls', '“Grandma, it’s me. I need bail money.”'],
-  ['04', 'Fake package delivery texts', '“USPS: your package is on hold.”'],
-  ['05', 'Fake job and task scams', '“Earn $300/day liking videos.”'],
-  ['06', 'Tech support and virus pop-ups', '“Your computer is infected. Call Microsoft.”'],
-];
-
-type OpenState = { kind: 'faq' | 'scam'; index: number } | null;
 
 export const LandingPage = () => {
-  const [open, setOpen] = useState<OpenState>(null);
-  const close = useCallback(() => setOpen(null), []);
-  const activeFaq = open?.kind === 'faq' ? faqs[open.index] : null;
-  const activeScam = open?.kind === 'scam' ? scams[open.index] : null;
-  const onPaste = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const text = new FormData(event.currentTarget).get('q');
-    const value = typeof text === 'string' ? text : '';
-    window.location.assign(`${SCAMCHECK_URL}/?q=${encodeURIComponent(value)}#check`);
-  };
-
   return (
     <div>
-      <section className="hero relative mx-auto flex min-h-[calc(100svh-7.5rem)] w-full max-w-6xl items-end px-4 py-24 sm:px-6 lg:items-center">
-        <div className="max-w-3xl">
-          <p className="eyebrow">AI-powered scams</p>
-          <h1 className="rise display mt-5 text-5xl leading-[0.95] text-ice sm:text-7xl">
-            Check it <em>before</em> you trust it.
+      <section className="hero mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
+        <div className="measure">
+          <h1 className="fade-up display text-5xl leading-[0.95] text-ice sm:text-7xl">
+            Check it before you trust it.
           </h1>
-          <p className="rise mt-6 max-w-xl text-xl leading-relaxed text-frost">
-            A fake text can look ordinary, and a cloned voice can sound familiar. Paste the message into ScamCheck and get a plain-language verdict in seconds. Free.
+          <p className="fade-up mt-6 text-xl leading-relaxed text-frost">
+            One place for the message, the statement, and the account that is not yours.
           </p>
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-            <a className="btn-accent w-full sm:w-auto" href={SCAMCHECK_URL}>Check a message — free</a>
-            <a className="btn-ghost w-full sm:w-auto" href="#how">How it works</a>
-          </div>
+          <Link className="btn-accent mt-8" to="/scamcheck">
+            Open the tools
+          </Link>
         </div>
+        <ImageSlot file="hero-home.svg" label="Homepage hero" />
+        <ul className="stat-row">
+          {stats.map((stat) => (
+            <li key={stat.value}>
+              <a href={stat.href}>
+                <span className="stat-value">{stat.value}</span>
+                <span className="stat-label">{stat.label}</span>
+                <span className="stat-source">{stat.source}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="page-section">
-        <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
-          <p className="eyebrow">Check a message</p>
-          <h2 className="rise display mt-4 text-4xl text-ice">Paste it. Read the verdict.</h2>
-          <p className="rise mt-4 max-w-xl text-lg text-frost">Nothing to install. Checking opens ScamCheck, where the verdict is written in plain language.</p>
-          <form className="glass mt-8 p-6" action={`${SCAMCHECK_URL}/#check`} method="GET" onSubmit={onPaste}>
-            <label className="block text-sm text-frost" htmlFor="paste">
-              Paste a message or link.
-            </label>
-            <textarea id="paste" name="q" className="field mt-3 min-h-28 py-3" placeholder="Paste a text, email, or link" />
-            <button className="btn-accent mt-4 w-full sm:w-auto" type="submit">Check a message — free</button>
-          </form>
-          <aside className="glass mt-4 p-6">
-            <p className="eyebrow">Example</p>
-            <p className="rise mt-3 text-ice">“Your account is locked. Verify now.”</p>
-            <p className="mt-2 text-sm text-frost">This card is an example, not a live verdict.</p>
-          </aside>
-        </div>
-      </section>
-
-      <section id="how" className="page-section">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-          <p className="eyebrow">How it works</p>
-          <h2 className="rise display mt-4 text-4xl text-ice sm:text-5xl">Three steps, then you decide.</h2>
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {checks.map(([index, title, copy]) => (
-              <article key={index} className="rise glass p-6">
-                <p className="font-mono text-[11px] text-frost">{index}</p>
-                <h3 className="display mt-3 text-4xl text-ice">{title}</h3>
+          <p className="eyebrow">What we check</p>
+          <h2 className="display mt-4 text-4xl text-ice">Three things, before you act.</h2>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {checks.map(([title, copy]) => (
+              <article key={title} className="glass p-6">
+                <h3 className="display text-3xl text-ice">{title}</h3>
                 <p className="mt-3 text-frost">{copy}</p>
               </article>
             ))}
@@ -98,119 +67,42 @@ export const LandingPage = () => {
         </div>
       </section>
 
-      <section className="page-section" id="sponsor">
-        <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
-          <p className="eyebrow">Sponsor or partner</p>
-          <h2 className="rise display mt-4 text-4xl text-ice">Placements for security and privacy products</h2>
-          <p className="rise mt-4 max-w-xl text-lg text-frost">
-            A sponsorship on ScamCheck is a labelled placement. It is for security and privacy products only.
-          </p>
-          <a className="mt-6 inline-flex min-h-12 items-center text-sm text-accent" href={`${SCAMCHECK_URL}/#sponsor`}>
-            Sponsor or partner
-          </a>
-        </div>
-      </section>
-
-      <ThreatPulse />
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <SponsorSlot id="home-between" />
+      </div>
 
       <section className="page-section">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="eyebrow">Field guides</p>
-              <h2 className="rise display mt-4 text-4xl text-ice sm:text-6xl">Scams going around right now</h2>
-            </div>
-            <a className="eyebrow" href={SCAMCHECK_URL}>All guides</a>
-          </div>
-          <p className="rise mt-4 max-w-2xl text-frost">Examples from ScamCheck. They are not incident reports from this site.</p>
-          <div className="mt-10 grid gap-px overflow-hidden rounded-[20px] border border-[#E6E6E1] bg-[#E6E6E1] sm:grid-cols-2 lg:grid-cols-4">
-            {scams.map(([index, title, quote], item) => (
-              <button key={index} type="button" className="scam-tile min-h-40 bg-white p-5" onClick={() => setOpen({ kind: 'scam', index: item })}>
-                <span className="font-mono text-[11px] text-frost">{index}</span>
-                <span className="mt-3 block text-lg text-ice">{title}</span>
-                <span className="mt-2 block text-sm text-frost">{quote}</span>
-              </button>
+          <p className="eyebrow">Who it is for</p>
+          <h2 className="display mt-4 text-4xl text-ice">People, creators, brands.</h2>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {audiences.map(([title, copy]) => (
+              <article key={title} className="glass p-6">
+                <h3 className="display text-3xl text-ice">{title}</h3>
+                <p className="mt-3 text-frost">{copy}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
       <section className="page-section">
-        <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
-          <p className="eyebrow">FAQ</p>
-          <h2 className="rise display mt-4 text-4xl text-ice sm:text-6xl">Questions people ask</h2>
-          <div className="mt-8 divide-y divide-[#E6E6E1] border-y border-[#E6E6E1]">
-            {faqs.map(([question], item) => (
-              <button key={question} type="button" className="faq-row flex min-h-16 items-center justify-between gap-4 py-4 text-left" onClick={() => setOpen({ kind: 'faq', index: item })}>
-                <span>{question}</span>
-                <span aria-hidden="true">+</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="next" className="page-section">
-        <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
-          <p className="eyebrow">Research</p>
-          <h2 className="rise display mt-4 text-4xl text-ice">What we&apos;re building next</h2>
-          <p className="rise mt-4 text-lg text-frost">In research. Nothing else is live, and this page does not promise capabilities or dates.</p>
-          <article className="mt-14 max-w-xl border-t border-[#E6E6E1] pt-10">
-            <p className="eyebrow">Playbook</p>
-            <h3 className="rise display mt-4 text-3xl text-ice">AI Scam Shield Playbook</h3>
-            <p className="rise mt-4 text-lg text-frost">A written playbook. It is separate from the free ScamCheck tool.</p>
-            {PLAYBOOK_CHECKOUT_URL.startsWith('https://') && (
-              <a className="btn-accent mt-8 w-full sm:w-auto" href={PLAYBOOK_CHECKOUT_URL}>Buy</a>
-            )}
-          </article>
-        </div>
-      </section>
-
-      <section className="page-section">
-        <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
-          <p className="eyebrow">Studio</p>
-          <h2 className="rise display mt-4 text-4xl text-ice">Coach Samuel</h2>
-          <p className="rise mt-4 text-lg text-frost">
-            ModGuard AI is Coach Samuel&apos;s AI safety studio. ScamCheck is the first live tool.
+        <div className="measure mx-auto w-full px-4 sm:px-6">
+          <p className="eyebrow">Real proof</p>
+          <h2 className="display mt-4 text-4xl text-ice">Public counts, with the source on the number.</h2>
+          <p className="mt-4 text-lg text-frost">
+            The FBI’s 6 April 2026 release of the 2025 IC3 report records nearly $21 billion in reported losses and 22,364 artificial-intelligence complaints, nearly $893 million. The FTC’s 19 October 2026 report to Congress says adults 60 and over reported about $3 billion in fraud losses for 2025.
           </p>
-        </div>
-      </section>
-
-      <section className="page-section">
-        <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
-          <p className="eyebrow">Newsletter</p>
-          <h2 className="rise display mt-4 text-4xl text-ice">Get the weekly Scam Alert</h2>
-          <p className="rise mt-4 max-w-xl text-lg text-frost">One email a week from ScamCheck: scams going around and how to spot them. Free. Unsubscribe on ScamCheck.</p>
-          <a className="mt-6 inline-flex min-h-12 items-center text-sm text-accent" href={SCAMCHECK_URL}>Subscribe on ScamCheck</a>
-        </div>
-      </section>
-
-      <section className="page-section" id="waitlist">
-        <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
-          <p className="eyebrow">Waitlist</p>
-          <h2 className="rise display mt-4 text-4xl text-ice">What should we protect next?</h2>
-          <p className="rise mt-4 max-w-xl text-lg text-frost">
-            Leave your name and email. Say what you want protected if you like. This is a note to the studio, not a launch date.
+          <p className="mt-4 text-frost">
+            <a className="text-accent" href={fbi}>FBI press release</a>
+            {' · '}
+            <a className="text-accent" href={ftc}>FTC press release</a>
           </p>
-          <WaitlistForm />
+          <Link className="btn-accent mt-8" to="/scamcheck">
+            Open the tools
+          </Link>
         </div>
       </section>
-
-      {activeFaq && (
-        <Modal title={activeFaq[0]} onClose={close}>
-          <p>{activeFaq[1]}</p>
-          <a className="btn-accent w-full sm:w-auto" href={SCAMCHECK_URL}>Open ScamCheck</a>
-          <button className="btn-ghost w-full sm:w-auto" type="button" onClick={close}>Close</button>
-        </Modal>
-      )}
-      {activeScam && (
-        <Modal title={activeScam[1]} onClose={close}>
-          <p>{activeScam[2]}</p>
-          <p>Example of a scam type listed on ScamCheck. It is not a live incident report from this site.</p>
-          <a className="btn-accent w-full sm:w-auto" href={SCAMCHECK_URL}>Check a message like this</a>
-          <button className="btn-ghost w-full sm:w-auto" type="button" onClick={close}>Close</button>
-        </Modal>
-      )}
     </div>
   );
 };

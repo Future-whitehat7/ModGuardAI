@@ -111,6 +111,28 @@
       <textarea name="protect"></textarea>
       <input name="bot-field" />
     </form>
+    <form name="impersonation-check" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="email" name="stripe-receipt-email" />
+      <input type="url" name="account-1" />
+      <input type="url" name="account-2" />
+      <input type="url" name="account-3" />
+      <textarea name="look-for"></textarea>
+      <textarea name="priorities"></textarea>
+      <input type="text" name="tier" />
+      <input type="checkbox" name="consent-permission" />
+      <input type="checkbox" name="consent-manual" />
+      <input type="checkbox" name="consent-clock" />
+      <input name="bot-field" />
+    </form>
+    <form name="sponsor-inquiry" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="text" name="tier" />
+      <textarea name="message"></textarea>
+      <input name="bot-field" />
+    </form>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

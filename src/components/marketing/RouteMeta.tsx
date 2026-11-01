@@ -20,6 +20,7 @@ export function RouteMeta() {
     const url = `${SITE_URL}${pathname === '/' ? '/' : pathname}`;
     document.title = meta.title;
     upsertMeta('name', 'description', meta.description);
+    upsertMeta('name', 'robots', meta.robots ?? 'index, follow');
     upsertMeta('property', 'og:title', meta.title);
     upsertMeta('property', 'og:description', meta.description);
     upsertMeta('property', 'og:url', url);
