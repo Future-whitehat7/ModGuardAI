@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
 import { Modal } from '../components/marketing/Modal';
 import { ThreatPulse } from '../components/marketing/ThreatPulse';
-import { SCAMCHECK_URL } from '../components/marketing/site';
+import { WaitlistForm } from '../components/marketing/WaitlistForm';
+import { PLAYBOOK_CHECKOUT_URL, SCAMCHECK_URL } from '../components/marketing/site';
 
 const checks = [
   ['01', 'Paste', 'A message, a link, or a screenshot of a text or email.'],
@@ -134,6 +135,14 @@ export const LandingPage = () => {
           <p className="eyebrow">Research</p>
           <h2 className="rise display mt-4 text-4xl text-ice">What we&apos;re building next</h2>
           <p className="rise mt-4 text-lg text-frost">In research. Nothing else is live, and this page does not promise capabilities or dates.</p>
+          <article className="mt-14 max-w-xl border-t border-[#E6E6E1] pt-10">
+            <p className="eyebrow">Playbook</p>
+            <h3 className="rise display mt-4 text-3xl text-ice">AI Scam Shield Playbook</h3>
+            <p className="rise mt-4 text-lg text-frost">A written playbook. It is separate from the free ScamCheck tool.</p>
+            {PLAYBOOK_CHECKOUT_URL.startsWith('https://') && (
+              <a className="btn-accent mt-8 w-full sm:w-auto" href={PLAYBOOK_CHECKOUT_URL}>Buy</a>
+            )}
+          </article>
         </div>
       </section>
 
@@ -149,12 +158,21 @@ export const LandingPage = () => {
 
       <section className="page-section">
         <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
-          <div className="glass p-8 sm:p-10">
-            <p className="eyebrow">Newsletter</p>
-            <h2 className="rise display mt-4 text-4xl text-ice">Get the weekly Scam Alert</h2>
-            <p className="rise mt-3 text-frost">One email a week from ScamCheck: scams going around and how to spot them. Free. Unsubscribe on ScamCheck.</p>
-            <a className="btn-accent mt-6 w-full sm:w-auto" href={SCAMCHECK_URL}>Subscribe on ScamCheck</a>
-          </div>
+          <p className="eyebrow">Newsletter</p>
+          <h2 className="rise display mt-4 text-4xl text-ice">Get the weekly Scam Alert</h2>
+          <p className="rise mt-4 max-w-xl text-lg text-frost">One email a week from ScamCheck: scams going around and how to spot them. Free. Unsubscribe on ScamCheck.</p>
+          <a className="mt-6 inline-flex min-h-12 items-center text-sm text-accent" href={SCAMCHECK_URL}>Subscribe on ScamCheck</a>
+        </div>
+      </section>
+
+      <section className="page-section" id="waitlist">
+        <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
+          <p className="eyebrow">Waitlist</p>
+          <h2 className="rise display mt-4 text-4xl text-ice">What should we protect next?</h2>
+          <p className="rise mt-4 max-w-xl text-lg text-frost">
+            Leave your name and email. Say what you want protected if you like. This is a note to the studio, not a launch date.
+          </p>
+          <WaitlistForm />
         </div>
       </section>
 
