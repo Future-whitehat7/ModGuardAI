@@ -1,14 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Modal } from './Modal';
 
+type ThreatTag = 'AI' | 'Cyber' | 'Deepfake' | 'Scam';
+
 interface ThreatItem {
   title: string;
   url: string;
   source: string;
   date: string;
   summary?: string;
-  ai?: boolean;
+  tag?: ThreatTag;
 }
+
+const FILTERS: Array<['all' | ThreatTag, string]> = [
+  ['all', 'All'],
+  ['AI', 'AI'],
+  ['Cyber', 'Cyber'],
+  ['Deepfake', 'Deepfakes'],
+  ['Scam', 'Scams'],
+];
 
 interface ThreatStat {
   label: string;
@@ -19,8 +29,18 @@ interface ThreatStat {
 }
 
 interface ThreatFile {
+  asOf?: string | null;
   stats?: ThreatStat[];
   items?: ThreatItem[];
+}
+
+function updatedLabel(asOfValue: string | null | undefined, now: number) {
+  const parsed = Date.parse(asOfValue ?? '');
+  if (Number.isNaN(parsed)) return null;
+  const mins = Math.max(0, Math.floor((now - parsed) / 60000));
+  if (mins < 1) return 'Updated just now';
+  if (mins === 1) return 'Updated 1 min ago';
+  return `Updated ${mins} min ago`;
 }
 
 function asOf(value: string) {
@@ -65,7 +85,8 @@ function CountUp({ value }: { value: number }) {
 export function ThreatPulse() {
   const [data, setData] = useState<ThreatFile | null>(null);
   const [failed, setFailed] = useState(false);
-  const [aiOnly, setAiOnly] = useState(false);
+  const [filter, setFilter] = useState<(typeof FILTERS)[number][0]>('all');
+  const [now, setNow] = useState(() => Date.now());
   const [open, setOpen] = useState<ThreatItem | null>(null);
   const close = useCallback(() => setOpen(null), []);
 
@@ -85,19 +106,21 @@ export function ThreatPulse() {
       return fallback.json() as Promise<ThreatFile>;
     };
     load().then(setData).catch(() => setFailed(true));
+    const timer = window.setInterval(() => setNow(Date.now()), 30000);
+    return () => window.clearInterval(timer);
   }, []);
 
   const stats = data?.stats ?? [];
   const items = data?.items ?? [];
-  const shown = aiOnly ? items.filter((item) => item.ai) : items;
-  const aiCount = items.filter((item) => item.ai).length;
+  const shown = filter === 'all' ? items : items.filter((item) => item.tag === filter);
+  const fresh = updatedLabel(data?.asOf, now);
 
   return (
     <section className="threat-band" id="pulse">
       <div className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 sm:py-28">
         <p className="eyebrow eyebrow-light flex items-center gap-3">
           <span className="live-dot" aria-hidden="true" />
-          Live feed
+          {fresh ?? 'Live feed'}
         </p>
         <h2 className="rise display mt-4 text-4xl text-white sm:text-6xl">Global threat pulse</h2>
         <p className="rise mt-5 max-w-2xl text-lg text-white/70">
@@ -123,11 +146,12 @@ export function ThreatPulse() {
           </ul>
         )}
         {items.length > 0 && (
-          <div className="mt-12 flex flex-wrap items-center gap-3">
-            <button type="button" className="btn-ghost" aria-pressed={aiOnly} onClick={() => setAiOnly((value) => !value)}>
-              {aiOnly ? 'All headlines' : `AI headlines (${aiCount})`}
-            </button>
-            <p className="text-sm text-white/60">The AI tag is a keyword match on the title, not a label from the publisher.</p>
+          <div className="mt-12 flex flex-wrap gap-2" role="group" aria-label="Filter headlines">
+            {FILTERS.map(([value, label]) => (
+              <button key={value} type="button" className="btn-ghost" aria-pressed={filter === value} onClick={() => setFilter(value)}>
+                {label}
+              </button>
+            ))}
           </div>
         )}
         {shown.length > 0 && (
@@ -136,7 +160,7 @@ export function ThreatPulse() {
               <li key={item.url} className="rise" style={{ transitionDelay: `${index * 45}ms` }}>
                 <button type="button" className="threat-hit" onClick={() => setOpen(item)}>
                   <span className="text-lg text-white">
-                    {item.ai && <span className="mr-3 font-mono text-[11px] uppercase tracking-[0.12em] text-[#c6b48a]">AI</span>}
+                    {item.tag && <span className="mr-3 font-mono text-[11px] uppercase tracking-[0.12em] text-[#c6b48a]">{item.tag}</span>}
                     {item.title}
                   </span>
                   <span className="shrink-0 font-mono text-[11px] uppercase tracking-[0.08em] text-white/55">
@@ -147,20 +171,22 @@ export function ThreatPulse() {
             ))}
           </ul>
         )}
-        {aiOnly && !shown.length && (
-          <p className="mt-4 text-sm text-white/60">No headline in this pull has an AI keyword in the title.</p>
+        {filter !== 'all' && !shown.length && (
+          <p className="mt-4 text-sm text-white/60">No {filter.toLowerCase()} headlines in this pull.</p>
         )}
         {!stats.length && !items.length && (
           <p className="mt-10 text-sm text-white/60">
             {failed || data ? 'No public threat data was available.' : 'Loading public threat data.'}
           </p>
         )}
-        <p className="mt-8 text-sm text-white/50">URLhaus and ThreatFox require an API key, so those counts are not shown.</p>
+        <p className="mt-8 text-sm text-white/50">
+          URLhaus, ThreatFox, VentureBeat, and Reuters did not return a keyless feed, so they are not shown.
+        </p>
       </div>
       {open && (
         <Modal title={open.title} kicker={open.source} onClose={close}>
           <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-frost">
-            {open.ai ? 'AI · ' : ''}{open.source} · {open.date || 'Date not in source'}
+            {open.tag ? `${open.tag} · ` : ''}{open.source} · {open.date || 'Date not in source'}
           </p>
           <p>{open.summary || 'This source did not include a summary.'}</p>
           <a className="btn-accent w-full sm:w-auto" href={open.url} target="_blank" rel="noopener noreferrer">Read at source</a>
