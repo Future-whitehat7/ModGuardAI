@@ -5,6 +5,9 @@
 [build.environment]
   NODE_VERSION = "20"
 
+[functions."threats-schedule"]
+  schedule = "*/15 * * * *"
+
 # Former pages described products that are not shipped. Send them home.
 [[redirects]]
   from = "/pulse.json"
