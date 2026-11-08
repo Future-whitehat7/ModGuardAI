@@ -76,14 +76,14 @@ test('a complete intake records the tier on the thanks path and never the Stripe
   }
 });
 
-test('the thanks page uses payNowHref and does not hard-code a second checkout URL', () => {
+test('the thanks page reads the server order and does not treat the query as payment', () => {
   const thanks = readFileSync(new URL('../src/pages/ImpersonationThanks.tsx', import.meta.url), 'utf8');
-  assert.match(thanks, /payNowHref\(order\.tier, IMPERSONATION_CHECKOUT_URL\)/);
-  assert.match(thanks, /readOrderView\(/);
+  assert.match(thanks, /\/api\/order-status/);
+  assert.equal(thanks.includes('readOrderView'), false);
   assert.equal(thanks.includes('Intake received.'), false);
   assert.equal(thanks.includes(STRIPE_199), false);
   const form = readFileSync(new URL('../src/components/marketing/IntakeForm.tsx', import.meta.url), 'utf8');
-  assert.match(form, /markFormStarted\(sessionStorage, decision\.tier\)/);
+  assert.match(form, /\/api\/intake/);
   assert.equal(form.includes(STRIPE_199), false);
 });
 

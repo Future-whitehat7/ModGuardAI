@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { intakeDecision, markFormStarted } from '../../config/impersonationHandoff';
+import { intakeDecision } from '../../config/impersonationHandoff';
 import { intakeTierRadios } from '../../config/platform';
 
 const sections = 5;
@@ -30,16 +30,20 @@ function sectionDone(section: HTMLElement) {
   });
 }
 
+const ACCESS_TOKEN_KEY = 'impersonation-access-token';
+
 export function IntakeForm() {
   const [done, setDone] = useState(0);
   const [error, setError] = useState('');
+  const [sending, setSending] = useState(false);
 
   const refresh = (form: HTMLFormElement) => {
     const count = [...form.querySelectorAll<HTMLElement>('[data-step]')].filter(sectionDone).length;
     setDone(count);
   };
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     const form = event.currentTarget;
     form.querySelectorAll('[aria-invalid]').forEach((field) => field.removeAttribute('aria-invalid'));
     const invalid = [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[required]')].filter(
@@ -65,13 +69,61 @@ export function IntakeForm() {
       (invalid[0] ?? badUrls[0] ?? firstAccount)?.focus();
       return;
     }
-    try {
-      markFormStarted(sessionStorage, decision.tier);
-    } catch {
-      // Without this marker the thanks page will not claim the form was sent.
-    }
-    form.action = decision.action;
+    setSending(true);
     setError('');
+    const data = new FormData(form);
+    const value = (name: string) => {
+      const field = data.get(name);
+      return typeof field === 'string' ? field : '';
+    };
+    try {
+      const response = await fetch('/api/intake', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          name: value('name'),
+          email: value('email'),
+          role: value('role'),
+          tier: value('tier'),
+          accounts: {
+            tiktok: value('tiktok'),
+            instagram: value('instagram'),
+            youtube: value('youtube'),
+            x: value('x'),
+            facebook: value('facebook'),
+            website: value('website'),
+            other: value('other'),
+          },
+          knownFakes: value('known_fakes'),
+          nameVariations: value('name_variations'),
+          dmsForMoney: value('dms_for_money'),
+          realOffers: value('real_offers'),
+          fanReports: value('fan_reports'),
+          priority: value('priority_platforms'),
+          sensitive: value('sensitive'),
+          consents: {
+            accounts: value('consent_accounts') === 'yes',
+            deliverable: value('consent_deliverable') === 'yes',
+            limits: value('consent_limits') === 'yes',
+          },
+          botField: value('bot-field'),
+        }),
+      });
+      const payload: unknown = await response.json();
+      const token = payload && typeof payload === 'object' && 'accessToken' in payload && typeof payload.accessToken === 'string'
+        ? payload.accessToken
+        : '';
+      if (!response.ok || !token) {
+        setError('The intake was not stored. Nothing was charged.');
+        setSending(false);
+        return;
+      }
+      sessionStorage.setItem(ACCESS_TOKEN_KEY, token);
+      window.location.assign('/impersonation-check/thanks');
+    } catch {
+      setError('The intake was not stored. Nothing was charged.');
+      setSending(false);
+    }
   };
 
   return (
@@ -273,8 +325,8 @@ export function IntakeForm() {
           {error}
         </p>
       )}
-      <button className="btn-accent mt-4 w-full" type="submit">
-        Start my check
+      <button className="btn-accent mt-4 w-full" type="submit" disabled={sending}>
+        {sending ? 'Sending…' : 'Start my check'}
       </button>
       <p className="hint form-foot">
         Submitting this form does not charge you. The next page has Pay now for the $199 one-time check. That payment is not the Sponsors Growth tier at $199/month. The 48-hour clock starts once this intake is complete and payment is received.
