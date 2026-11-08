@@ -19,9 +19,9 @@ const checks = [
 ];
 
 const audiences = [
-  { title: 'People', copy: 'Check the message before the transfer leaves the account.', image: brandImages.whoPeople },
-  { title: 'Creators', copy: 'A copy of the account can ask the audience for money.', image: brandImages.whoCreators },
-  { title: 'Brands', copy: 'A labeled placement sits next to people who are already checking.', image: brandImages.whoBrands },
+  { title: 'People', copy: 'Check the message before the transfer leaves the account.', image: brandImages.whoPeople, offer: false },
+  { title: 'Creators', copy: 'A copy of the account can ask the audience for money.', image: brandImages.whoCreators, offer: true },
+  { title: 'Brands', copy: 'A labeled placement sits next to people who are already checking.', image: brandImages.whoBrands, offer: false },
 ];
 
 export const LandingPage = () => {
@@ -82,6 +82,14 @@ export const LandingPage = () => {
                 <ImageSlot image={audience.image} />
                 <h3 className="display text-3xl text-ice">{audience.title}</h3>
                 <p className="mt-3 text-frost">{audience.copy}</p>
+                {audience.offer && (
+                  <Link
+                    className="mt-6 block min-h-12 rounded-[20px] border border-[#E6E6E1] bg-white p-5 text-ice focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7dd3fc]"
+                    to="/impersonation-check"
+                  >
+                    Verify suspicious accounts — $199 one-time
+                  </Link>
+                )}
               </article>
             ))}
           </div>

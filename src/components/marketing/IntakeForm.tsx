@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
+import { intakeTierRadios } from '../../config/platform';
 
 const sections = 5;
 
@@ -63,6 +64,13 @@ export function IntakeForm() {
       (invalid[0] ?? badUrls[0] ?? firstAccount)?.focus();
       return;
     }
+    const tier = form.querySelector<HTMLInputElement>('input[name="tier"]:checked')?.value === '499' ? '499' : '199';
+    try {
+      sessionStorage.setItem('impersonation-check-tier', tier);
+    } catch {
+      // The thanks page also reads ?tier= if storage is blocked.
+    }
+    form.action = `/impersonation-check/thanks?tier=${tier}`;
     setError('');
   };
 
@@ -116,7 +124,7 @@ export function IntakeForm() {
           placeholder="you@example.com"
         />
         <p className="hint" id="email-hint">
-          We send your slot date and report here.
+          We send the evidence and report steps here.
         </p>
         <fieldset className="mt-4">
           <legend className="text-sm text-frost">Who is filling this in?</legend>
@@ -131,14 +139,18 @@ export function IntakeForm() {
         </fieldset>
         <fieldset className="mt-4">
           <legend className="text-sm text-frost">Which check?</legend>
-          <label className="choice">
-            <input type="radio" name="tier" value="199" required defaultChecked />
-            <span>$199. Creators with 100K to 1 million followers</span>
-          </label>
-          <label className="choice">
-            <input type="radio" name="tier" value="499" />
-            <span>$499. Over 1 million followers, or public figures booked through a manager</span>
-          </label>
+          {intakeTierRadios.map((option) => (
+            <label className="choice" key={option.value}>
+              <input
+                type="radio"
+                name="tier"
+                value={option.value}
+                required={option.value === '199'}
+                defaultChecked={option.value === '199'}
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
         </fieldset>
       </fieldset>
 
@@ -180,7 +192,22 @@ export function IntakeForm() {
       </fieldset>
 
       <fieldset className="intake-step" data-step="3">
-        <legend>3. What to look for</legend>
+        <legend>3. What you’ve spotted</legend>
+        <label className="mt-4 block text-sm text-frost" htmlFor="known-fakes">
+          Suspicious accounts or ads
+        </label>
+        <textarea
+          id="known-fakes"
+          className="field mt-2 min-h-24 py-3"
+          name="known_fakes"
+          rows={3}
+          required
+          placeholder="Paste each link or handle, one per line"
+          aria-describedby="spotted-hint"
+        />
+        <p className="hint" id="spotted-hint">
+          We verify these. We do not search for accounts you leave off this list.
+        </p>
         <label className="mt-4 block text-sm text-frost" htmlFor="name-variations">
           Name variations, nicknames, common misspellings <span className="opt">Optional</span>
         </label>
@@ -201,12 +228,8 @@ export function IntakeForm() {
         </label>
         <textarea id="real-offers" className="field mt-2 min-h-24 py-3" name="real_offers" rows={3} aria-describedby="offers-hint" />
         <p className="hint" id="offers-hint">
-          Products, courses, or offers, so a fake one stands out.
+          Products, courses, or offers you actually run. Used only to compare with the accounts or ads you sent.
         </p>
-        <label className="mt-4 block text-sm text-frost" htmlFor="known-fakes">
-          Fakes you already know about <span className="opt">Optional</span>
-        </label>
-        <textarea id="known-fakes" className="field mt-2 min-h-24 py-3" name="known_fakes" rows={3} placeholder="Paste links, one per line" />
         <label className="mt-4 block text-sm text-frost" htmlFor="screenshots">
           Screenshots of known fakes <span className="opt">Optional</span>
         </label>
@@ -220,9 +243,9 @@ export function IntakeForm() {
       <fieldset className="intake-step" data-step="4">
         <legend>4. Priorities <span className="opt">Optional</span></legend>
         <label className="mt-4 block text-sm text-frost" htmlFor="priority-platforms">
-          Platforms that matter most
+          Which item to verify first
         </label>
-        <input id="priority-platforms" className="field mt-2" type="text" name="priority_platforms" placeholder="Instagram first, then TikTok" />
+        <input id="priority-platforms" className="field mt-2" type="text" name="priority_platforms" placeholder="The account or ad you want checked first" />
         <label className="mt-4 block text-sm text-frost" htmlFor="sensitive">
           Anything we should handle discreetly
         </label>
@@ -237,11 +260,11 @@ export function IntakeForm() {
         </label>
         <label className="choice">
           <input type="checkbox" name="consent_deliverable" value="yes" required />
-          <span>I understand the deliverable is a findings report and a ready-to-file takedown list, not guaranteed removals. Each platform decides on removals.</span>
+          <span>I understand the deliverable is evidence and the exact platform report steps, not guaranteed removals. Each platform decides.</span>
         </label>
         <label className="choice">
           <input type="checkbox" name="consent_limits" value="yes" required />
-          <span>I understand a search can miss copies, and ModGuard provides risk-reduction guidance, not a guarantee.</span>
+          <span>I understand ModGuard verifies the accounts and ads I send, does not search for others, and does not guarantee removal.</span>
         </label>
       </fieldset>
 
@@ -251,10 +274,10 @@ export function IntakeForm() {
         </p>
       )}
       <button className="btn-accent mt-4 w-full" type="submit">
-        Start my $199 check
+        Start my check
       </button>
       <p className="hint form-foot">
-        Submitting this form does not charge you. The 48-hour clock starts once this intake is complete and payment is received.
+        Submitting this form does not charge you. The next page has Pay now for the $199 one-time check. That payment is not the Sponsors Growth tier at $199/month. The 48-hour clock starts once this intake is complete and payment is received.
       </p>
     </form>
   );

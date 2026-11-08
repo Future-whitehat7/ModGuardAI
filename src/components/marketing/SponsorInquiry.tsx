@@ -59,7 +59,7 @@ export function SponsorInquiry({ initialTier = 'starter' }: { initialTier?: Tier
       <p className="eyebrow">Inquiry</p>
       <h2 className="display mt-3 text-3xl text-ice">Ask before you pay</h2>
       <p className="measure mt-3 text-frost">
-        Starter and Elite do not have a live card payment. Growth does. This form is the pending-stripe path.
+        Starter, Growth, and Elite do not take a card payment on this page. Growth is $199/month. The $199 one-time Impersonation Check is a separate payment, after intake.
       </p>
       <label className="mt-4 block text-sm text-frost" htmlFor="sponsor-name">
         Name

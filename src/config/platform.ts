@@ -6,7 +6,7 @@ export const SCAMCHECK_FAQ_URL = 'https://scamcheck.modguardai.org/faq';
 export const PLAYBOOK_URL = 'https://scamcheck.modguardai.org/playbook';
 export const PLAYBOOK_CHECKOUT_URL = 'https://buy.stripe.com/14AcN60EMdcW9Rj8gj4ZG05';
 
-/** Live $199 Stripe payment. Product text: manual impersonation sweep for creators with 100K to 1 million followers. */
+/** $199 one-time Impersonation Check. Not the Sponsors Growth tier at $199/month. */
 export const IMPERSONATION_CHECKOUT_URL = 'https://buy.stripe.com/28E6oIgDKc8S8NfdAD4ZG07';
 
 /** Free impersonation checker. CORS allows modguardai.org and *.netlify.app. */
@@ -41,7 +41,7 @@ export const protectionTiers: ProtectionTier[] = [
       { label: '$99/month', detail: 'month' },
     ],
     includes: [
-      'Checkout is not open. What the sweep includes is confirmed in writing before anyone pays.',
+      'Checkout is not open. Scope is confirmed in writing before anyone pays.',
     ],
     checkout: { kind: 'pending-stripe' },
   },
@@ -49,13 +49,13 @@ export const protectionTiers: ProtectionTier[] = [
     id: 'growth',
     name: 'Growth',
     audience: 'Creators with 100K to 1 million followers',
-    purpose: 'The audience size on the live $199 payment.',
+    purpose: 'A monthly Sponsors tier. It is not the $199 one-time Impersonation Check.',
     prices: [{ label: '$199/month', detail: 'month' }],
     includes: [
-      'Manual impersonation sweep for creators with 100K to 1 million followers. That is the description on the live Stripe payment.',
-      'The 48-hour clock starts once intake is complete, not at payment.',
+      'Checkout for this monthly price is not open on this page.',
+      'The $199 one-time Impersonation Check is a separate payment, after intake.',
     ],
-    checkout: { kind: 'stripe', href: IMPERSONATION_CHECKOUT_URL },
+    checkout: { kind: 'pending-stripe' },
   },
   {
     id: 'elite',
@@ -65,7 +65,7 @@ export const protectionTiers: ProtectionTier[] = [
     prices: [{ label: 'From $499/month', detail: 'month' }],
     includes: [
       'Checkout is not open. The listed price starts at $499 a month.',
-      'The Impersonation Check $499 choice is this tier: over 1 million followers, or public figures booked through a manager.',
+      'The Impersonation Check $499 option is separate: Over 1 million followers, or public figures booked through a manager.',
     ],
     checkout: { kind: 'pending-stripe' },
   },
@@ -79,14 +79,14 @@ export function tierById(id: TierId): ProtectionTier {
   return tier;
 }
 
-/** Radios from the ModGuard Lead intake. They are not a full match for the three tiers. */
+/** One-time Impersonation Check prices. Not the Sponsors monthly tiers. */
 export const intakeTierRadios = [
   {
-    value: '199-100k-1m',
-    label: '$199 for creators with 100K to 1 million followers',
+    value: '199',
+    label: '$199 one-time. Creators with 100K to 1 million followers',
   },
   {
-    value: '499-public-figures',
+    value: '499',
     label: '$499. Over 1 million followers, or public figures booked through a manager',
   },
 ] as const;
