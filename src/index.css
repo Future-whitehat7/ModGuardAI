@@ -1029,15 +1029,33 @@ html.motion-js .reveal.is-in {
 .brand-picture {
   display: block;
   margin-top: 1.5rem;
+  overflow: hidden;
+  border-radius: 24px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 30px 60px -32px rgba(28, 25, 20, 0.28);
+  background: #f4f1ea;
 }
 
 .brand-picture img {
   display: block;
   width: 100%;
   height: auto;
-  border: 1px solid #e6e6e1;
-  border-radius: 20px;
-  background: #f6f6f3;
+  border-radius: 24px;
+  background: #f4f1ea;
+  image-rendering: auto;
+  transform: scale(1.001);
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), filter 1.2s ease;
+}
+
+.brand-picture:hover img {
+  transform: scale(1.03);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-picture img,
+  .brand-picture:hover img {
+    transition: none;
+    transform: none;
+  }
 }
 
 .brand-card {
