@@ -47,6 +47,11 @@ export function ImpersonationChecker() {
     const realHandle = String(data.get('realHandle') ?? '').trim();
     const platform = String(data.get('platform') ?? '').trim();
     const notes = String(data.get('notes') ?? '').trim();
+    if (suspect.length > 500 || realHandle.length > 500 || notes.length > 2000) {
+      setStatus('error');
+      setError('That is too long to check here. Shorten it and try again.');
+      return;
+    }
     setStatus('sending');
     setError('');
     setResult(null);

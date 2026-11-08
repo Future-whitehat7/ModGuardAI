@@ -34,7 +34,7 @@ export function SponsorInquiry({ initialTier = 'starter' }: { initialTier?: Tier
   if (status === 'done') {
     return (
       <p className="glass p-6 text-ice" role="status">
-        Inquiry received. We have your name, email, and the tier you asked about. We reply by email. Nothing is reserved until that reply.
+        The inquiry was sent. We reply by email if it arrives. Nothing is reserved, and this page cannot show a saved inquiry id.
       </p>
     );
   }

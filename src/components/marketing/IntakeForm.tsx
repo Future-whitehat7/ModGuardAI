@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { intakeDecision } from '../../config/impersonationHandoff';
+import { intakeDecision, markFormStarted } from '../../config/impersonationHandoff';
 import { intakeTierRadios } from '../../config/platform';
 
 const sections = 5;
@@ -66,9 +66,9 @@ export function IntakeForm() {
       return;
     }
     try {
-      sessionStorage.setItem('impersonation-check-tier', decision.tier);
+      markFormStarted(sessionStorage, decision.tier);
     } catch {
-      // The thanks page also reads ?tier= if storage is blocked.
+      // Without this marker the thanks page will not claim the form was sent.
     }
     form.action = decision.action;
     setError('');

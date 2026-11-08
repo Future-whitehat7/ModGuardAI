@@ -41,7 +41,7 @@ export function metaForPath(pathname: string): RouteMeta {
   if (pathname === '/impersonation-check/thanks') {
     return {
       title: 'Intake | Impersonation Check',
-      description: 'Intake received. Pay now is the next step for the $199 one-time check. The 48-hour clock starts once intake is complete and payment is received.',
+      description: 'The step after the Impersonation Check form. Opening this page does not submit an intake and does not confirm payment.',
       robots: 'noindex, follow',
     };
   }

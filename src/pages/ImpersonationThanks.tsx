@@ -1,58 +1,77 @@
-import { useSearchParams, Link } from 'react-router-dom';
-import { payNowHref, type IntakeTier } from '../config/impersonationHandoff';
+import { useMemo } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { payNowHref, readOrderView, type MemoryStore } from '../config/impersonationHandoff';
 import { IMPERSONATION_CHECKOUT_URL } from '../config/platform';
 
 const CONTACT = 'mailto:samuel.fagbamigbe@modguardai.org?subject=Impersonation%20Check';
 
-function selectedTier(queryTier: string | null): IntakeTier {
-  if (queryTier === '499' || queryTier === '199') return queryTier;
-  try {
-    const stored = sessionStorage.getItem('impersonation-check-tier');
-    if (stored === '499' || stored === '199') return stored;
-  } catch {
-    // sessionStorage can be unavailable. The $199 one-time path is the labeled default.
-  }
-  return '199';
+function browserStore(): MemoryStore {
+  return {
+    getItem(key) {
+      try {
+        return sessionStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    },
+    setItem(key, value) {
+      sessionStorage.setItem(key, value);
+    },
+  };
 }
 
 export const ImpersonationThanks = () => {
   const [params] = useSearchParams();
-  const tier = selectedTier(params.get('tier'));
-  const checkoutHref = payNowHref(tier, IMPERSONATION_CHECKOUT_URL);
+  const order = useMemo(() => readOrderView(browserStore(), params.get('tier')), [params]);
+  const checkoutHref = order.kind === 'form-started' ? payNowHref(order.tier, IMPERSONATION_CHECKOUT_URL) : null;
 
   return (
     <article className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
       <p className="eyebrow">Impersonation Check</p>
-      <h1 className="display mt-4 text-5xl text-ice">Intake received.</h1>
-      <p className="measure mt-6 text-lg text-frost">
-        Thank you. This form did not charge you. Within 48 hours of a complete intake and payment, we verify each account or ad you sent and send evidence plus the exact platform report steps. We do not remove accounts.
-      </p>
-      {checkoutHref === null ? (
+      {order.kind === 'no-intake' ? (
         <>
-          <p className="measure mt-4 text-frost">
-            You selected the $499 option: Over 1 million followers, or public figures booked through a manager. That option does not use the $199 one-time Stripe link. Email{' '}
-            <a href={CONTACT}>samuel.fagbamigbe@modguardai.org</a>
-            {' '}and include the $499 option so payment can be arranged.
+          <h1 className="display mt-4 text-5xl text-ice">Form not sent from this browser.</h1>
+          <p className="measure mt-6 text-lg text-frost">
+            Opening this address does not submit an intake and does not confirm a payment. The $199 one-time check still starts with the form. We verify the accounts and ads you send. We do not search for others, and we do not guarantee removal.
           </p>
           <div className="mt-8">
-            <Link className="btn-ghost" to="/impersonation-check">
-              Back to Impersonation Check
+            <Link className="btn-accent" to="/impersonation-check#intake">
+              Back to the form
             </Link>
           </div>
         </>
       ) : (
         <>
-          <p className="measure mt-4 text-frost">
-            Pay now for the $199 one-time check. That Stripe payment is not the Sponsors Growth tier at $199/month. The 48-hour clock starts once this intake is complete and this payment is received.
+          <h1 className="display mt-4 text-5xl text-ice">Form sent from this browser. Payment is not confirmed.</h1>
+          <p className="measure mt-6 text-lg text-frost">
+            The form passed its checks in this browser and the browser sent it on. This page cannot see a stored intake, a Stripe payment, or a report. The 48-hour clock starts only after a complete intake and payment. We do not remove accounts.
           </p>
-          <p className="measure mt-4 text-sm text-frost">
-            If you selected the $499 option — Over 1 million followers, or public figures booked through a manager — do not use this link. Email{' '}
-            <a href={CONTACT}>samuel.fagbamigbe@modguardai.org</a>.
-          </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a className="btn-accent" href={checkoutHref}>
-              Pay now
-            </a>
+          {checkoutHref === null ? (
+            <>
+              <p className="measure mt-4 text-frost">
+                You selected the $499 option: Over 1 million followers, or public figures booked through a manager. That option does not use the $199 one-time Stripe link. Email{' '}
+                <a href={CONTACT}>samuel.fagbamigbe@modguardai.org</a>
+                {' '}and include the $499 option so payment can be arranged. This page cannot confirm that email or that payment.
+              </p>
+              <div className="mt-8">
+                <a className="btn-accent" href={CONTACT}>
+                  Email about the $499 option
+                </a>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="measure mt-4 text-frost">
+                Pay now for the $199 one-time check. That Stripe payment is not the Sponsors Growth tier at $199/month. Opening the link does not mark an order paid.
+              </p>
+              <div className="mt-8">
+                <a className="btn-accent" href={checkoutHref}>
+                  Pay now
+                </a>
+              </div>
+            </>
+          )}
+          <div className="mt-3">
             <Link className="btn-ghost" to="/impersonation-check">
               Back to Impersonation Check
             </Link>
