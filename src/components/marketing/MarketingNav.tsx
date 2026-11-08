@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import {
-  SCAMCHECK_LABEL,
-  SCAMCHECK_URL,
-  menuLinks,
-  primaryLinks,
-  type SiteLink,
-} from './site';
+import { ToolTabs } from './ToolTabs';
+import { menuLinks, type SiteLink } from './site';
 
 function isCurrent(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -77,20 +72,9 @@ export function MarketingNav() {
           ModGuard
         </Link>
 
-        <nav className="order-4 ml-auto hidden items-center gap-1 lg:order-2 lg:flex" aria-label="Primary">
-          {primaryLinks.map((link) => (
-            <NavAnchor
-              key={link.href}
-              link={link}
-              pathname={pathname}
-              className="hud-link"
-            />
-          ))}
-        </nav>
-
-        <a href={SCAMCHECK_URL} className="hud-pill order-3">
-          {SCAMCHECK_LABEL}
-        </a>
+        <Link to="/scamcheck" className="hud-pill order-3">
+          Open the tools
+        </Link>
         <button
           type="button"
           className="hud-menu-button order-2 ml-auto lg:order-4 lg:ml-0"
@@ -101,6 +85,7 @@ export function MarketingNav() {
           {open ? 'Close' : 'Menu'}
         </button>
       </div>
+      <ToolTabs />
 
       {open && (
         <nav id="site-menu" className="hud-menu" aria-label="All pages">

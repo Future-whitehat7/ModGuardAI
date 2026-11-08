@@ -17,14 +17,14 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://modguardai.org/" />
     <meta property="og:site_name" content="ModGuard AI" />
-    <meta property="og:image" content="https://modguardai.org/og.png" />
+    <meta property="og:image" content="https://scamcheck.modguardai.org/brand/og-modguardai.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="AI scam checker for messages and links | ModGuard ScamCheck" />
     <meta name="twitter:description" content="Check if a message is a scam. Free AI scam checker with an AI verdict and phishing link checks." />
-    <meta name="twitter:image" content="https://modguardai.org/og.png" />
+    <meta name="twitter:image" content="https://scamcheck.modguardai.org/brand/og-modguardai.png" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -109,6 +109,38 @@
       <input type="text" name="name" />
       <input type="email" name="email" />
       <textarea name="protect"></textarea>
+      <input name="bot-field" />
+    </form>
+    <form name="impersonation-check" method="POST" action="/impersonation-check/thanks" enctype="multipart/form-data" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="text" name="role" />
+      <input type="text" name="tier" />
+      <input type="url" name="tiktok" />
+      <input type="url" name="instagram" />
+      <input type="url" name="youtube" />
+      <input type="url" name="x" />
+      <input type="url" name="facebook" />
+      <input type="url" name="website" />
+      <input type="text" name="other" />
+      <textarea name="name_variations"></textarea>
+      <input type="text" name="dms_for_money" />
+      <textarea name="real_offers"></textarea>
+      <textarea name="known_fakes"></textarea>
+      <input type="file" name="screenshots" />
+      <textarea name="fan_reports"></textarea>
+      <input type="text" name="priority_platforms" />
+      <textarea name="sensitive"></textarea>
+      <input type="checkbox" name="consent_accounts" />
+      <input type="checkbox" name="consent_deliverable" />
+      <input type="checkbox" name="consent_limits" />
+      <input name="bot-field" />
+    </form>
+    <form name="sponsor-inquiry" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="text" name="tier" />
+      <textarea name="message"></textarea>
       <input name="bot-field" />
     </form>
     <script type="module" src="/src/main.tsx"></script>

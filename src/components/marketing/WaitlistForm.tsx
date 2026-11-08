@@ -14,7 +14,11 @@ export function WaitlistForm() {
       const response = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(new FormData(form)).toString(),
+        body: new URLSearchParams(
+          [...new FormData(form).entries()].flatMap(([key, value]) =>
+            typeof value === 'string' ? [[key, value]] : [],
+          ),
+        ).toString(),
       });
       if (!response.ok) throw new Error('form');
       setStatus('done');

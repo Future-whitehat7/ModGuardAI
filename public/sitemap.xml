@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://modguardai.org/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://modguardai.org/scamcheck</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://modguardai.org/impersonation-check</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://modguardai.org/insights</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://modguardai.org/insights/older-adults-fraud-losses-2025</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://modguardai.org/insights/ic3-2025-ai-and-impersonation</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://modguardai.org/insights/passkeys-sign-in-share-2026</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://modguardai.org/insights/dbir-2026-vulnerability-exploitation</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://modguardai.org/insights/eu-labeling-rules-for-deepfakes</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://modguardai.org/sponsor</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://modguardai.org/about</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
 </urlset>
