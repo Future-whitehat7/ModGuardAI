@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
+import { intakeDecision } from '../../config/impersonationHandoff';
 import { intakeTierRadios } from '../../config/platform';
 
 const sections = 5;
@@ -49,28 +50,27 @@ export function IntakeForm() {
     const badUrls = [...form.querySelectorAll<HTMLInputElement>('input[type="url"]')].filter(
       (field) => field.value.trim() !== '' && !field.checkValidity(),
     );
-    if (invalid.length > 0 || !hasLink || badUrls.length > 0) {
+    const decision = intakeDecision({
+      invalidRequired: invalid.length,
+      hasAccountLink: hasLink,
+      invalidUrls: badUrls.length,
+      tierValue: form.querySelector<HTMLInputElement>('input[name="tier"]:checked')?.value ?? null,
+    });
+    if (!decision.ok) {
       event.preventDefault();
       [...invalid, ...badUrls].forEach((field) => field.setAttribute('aria-invalid', 'true'));
       const firstAccount = accounts?.querySelector<HTMLInputElement>('input');
       if (!hasLink && firstAccount) firstAccount.setAttribute('aria-invalid', 'true');
-      setError(
-        badUrls.length > 0
-          ? 'Use a full https link for each account you add.'
-          : !hasLink && invalid.length === 0
-            ? 'Add at least one official account link in section 2.'
-            : `Please complete the highlighted fields${!hasLink ? ' and add at least one official account link' : ''}.`,
-      );
+      setError(decision.message);
       (invalid[0] ?? badUrls[0] ?? firstAccount)?.focus();
       return;
     }
-    const tier = form.querySelector<HTMLInputElement>('input[name="tier"]:checked')?.value === '499' ? '499' : '199';
     try {
-      sessionStorage.setItem('impersonation-check-tier', tier);
+      sessionStorage.setItem('impersonation-check-tier', decision.tier);
     } catch {
       // The thanks page also reads ?tier= if storage is blocked.
     }
-    form.action = `/impersonation-check/thanks?tier=${tier}`;
+    form.action = decision.action;
     setError('');
   };
 

@@ -50,7 +50,7 @@ export const ImpersonationCheck = () => {
         <p className="mt-4 text-sm text-frost">
           The $199 price is one-time. It is not the Sponsors Growth tier at $199/month. The $499 option is not that monthly Elite price either.
         </p>
-        <a className="btn-accent mt-6 w-full" href="#intake">
+        <a className="btn-ghost mt-6 w-full" href="#intake">
           Start my check
         </a>
         <p className="mt-3 text-sm text-frost">

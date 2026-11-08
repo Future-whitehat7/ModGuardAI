@@ -515,13 +515,19 @@ body {
   justify-content: center;
   min-height: 48px;
   padding: 0.45rem 0.95rem;
+  border: 1px solid #e6e6e1;
   border-radius: 999px;
-  background: #2b4bff;
-  color: #ffffff;
+  background: transparent;
+  color: #4a4e57;
   font-family: "JetBrains Mono", ui-monospace, monospace;
   font-size: 12px;
   line-height: 1.25;
   text-align: center;
+}
+
+.hud-pill:hover {
+  border-color: #0e0f12;
+  color: #0e0f12;
 }
 
 .hud-menu {
@@ -910,6 +916,21 @@ html.motion-js .reveal.is-in {
   overflow-x: auto;
   border-top: 1px solid #e6e6e1;
   padding: 0 0.5rem;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.tool-tabs[data-overflow='end'],
+.tool-tabs[data-overflow='both'] {
+  mask-image: linear-gradient(to right, #000 calc(100% - 1.75rem), transparent);
+}
+
+.tool-tabs[data-overflow='start'] {
+  mask-image: linear-gradient(to right, transparent, #000 1.75rem);
+}
+
+.tool-tabs[data-overflow='both'] {
+  mask-image: linear-gradient(to right, transparent, #000 1.75rem, #000 calc(100% - 1.75rem), transparent);
 }
 
 .tool-tab {
@@ -944,6 +965,18 @@ html.motion-js .reveal.is-in {
 
 .tool-tab[aria-current="page"]::after {
   transform: scaleX(1);
+}
+
+@media (max-width: 720px) {
+  .tool-tab {
+    padding: 0 0.45rem;
+    scroll-snap-align: start;
+  }
+
+  .tool-tab::after {
+    left: 0.45rem;
+    right: 0.45rem;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {

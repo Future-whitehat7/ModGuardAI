@@ -108,7 +108,7 @@ export const LandingPage = () => {
             {' · '}
             <a className="text-accent" href={ftc}>FTC press release</a>
           </p>
-          <Link className="btn-accent mt-8" to="/scamcheck">
+          <Link className="btn-ghost mt-8" to="/scamcheck">
             Open the tools
           </Link>
         </div>

@@ -137,7 +137,7 @@ export function ImpersonationChecker() {
             </>
           )}
           <p className="mt-6 text-frost">A free read of one handle is not the paid check. The paid check verifies the accounts and ads you send.</p>
-          <Link className="btn-accent mt-4" to="/impersonation-check#intake">
+          <Link className="btn-ghost mt-4" to="/impersonation-check#intake">
             Start my check
           </Link>
         </div>
