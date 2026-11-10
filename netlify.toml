@@ -8,6 +8,9 @@
 [functions."threats-schedule"]
   schedule = "*/15 * * * *"
 
+# research-background.mjs is a Netlify background function because the file name ends in -background.
+# The Stripe webhook returns as soon as that function accepts the job. Research and email continue after the 202.
+
 # Former pages described products that are not shipped. Send them home.
 [[redirects]]
   from = "/pulse.json"

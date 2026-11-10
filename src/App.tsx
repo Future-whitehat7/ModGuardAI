@@ -2,6 +2,7 @@ import { Navigate, BrowserRouter as Router, Route, Routes } from 'react-router-d
 import { About } from './pages/About';
 import { ImpersonationCheck } from './pages/ImpersonationCheck';
 import { ImpersonationThanks } from './pages/ImpersonationThanks';
+import { Operator } from './pages/Operator';
 import { InsightArticle } from './pages/InsightArticle';
 import { Insights } from './pages/Insights';
 import { LandingPage } from './pages/LandingPage';
@@ -21,6 +22,7 @@ function App() {
           <Route path="/scamcheck" element={<ScamCheckTool />} />
           <Route path="/impersonation-check" element={<ImpersonationCheck />} />
           <Route path="/impersonation-check/thanks" element={<ImpersonationThanks />} />
+          <Route path="/operator" element={<Operator />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="/insights/:slug" element={<InsightArticle />} />
           <Route path="/sponsor" element={<Sponsor />} />

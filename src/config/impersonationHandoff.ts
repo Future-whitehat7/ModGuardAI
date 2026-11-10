@@ -93,12 +93,15 @@ export function readOrderView(store: MemoryStore, queryTier: string | null): Ord
   };
 }
 
-export const deliveryGaps = [
-  'This repo has no Stripe webhook and no Checkout Session lookup, so the thanks page cannot know that a card was charged.',
-  'This repo has no order record tying an intake to a payment.',
-  'This repo has no mailer that sends the evidence report.',
-  'A Netlify Form record exists only if the browser POST reaches Netlify. The thanks page cannot see that record.',
+export const deliveryLimits = [
+  'Automated research reads public pages only. It does not log in, and it does not decide that an account is impersonation.',
+  'Customer and operator email send only when RESEND_API_KEY, RESEND_FROM, and DELIVERY_SEND_ENABLED=1 are set. A missing setting is recorded.',
+  'OPERATOR_EMAIL is a comma-separated list. Each address gets its own copy. A failed address is recorded and retried without resending the ones that succeeded.',
+  'We do not file platform reports and we do not guarantee removal.',
 ] as const;
+
+/** @deprecated Use deliveryLimits. Kept so older notes still point at the honest limits. */
+export const deliveryGaps = deliveryLimits;
 
 export function payNowHref(tier: IntakeTier, checkoutUrl: string): string | null {
   switch (tier) {

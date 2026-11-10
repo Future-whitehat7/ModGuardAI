@@ -1,3 +1,19 @@
+/**
+ * Optional CLI for the same actions as /operator.
+ *
+ * The paid webhook starts research and email on its own. Use this only to override or retry.
+ *
+ * Required in the shell: MODGUARD_API_BASE (site origin) and OPERATOR_TOKEN.
+ * Optional: MODGUARD_NAMESPACE=live|preview|test (default preview).
+ *
+ * Netlify also needs APP_ENV, STRIPE_WEBHOOK_SECRET, STRIPE_PAYMENT_LINK_ID,
+ * RESEARCH_TRIGGER_TOKEN, RESEND_API_KEY, RESEND_FROM, DELIVERY_SEND_ENABLED=1,
+ * and OPERATOR_EMAIL as a comma-separated list. PUBLIC_SITE_URL is optional.
+ *
+ * Usage:
+ *   node scripts/operator.mjs list
+ *   node scripts/operator.mjs <save-evidence|approve|prepare-delivery|retry-research> <orderId> [evidence.json]
+ */
 import { readFileSync } from 'node:fs';
 
 const base = process.env.MODGUARD_API_BASE || '';
@@ -12,8 +28,11 @@ function fail(message) {
 if (!base || !token) {
   fail('Set MODGUARD_API_BASE and OPERATOR_TOKEN in the server environment. The token is not printed.');
 }
-if (!['save-evidence', 'approve', 'prepare-delivery'].includes(action) || !orderId) {
-  fail('Usage: node scripts/operator.mjs <save-evidence|approve|prepare-delivery> <orderId> [evidence.json]');
+if (!['list', 'save-evidence', 'approve', 'prepare-delivery', 'retry-research'].includes(action)) {
+  fail('Usage: node scripts/operator.mjs list | <save-evidence|approve|prepare-delivery|retry-research> <orderId> [evidence.json]');
+}
+if (action !== 'list' && !orderId) {
+  fail('Usage: node scripts/operator.mjs <save-evidence|approve|prepare-delivery|retry-research> <orderId> [evidence.json]');
 }
 
 const body = { action, orderId, namespace: process.env.MODGUARD_NAMESPACE || 'preview' };
@@ -35,5 +54,8 @@ const response = await fetch(new URL('/api/operator', base), {
   body: JSON.stringify(body),
 });
 const payload = await response.json();
-process.stdout.write(`${JSON.stringify({ status: response.status, state: payload.state ?? payload.error, emailSent: payload.emailSent ?? false })}\n`);
+const summary = Array.isArray(payload.orders)
+  ? { status: response.status, orders: payload.orders.length }
+  : { status: response.status, state: payload.state ?? payload.error ?? payload.result, emailSent: payload.emailSent ?? false };
+process.stdout.write(`${JSON.stringify(summary)}\n`);
 if (!response.ok) process.exit(1);

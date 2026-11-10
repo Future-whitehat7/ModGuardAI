@@ -11,7 +11,7 @@ const worries = [
 
 const steps = [
   ['1', 'You send what you spotted', 'Suspicious accounts or ads, plus the real accounts they are copying.'],
-  ['2', 'We verify each one', 'Within 48 hours of a complete intake and payment, each item you sent is checked.'],
+  ['2', 'Automated research reads each link', 'After payment, each public page you sent is read and compared with the official handles you gave us. Data confidence is about how much of the page could be read.'],
   ['3', 'You get the report steps', 'Evidence, and the exact place on that platform to file a report. The platform decides.'],
 ];
 
@@ -23,7 +23,7 @@ export const ImpersonationCheck = () => {
         Send us what you’ve spotted.
       </h1>
       <p className="measure mt-6 text-xl text-frost">
-        Send us the suspicious accounts or ads you’ve spotted. Within 48 hours of a complete intake and payment, we verify each one and send you evidence plus the exact platform report steps.
+        Send us the suspicious accounts or ads you’ve spotted. After payment, automated research reads those public pages and emails you the notes, a data-confidence level for each one, and the exact platform report steps. It does not decide that an account is impersonation, and it does not remove anything.
       </p>
       <div className="mt-8">
         <a className="btn-accent" href="#intake">
@@ -128,7 +128,7 @@ export const ImpersonationCheck = () => {
 
       <section className="page-section">
         <p className="eyebrow">The check</p>
-        <h2 className="display mt-4 text-4xl text-ice">Within 48 hours of a complete intake and payment.</h2>
+        <h2 className="display mt-4 text-4xl text-ice">After a verified payment.</h2>
         <dl className="mt-8 grid gap-4 sm:grid-cols-2">
           <div className="glass p-6">
             <dt className="eyebrow">Price</dt>
@@ -138,7 +138,7 @@ export const ImpersonationCheck = () => {
           </div>
           <div className="glass p-6">
             <dt className="eyebrow">Turnaround</dt>
-            <dd className="mt-3 text-ice">Within 48 hours of a complete intake and payment.</dd>
+            <dd className="mt-3 text-ice">After a verified payment. The email includes a private link if you close the tab.</dd>
           </div>
           <div className="glass p-6">
             <dt className="eyebrow">You receive</dt>
@@ -160,7 +160,7 @@ export const ImpersonationCheck = () => {
         <ol className="mt-6 list-decimal space-y-2 pl-5 text-ice">
           <li>Submit this form with your real accounts and the suspicious accounts or ads you’ve spotted.</li>
           <li>On the next page, choose Pay now. The $199 one-time check opens Stripe. The $499 option does not use that link.</li>
-          <li>Within 48 hours of a complete intake and payment, we verify each one and send evidence plus the exact platform report steps.</li>
+          <li>After payment, automated research emails the notes and the exact platform report steps. We do not remove accounts.</li>
         </ol>
         <div className="mt-8 max-w-3xl">
           <IntakeForm />

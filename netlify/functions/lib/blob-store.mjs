@@ -9,5 +9,15 @@ export async function openBlobStore() {
     async set(key, value) {
       await store.setJSON(key, value);
     },
+    async keys(prefix) {
+      const found = [];
+      let cursor;
+      do {
+        const page = await store.list({ prefix, cursor });
+        for (const blob of page.blobs ?? []) found.push(blob.key);
+        cursor = page.nextCursor || undefined;
+      } while (cursor);
+      return found;
+    },
   };
 }
