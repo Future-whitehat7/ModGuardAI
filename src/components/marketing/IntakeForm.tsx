@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { intakeDecision } from '../../config/impersonationHandoff';
 import { intakeTierRadios } from '../../config/platform';
+import { suspiciousAccountField } from '../../config/submittedAccounts';
 
 const sections = 5;
 
@@ -246,7 +247,7 @@ export function IntakeForm() {
       <fieldset className="intake-step" data-step="3">
         <legend>3. What you’ve spotted</legend>
         <label className="mt-4 block text-sm text-frost" htmlFor="known-fakes">
-          Suspicious accounts or ads
+          {suspiciousAccountField.label}
         </label>
         <textarea
           id="known-fakes"
@@ -254,11 +255,11 @@ export function IntakeForm() {
           name="known_fakes"
           rows={3}
           required
-          placeholder="Paste each link or handle, one per line"
+          placeholder={suspiciousAccountField.placeholder}
           aria-describedby="spotted-hint"
         />
         <p className="hint" id="spotted-hint">
-          We verify these. We do not search for accounts you leave off this list.
+          {suspiciousAccountField.hint}
         </p>
         <label className="mt-4 block text-sm text-frost" htmlFor="name-variations">
           Name variations, nicknames, common misspellings <span className="opt">Optional</span>

@@ -277,6 +277,7 @@ function ReadyOrder({ status }: { status: ReadyStatus }) {
               </ol>
             </article>
           ))}
+          <Lookalikes evidence={status.evidence} />
         </section>
       ) : null}
       {paid && !status.evidence && status.report !== 'researching' ? (
@@ -304,6 +305,45 @@ function ReadyOrder({ status }: { status: ReadyStatus }) {
           Back to Impersonation Check
         </Link>
       </div>
+    </>
+  );
+}
+
+function Lookalikes({ evidence }: { evidence: ReadyStatus['evidence'] }) {
+  const record = evidence as { lookalikes?: { handle?: string; platform?: string; url?: string; similarity?: number | null; confidence?: string; label?: string }[]; coverage?: { uncheckedPlatforms?: string[]; instruction?: string; partial?: boolean } } | null;
+  const matches = record?.lookalikes ?? [];
+  const platforms = record?.coverage?.uncheckedPlatforms ?? ['Instagram', 'Facebook', 'X', 'LinkedIn', 'Threads', 'Snapchat'];
+  return (
+    <>
+      <article className="glass p-6">
+        <p className="eyebrow">Possible look-alike accounts found</p>
+        <p className="mt-3 text-sm text-frost">Each match is possible and unverified. This is not a determination and it does not remove an account.</p>
+        {matches.length === 0 ? (
+          <p className="mt-3 text-ice">No possible look-alike was confirmed on the sites this server could read. That is not proof that none exist.</p>
+        ) : matches.map((match) => (
+          <div className="mt-4" key={`${match.platform}-${match.handle}`}>
+            <h2 className="text-ice">{match.platform} · @{match.handle}</h2>
+            <p className="mt-1 text-sm text-frost">
+              {typeof match.similarity === 'number' ? `${Math.round(match.similarity * 100)}% similarity` : 'Similarity n/a'}
+              {' · '}
+              data confidence {match.confidence || 'low'}
+              {' · '}
+              possible, unverified
+            </p>
+            {match.url ? <p className="mt-1 break-all text-sm text-frost">{match.url}</p> : null}
+          </div>
+        ))}
+      </article>
+      <article className="glass p-6">
+        <p className="eyebrow">Platforms not checked from the server</p>
+        <p className="mt-3 text-ice">{platforms.join(', ')}</p>
+        <p className="mt-3 text-sm text-frost">
+          {record?.coverage?.instruction || 'Paste a full https profile link for any account on those platforms.'}
+        </p>
+        {record?.coverage?.partial ? (
+          <p className="mt-3 text-sm text-frost">The look-alike search stopped early so the time limit would not be exceeded. Coverage is partial.</p>
+        ) : null}
+      </article>
     </>
   );
 }

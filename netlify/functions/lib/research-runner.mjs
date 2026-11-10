@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { sendConfirmation, sendOperatorCopy, sendResults } from './deliver.mjs';
 import { accessSecretKey, orderStorageKey } from './order-machine.mjs';
 import { researchIntake } from './research.mjs';
+import { DISCOVERY_BUDGET_MS, discoverLookalikes, emptyDiscovery } from './sherlock-check.mjs';
 
 const LOCK_MS = 12 * 60 * 1000;
 
@@ -101,7 +102,25 @@ export async function runPaidResearch({
         resolveImpl,
         timeoutMs: config.researchTimeoutMs,
       });
-      working.evidence = { ...researched, recordedAt: now };
+      let discovery = emptyDiscovery();
+      try {
+        discovery = await discoverLookalikes({
+          intake: working.intake,
+          fetchImpl,
+          store,
+          now,
+          deadline: now + DISCOVERY_BUDGET_MS,
+        });
+      } catch {
+        discovery = emptyDiscovery({ partial: true });
+      }
+      working.evidence = {
+        ...researched,
+        summary: `${researched.summary} ${discovery.summary}`.trim(),
+        lookalikes: discovery.lookalikes,
+        coverage: discovery.coverage,
+        recordedAt: now,
+      };
       await store.set(key, working);
     }
     let customerResult = working.delivery?.results;

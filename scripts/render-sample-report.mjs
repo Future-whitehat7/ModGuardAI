@@ -24,10 +24,25 @@ const research = await researchIntake({
 
 const pdf = await buildReportPdf(buildReportModel({
   orderId: `ord_${'ab'.repeat(16)}`,
-  summary: research.summary,
+  summary: `${research.summary} One possible look-alike was found. It is unverified.`,
   items: research.items,
   generatedAt: '2026-11-10T14:00:00.000Z',
   statusUrl: 'https://example.com/impersonation-check/thanks?access=sample-token',
+  lookalikes: [{
+    handle: 'examplecreat0r',
+    platform: 'YouTube',
+    url: 'https://www.youtube.com/@examplecreat0r',
+    similarity: 0.93,
+    confidence: 'medium',
+    label: 'possible, unverified',
+  }],
+  coverage: {
+    checked: ['YouTube', 'TikTok', 'GitHub'],
+    skipped: [{ site: 'Patreon', reason: 'self-test' }],
+    partial: false,
+    uncheckedPlatforms: ['Instagram', 'Facebook', 'X', 'LinkedIn', 'Threads', 'Snapchat'],
+    instruction: 'These platforms cannot be checked reliably from this server. Paste a full https profile link for any account on them. This is not a determination and it does not remove an account.',
+  },
 }));
 
 const directory = '/opt/cursor/artifacts';
