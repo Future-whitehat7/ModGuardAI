@@ -36,6 +36,29 @@ function linked(text) {
   return safe.replace(/https:\/\/[^\s<]+/g, (url) => `<a href="${url}" style="color:#3f3a34;text-decoration:underline;">${url}</a>`);
 }
 
+function discoveryHtml(lookalikes, coverage) {
+  const matches = Array.isArray(lookalikes) ? lookalikes : [];
+  const rows = matches.map((match) => {
+    const pct = typeof match.similarity === 'number' ? `${Math.round(match.similarity * 100)}%` : 'n/a';
+    return `<div style="margin:18px 0 0;">
+      <p style="margin:0;font-size:18px;">${escapeHtml(match.platform || '')} · @${escapeHtml(match.handle || '')}</p>
+      <p style="margin:6px 0 0;font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#6f675e;">Similarity ${pct} · data confidence ${escapeHtml(match.confidence || 'low')} · possible, unverified</p>
+      <p style="margin:6px 0 0;font-family:Helvetica,Arial,sans-serif;font-size:12px;word-break:break-all;">${escapeHtml(match.url || '')}</p>
+    </div>`;
+  }).join('');
+  const platforms = (coverage?.uncheckedPlatforms || ['Instagram', 'Facebook', 'X', 'LinkedIn', 'Threads', 'Snapchat']).join(', ');
+  const instruction = coverage?.instruction || 'Paste a full https profile link for any account on those platforms.';
+  return `<div style="margin:32px 0 0;padding-top:22px;border-top:1px solid #e4ddd2;">
+    <p style="margin:0;font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#6f675e;">Possible look-alike accounts found</p>
+    <p style="margin:8px 0 0;">Each match is possible and unverified. This is not a determination and it does not remove an account.</p>
+    ${rows || '<p style="margin:12px 0 0;">No possible look-alike was confirmed on the sites this server could read. That is not proof that none exist.</p>'}
+    <p style="margin:22px 0 0;font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#6f675e;">Platforms not checked from the server</p>
+    <p style="margin:8px 0 0;">${escapeHtml(platforms)}</p>
+    <p style="margin:8px 0 0;">${escapeHtml(instruction)}</p>
+    ${coverage?.partial ? '<p style="margin:8px 0 0;">The look-alike search stopped early so the time limit would not be exceeded. Coverage is partial.</p>' : ''}
+  </div>`;
+}
+
 function layout(title, bodyHtml) {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -82,7 +105,7 @@ export function renderConfirmationEmail({ statusUrl }) {
   return { subject: 'Payment verified', html, text };
 }
 
-export function renderResultsEmail({ summary, items, statusUrl, offers = defaultOffers }) {
+export function renderResultsEmail({ summary, items, statusUrl, offers = defaultOffers, lookalikes = [], coverage = null }) {
   const blocks = (Array.isArray(items) ? items : []).map((item) => {
     const platform = platformLabel(knownPlatform(item.platform));
     const handle = item.handle ? `@${escapeHtml(item.handle)}` : 'No handle parsed';
@@ -117,6 +140,7 @@ export function renderResultsEmail({ summary, items, statusUrl, offers = default
      <p style="margin:16px 0 0;">A PDF of the same research is attached. Data confidence is about how much of a public page could be read. It is not a determination, and nothing here removes an account.</p>
      ${blocks}
      ${link}
+     ${discoveryHtml(lookalikes, coverage)}
      ${offerBlocks ? `<div style="margin:36px 0 0;padding-top:22px;border-top:1px solid #e4ddd2;">
        <p style="margin:0;font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#6f675e;">Other options</p>
        ${offerBlocks}
@@ -141,6 +165,16 @@ export function renderResultsEmail({ summary, items, statusUrl, offers = default
     textLines.push('');
   }
   if (statusUrl) textLines.push(`Private page: ${statusUrl}`, '');
+  textLines.push('Possible look-alike accounts found', 'Each match is possible, unverified. This is not a determination and it does not remove an account.');
+  if (!Array.isArray(lookalikes) || lookalikes.length === 0) {
+    textLines.push('No possible look-alike was confirmed on the sites this server could read. That is not proof that none exist.');
+  }
+  for (const match of lookalikes || []) {
+    const pct = typeof match.similarity === 'number' ? `${Math.round(match.similarity * 100)}%` : 'n/a';
+    textLines.push(`${match.platform} @${match.handle}`, match.url || '', `Similarity ${pct}`, `Data confidence ${match.confidence || 'low'}`, 'possible, unverified', '');
+  }
+  textLines.push('Platforms not checked from the server', (coverage?.uncheckedPlatforms || ['Instagram', 'Facebook', 'X', 'LinkedIn', 'Threads', 'Snapchat']).join(', '), coverage?.instruction || 'Paste a full https profile link for any account on those platforms.');
+  if (coverage?.partial) textLines.push('The look-alike search stopped early so the time limit would not be exceeded. Coverage is partial.');
   const offerList = Array.isArray(offers) ? offers : [];
   if (offerList.length > 0) {
     textLines.push('Other options');
