@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom';
 import { MarketingFooter } from './MarketingFooter';
 import { MarketingNav } from './MarketingNav';
 import { observeRises } from './rise';
-import { SpaceSky } from './SpaceSky';
 
 export function MarketingShell() {
   useEffect(() => {
@@ -24,7 +23,6 @@ export function MarketingShell() {
 
   return (
     <div className="marketing-frame min-h-screen bg-ink text-ice">
-      <SpaceSky />
       <div className="grain" aria-hidden="true" />
       <MarketingNav />
       <div id="content">

@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { brandImages } from '../components/marketing/brandImages';
 import { ImageSlot } from '../components/marketing/ImageSlot';
 import { SponsorSlot } from '../components/marketing/SponsorSlot';
+import { ThreatRadar } from '../components/marketing/ThreatRadar';
+import { VaultHero } from '../components/marketing/VaultHero';
 
 const fbi = 'https://www.fbi.gov/news/press-releases/cryptocurrency-and-ai-scams-bilk-americans-of-billions';
 const ftc = 'https://www.ftc.gov/news-events/news/press-releases/2026/10/ftc-issues-annual-report-congress-agencys-actions-protect-older-adults';
@@ -41,7 +43,7 @@ export const LandingPage = () => {
               Open the tools
             </Link>
           </div>
-          <ImageSlot className="hero-plate" image={brandImages.hero} priority />
+          <VaultHero />
           <ul className="stat-row">
             {stats.map((stat) => (
               <li key={stat.value}>
@@ -55,6 +57,8 @@ export const LandingPage = () => {
           </ul>
         </div>
       </section>
+
+      <ThreatRadar />
 
       <section className="page-section">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">

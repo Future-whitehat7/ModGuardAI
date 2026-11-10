@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Logo } from '../brand/Logo';
 import { PLAYBOOK_URL, SCAMCHECK_URL } from '../../config/platform';
 
 const links = [
@@ -17,9 +18,8 @@ export function MarketingFooter() {
     <footer className="site-footer">
       <div className="site-footer-grid">
         <div>
-          <Link to="/" className="hud-logo">
-            <img className="brand-mark" src="/brand/modguard-mark.png" alt="" width="42" height="42" />
-            ModGuard
+          <Link to="/" className="logo-link" aria-label="ModGuard AI home">
+            <Logo surface="light" />
           </Link>
           <p className="mt-5 max-w-md text-base leading-relaxed text-frost">
             ModGuard AI is an AI safety studio. ScamCheck is the first live tool: a free AI scam checker.

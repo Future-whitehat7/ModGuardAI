@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { Logo } from '../brand/Logo';
 import { ToolTabs } from './ToolTabs';
 import { headerLinks, menuLinks, type SiteLink } from './site';
 
@@ -67,9 +68,8 @@ export function MarketingNav() {
         Skip to content
       </a>
       <div className="hud-row mx-auto flex w-full max-w-6xl items-center gap-x-2 px-4 sm:gap-x-3 sm:px-6">
-        <Link to="/" className="hud-logo" aria-label="ModGuard AI home">
-          <img className="brand-mark" src="/brand/modguard-mark.png" alt="" width="42" height="42" />
-          ModGuard
+        <Link to="/" className="logo-link" aria-label="ModGuard AI home">
+          <Logo surface="light" />
         </Link>
         <nav className="hud-links" aria-label="Primary">
           {headerLinks.map((link) => (
