@@ -176,7 +176,7 @@ export function IntakeForm() {
           placeholder="you@example.com"
         />
         <p className="hint" id="email-hint">
-          We send the evidence and report steps here.
+          After payment, we email the automated research and the platform report steps to this address. The email includes a private link that reopens the status page.
         </p>
         <fieldset className="mt-4">
           <legend className="text-sm text-frost">Who is filling this in?</legend>
@@ -329,7 +329,7 @@ export function IntakeForm() {
         {sending ? 'Sending…' : 'Start my check'}
       </button>
       <p className="hint form-foot">
-        Submitting this form does not charge you. The next page has Pay now for the $199 one-time check. That payment is not the Sponsors Growth tier at $199/month. The 48-hour clock starts once this intake is complete and payment is received.
+        Submitting this form does not charge you. The next page has Pay now for the $199 one-time check. That payment is not the Sponsors Growth tier at $199/month. After payment is verified, automated research reads the public pages you submitted and emails the notes. We do not remove accounts.
       </p>
     </form>
   );

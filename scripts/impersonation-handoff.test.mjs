@@ -2,8 +2,9 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { IMPERSONATION_CHECKOUT_URL } from '../src/config/platform.ts';
+import { readAccessToken } from '../src/config/accessToken.ts';
 import {
-  deliveryGaps,
+  deliveryLimits,
   intakeDecision,
   intakeThanksPath,
   markFormStarted,
@@ -76,14 +77,19 @@ test('a complete intake records the tier on the thanks path and never the Stripe
   }
 });
 
-test('the thanks page reads the server order and does not treat the query as payment', () => {
+test('the thanks page reads the server order and the email token, and does not treat the query tier as payment', () => {
   const thanks = readFileSync(new URL('../src/pages/ImpersonationThanks.tsx', import.meta.url), 'utf8');
   assert.match(thanks, /\/api\/order-status/);
+  assert.match(thanks, /readAccessToken/);
+  assert.match(thanks, /params\.get\('access'\)/);
   assert.equal(thanks.includes('readOrderView'), false);
   assert.equal(thanks.includes('Intake received.'), false);
   assert.equal(thanks.includes(STRIPE_199), false);
   const form = readFileSync(new URL('../src/components/marketing/IntakeForm.tsx', import.meta.url), 'utf8');
   assert.match(form, /\/api\/intake/);
+  assert.match(form, /private link that reopens the status page/);
+  assert.equal(form.includes('We send the evidence and report steps here.'), false);
+  assert.equal(form.includes('48-hour clock'), false);
   assert.equal(form.includes(STRIPE_199), false);
 });
 
@@ -126,8 +132,15 @@ test('a form marker selects the tier and still does not verify payment or a repo
   }
 });
 
-test('delivery still needs systems this repo does not have', () => {
-  assert.equal(deliveryGaps.some((gap) => gap.includes('webhook')), true);
-  assert.equal(deliveryGaps.some((gap) => gap.includes('order record')), true);
-  assert.equal(deliveryGaps.some((gap) => gap.includes('mailer')), true);
+test('the email link token is preferred over a token already in the tab', () => {
+  assert.equal(readAccessToken('from-email', 'from-tab'), 'from-email');
+  assert.equal(readAccessToken('  ', 'from-tab'), 'from-tab');
+  assert.equal(readAccessToken(null, null), '');
+});
+
+test('delivery limits stay honest about automation and removal', () => {
+  assert.equal(deliveryLimits.some((limit) => limit.includes('does not decide')), true);
+  assert.equal(deliveryLimits.some((limit) => limit.includes('DELIVERY_SEND_ENABLED')), true);
+  assert.equal(deliveryLimits.some((limit) => limit.includes('comma-separated')), true);
+  assert.equal(deliveryLimits.some((limit) => limit.includes('do not guarantee removal')), true);
 });

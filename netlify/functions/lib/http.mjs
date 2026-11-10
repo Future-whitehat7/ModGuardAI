@@ -1,5 +1,21 @@
-import { readConfig, createIntake, readStatus, handleWebhookRequest, operatorCommand } from './order-machine.mjs';
 import { openBlobStore } from './blob-store.mjs';
+import {
+  completeWebhook,
+  createIntake,
+  operatorCommand,
+  readConfig,
+  readStatus,
+  warnIfAppEnvUnset,
+} from './order-machine.mjs';
+import { kickResearch } from './research-runner.mjs';
+import { createResendMailer, deliveryConfigured } from './resend.mjs';
+
+warnIfAppEnvUnset(process.env);
+
+function mailerFor(config) {
+  if (!deliveryConfigured(config)) return null;
+  return createResendMailer({ apiKey: config.resendApiKey, from: config.resendFrom });
+}
 
 function json(result) {
   return new Response(JSON.stringify(result.body), {
@@ -53,12 +69,13 @@ export async function statusFunction(request) {
 export async function webhookFunction(request) {
   if (request.method !== 'POST') return json({ status: 405, body: { error: 'method' } });
   const rawBody = await request.text();
-  return withStore((store, config) => handleWebhookRequest({
+  return withStore((store, config) => completeWebhook({
     store,
     config,
     rawBody,
     signature: request.headers.get('stripe-signature') || '',
     now: Date.now(),
+    kick: (target) => kickResearch(config, target),
   }));
 }
 
@@ -70,11 +87,18 @@ export async function operatorFunction(request) {
   } catch {
     return json({ status: 400, body: { error: 'bad_payload' } });
   }
-  return withStore((store, config) => operatorCommand({
-    store,
-    config,
-    authorization: request.headers.get('authorization') || '',
-    body,
-    now: Date.now(),
-  }));
+  return withStore(async (store, config) => {
+    const result = await operatorCommand({
+      store,
+      config,
+      authorization: request.headers.get('authorization') || '',
+      body,
+      now: Date.now(),
+      mailer: mailerFor(config),
+    });
+    if (!result.kick) return result;
+    const kicked = await kickResearch(config, result.kick);
+    if (!kicked.ok) return { status: 503, body: { error: kicked.error || 'research_not_started', queued: false } };
+    return result;
+  });
 }

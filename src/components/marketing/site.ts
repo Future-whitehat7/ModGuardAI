@@ -35,14 +35,21 @@ export function metaForPath(pathname: string): RouteMeta {
     return {
       title: 'Impersonation Check | ModGuard AI',
       description:
-        'Send suspicious accounts or ads you have spotted. Within 48 hours of a complete intake and payment, we verify each one and send evidence plus the exact platform report steps. $199 one-time. We do not remove accounts.',
+        'Send suspicious accounts or ads you have spotted. After payment, automated research emails notes, a data-confidence level, and the platform report steps. $199 one-time. It does not decide impersonation and it does not remove accounts.',
     };
   }
   if (pathname === '/impersonation-check/thanks') {
     return {
-      title: 'Intake | Impersonation Check',
-      description: 'The step after the Impersonation Check form. Opening this page does not submit an intake and does not confirm payment.',
-      robots: 'noindex, follow',
+      title: 'Order status | Impersonation Check',
+      description: 'Private status for one Impersonation Check. Opening this page does not submit an intake and does not confirm payment.',
+      robots: 'noindex, nofollow',
+    };
+  }
+  if (pathname === '/operator') {
+    return {
+      title: 'Operator | Impersonation Check',
+      description: 'Optional override for a paid Impersonation Check.',
+      robots: 'noindex, nofollow',
     };
   }
   if (pathname === '/insights') {
