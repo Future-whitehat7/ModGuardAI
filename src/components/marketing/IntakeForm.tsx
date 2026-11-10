@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
+import { intakeDecision } from '../../config/impersonationHandoff';
+import { intakeTierRadios } from '../../config/platform';
 
 const sections = 5;
 
@@ -28,16 +30,20 @@ function sectionDone(section: HTMLElement) {
   });
 }
 
+const ACCESS_TOKEN_KEY = 'impersonation-access-token';
+
 export function IntakeForm() {
   const [done, setDone] = useState(0);
   const [error, setError] = useState('');
+  const [sending, setSending] = useState(false);
 
   const refresh = (form: HTMLFormElement) => {
     const count = [...form.querySelectorAll<HTMLElement>('[data-step]')].filter(sectionDone).length;
     setDone(count);
   };
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     const form = event.currentTarget;
     form.querySelectorAll('[aria-invalid]').forEach((field) => field.removeAttribute('aria-invalid'));
     const invalid = [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[required]')].filter(
@@ -48,22 +54,76 @@ export function IntakeForm() {
     const badUrls = [...form.querySelectorAll<HTMLInputElement>('input[type="url"]')].filter(
       (field) => field.value.trim() !== '' && !field.checkValidity(),
     );
-    if (invalid.length > 0 || !hasLink || badUrls.length > 0) {
+    const decision = intakeDecision({
+      invalidRequired: invalid.length,
+      hasAccountLink: hasLink,
+      invalidUrls: badUrls.length,
+      tierValue: form.querySelector<HTMLInputElement>('input[name="tier"]:checked')?.value ?? null,
+    });
+    if (!decision.ok) {
       event.preventDefault();
       [...invalid, ...badUrls].forEach((field) => field.setAttribute('aria-invalid', 'true'));
       const firstAccount = accounts?.querySelector<HTMLInputElement>('input');
       if (!hasLink && firstAccount) firstAccount.setAttribute('aria-invalid', 'true');
-      setError(
-        badUrls.length > 0
-          ? 'Use a full https link for each account you add.'
-          : !hasLink && invalid.length === 0
-            ? 'Add at least one official account link in section 2.'
-            : `Please complete the highlighted fields${!hasLink ? ' and add at least one official account link' : ''}.`,
-      );
+      setError(decision.message);
       (invalid[0] ?? badUrls[0] ?? firstAccount)?.focus();
       return;
     }
+    setSending(true);
     setError('');
+    const data = new FormData(form);
+    const value = (name: string) => {
+      const field = data.get(name);
+      return typeof field === 'string' ? field : '';
+    };
+    try {
+      const response = await fetch('/api/intake', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          name: value('name'),
+          email: value('email'),
+          role: value('role'),
+          tier: value('tier'),
+          accounts: {
+            tiktok: value('tiktok'),
+            instagram: value('instagram'),
+            youtube: value('youtube'),
+            x: value('x'),
+            facebook: value('facebook'),
+            website: value('website'),
+            other: value('other'),
+          },
+          knownFakes: value('known_fakes'),
+          nameVariations: value('name_variations'),
+          dmsForMoney: value('dms_for_money'),
+          realOffers: value('real_offers'),
+          fanReports: value('fan_reports'),
+          priority: value('priority_platforms'),
+          sensitive: value('sensitive'),
+          consents: {
+            accounts: value('consent_accounts') === 'yes',
+            deliverable: value('consent_deliverable') === 'yes',
+            limits: value('consent_limits') === 'yes',
+          },
+          botField: value('bot-field'),
+        }),
+      });
+      const payload: unknown = await response.json();
+      const token = payload && typeof payload === 'object' && 'accessToken' in payload && typeof payload.accessToken === 'string'
+        ? payload.accessToken
+        : '';
+      if (!response.ok || !token) {
+        setError('The intake was not stored. Nothing was charged.');
+        setSending(false);
+        return;
+      }
+      sessionStorage.setItem(ACCESS_TOKEN_KEY, token);
+      window.location.assign('/impersonation-check/thanks');
+    } catch {
+      setError('The intake was not stored. Nothing was charged.');
+      setSending(false);
+    }
   };
 
   return (
@@ -116,7 +176,7 @@ export function IntakeForm() {
           placeholder="you@example.com"
         />
         <p className="hint" id="email-hint">
-          We send your slot date and report here.
+          We send the evidence and report steps here.
         </p>
         <fieldset className="mt-4">
           <legend className="text-sm text-frost">Who is filling this in?</legend>
@@ -131,14 +191,18 @@ export function IntakeForm() {
         </fieldset>
         <fieldset className="mt-4">
           <legend className="text-sm text-frost">Which check?</legend>
-          <label className="choice">
-            <input type="radio" name="tier" value="199" required defaultChecked />
-            <span>$199. Creators with 100K to 1 million followers</span>
-          </label>
-          <label className="choice">
-            <input type="radio" name="tier" value="499" />
-            <span>$499. Over 1 million followers, or public figures booked through a manager</span>
-          </label>
+          {intakeTierRadios.map((option) => (
+            <label className="choice" key={option.value}>
+              <input
+                type="radio"
+                name="tier"
+                value={option.value}
+                required={option.value === '199'}
+                defaultChecked={option.value === '199'}
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
         </fieldset>
       </fieldset>
 
@@ -180,7 +244,22 @@ export function IntakeForm() {
       </fieldset>
 
       <fieldset className="intake-step" data-step="3">
-        <legend>3. What to look for</legend>
+        <legend>3. What you’ve spotted</legend>
+        <label className="mt-4 block text-sm text-frost" htmlFor="known-fakes">
+          Suspicious accounts or ads
+        </label>
+        <textarea
+          id="known-fakes"
+          className="field mt-2 min-h-24 py-3"
+          name="known_fakes"
+          rows={3}
+          required
+          placeholder="Paste each link or handle, one per line"
+          aria-describedby="spotted-hint"
+        />
+        <p className="hint" id="spotted-hint">
+          We verify these. We do not search for accounts you leave off this list.
+        </p>
         <label className="mt-4 block text-sm text-frost" htmlFor="name-variations">
           Name variations, nicknames, common misspellings <span className="opt">Optional</span>
         </label>
@@ -201,12 +280,8 @@ export function IntakeForm() {
         </label>
         <textarea id="real-offers" className="field mt-2 min-h-24 py-3" name="real_offers" rows={3} aria-describedby="offers-hint" />
         <p className="hint" id="offers-hint">
-          Products, courses, or offers, so a fake one stands out.
+          Products, courses, or offers you actually run. Used only to compare with the accounts or ads you sent.
         </p>
-        <label className="mt-4 block text-sm text-frost" htmlFor="known-fakes">
-          Fakes you already know about <span className="opt">Optional</span>
-        </label>
-        <textarea id="known-fakes" className="field mt-2 min-h-24 py-3" name="known_fakes" rows={3} placeholder="Paste links, one per line" />
         <label className="mt-4 block text-sm text-frost" htmlFor="screenshots">
           Screenshots of known fakes <span className="opt">Optional</span>
         </label>
@@ -220,9 +295,9 @@ export function IntakeForm() {
       <fieldset className="intake-step" data-step="4">
         <legend>4. Priorities <span className="opt">Optional</span></legend>
         <label className="mt-4 block text-sm text-frost" htmlFor="priority-platforms">
-          Platforms that matter most
+          Which item to verify first
         </label>
-        <input id="priority-platforms" className="field mt-2" type="text" name="priority_platforms" placeholder="Instagram first, then TikTok" />
+        <input id="priority-platforms" className="field mt-2" type="text" name="priority_platforms" placeholder="The account or ad you want checked first" />
         <label className="mt-4 block text-sm text-frost" htmlFor="sensitive">
           Anything we should handle discreetly
         </label>
@@ -237,11 +312,11 @@ export function IntakeForm() {
         </label>
         <label className="choice">
           <input type="checkbox" name="consent_deliverable" value="yes" required />
-          <span>I understand the deliverable is a findings report and a ready-to-file takedown list, not guaranteed removals. Each platform decides on removals.</span>
+          <span>I understand the deliverable is evidence and the exact platform report steps, not guaranteed removals. Each platform decides.</span>
         </label>
         <label className="choice">
           <input type="checkbox" name="consent_limits" value="yes" required />
-          <span>I understand a search can miss copies, and ModGuard provides risk-reduction guidance, not a guarantee.</span>
+          <span>I understand ModGuard verifies the accounts and ads I send, does not search for others, and does not guarantee removal.</span>
         </label>
       </fieldset>
 
@@ -250,11 +325,11 @@ export function IntakeForm() {
           {error}
         </p>
       )}
-      <button className="btn-accent mt-4 w-full" type="submit">
-        Start my $199 check
+      <button className="btn-accent mt-4 w-full" type="submit" disabled={sending}>
+        {sending ? 'Sending…' : 'Start my check'}
       </button>
       <p className="hint form-foot">
-        Submitting this form does not charge you. The 48-hour clock starts once this intake is complete and payment is received.
+        Submitting this form does not charge you. The next page has Pay now for the $199 one-time check. That payment is not the Sponsors Growth tier at $199/month. The 48-hour clock starts once this intake is complete and payment is received.
       </p>
     </form>
   );

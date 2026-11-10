@@ -21,7 +21,7 @@ export function metaForPath(pathname: string): RouteMeta {
     return {
       title: 'About ModGuard AI | ScamCheck',
       description:
-        'ModGuard AI is an AI safety studio. ScamCheck, a free AI scam checker, is the first live tool. Impersonation Check is the paid manual sweep.',
+        'ModGuard AI is an AI safety studio. ScamCheck, a free AI scam checker, is the first live tool. Impersonation Check verifies accounts and ads you send. $199 one-time.',
     };
   }
   if (pathname === '/scamcheck') {
@@ -35,13 +35,13 @@ export function metaForPath(pathname: string): RouteMeta {
     return {
       title: 'Impersonation Check | ModGuard AI',
       description:
-        'A manual sweep for fake profiles, cloned pages, and scam ads. Findings and a ready-to-file takedown list. $199. The 48-hour clock starts after intake and payment.',
+        'Send suspicious accounts or ads you have spotted. Within 48 hours of a complete intake and payment, we verify each one and send evidence plus the exact platform report steps. $199 one-time. We do not remove accounts.',
     };
   }
   if (pathname === '/impersonation-check/thanks') {
     return {
       title: 'Intake | Impersonation Check',
-      description: 'Intake received. The 48-hour clock starts once intake is complete and payment is received.',
+      description: 'The step after the Impersonation Check form. Opening this page does not submit an intake and does not confirm payment.',
       robots: 'noindex, follow',
     };
   }
@@ -62,7 +62,7 @@ export function metaForPath(pathname: string): RouteMeta {
     return {
       title: 'Sponsors | ModGuard AI',
       description:
-        'Starter, Growth, and Elite. Growth is the live $199 manual impersonation sweep. Starter and Elite ask first.',
+        'Starter, Growth, and Elite. Growth is $199/month. The Impersonation Check is a separate $199 one-time payment.',
     };
   }
   return { title: DEFAULT_TITLE, description: DEFAULT_DESCRIPTION };

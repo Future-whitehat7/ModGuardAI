@@ -47,6 +47,11 @@ export function ImpersonationChecker() {
     const realHandle = String(data.get('realHandle') ?? '').trim();
     const platform = String(data.get('platform') ?? '').trim();
     const notes = String(data.get('notes') ?? '').trim();
+    if (suspect.length > 500 || realHandle.length > 500 || notes.length > 2000) {
+      setStatus('error');
+      setError('That is too long to check here. Shorten it and try again.');
+      return;
+    }
     setStatus('sending');
     setError('');
     setResult(null);
@@ -136,9 +141,9 @@ export function ImpersonationChecker() {
               </ol>
             </>
           )}
-          <p className="mt-6 text-frost">A free read of the handle is not a sweep of the account.</p>
-          <Link className="btn-accent mt-4" to="/impersonation-check#intake">
-            Start intake for the manual sweep
+          <p className="mt-6 text-frost">A free read of one handle is not the paid check. The paid check verifies the accounts and ads you send.</p>
+          <Link className="btn-ghost mt-4" to="/impersonation-check#intake">
+            Start my check
           </Link>
         </div>
       )}

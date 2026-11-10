@@ -34,7 +34,7 @@ export function SponsorInquiry({ initialTier = 'starter' }: { initialTier?: Tier
   if (status === 'done') {
     return (
       <p className="glass p-6 text-ice" role="status">
-        Inquiry received. We have your name, email, and the tier you asked about. We reply by email. Nothing is reserved until that reply.
+        The inquiry was sent. We reply by email if it arrives. Nothing is reserved, and this page cannot show a saved inquiry id.
       </p>
     );
   }
@@ -59,7 +59,7 @@ export function SponsorInquiry({ initialTier = 'starter' }: { initialTier?: Tier
       <p className="eyebrow">Inquiry</p>
       <h2 className="display mt-3 text-3xl text-ice">Ask before you pay</h2>
       <p className="measure mt-3 text-frost">
-        Starter and Elite do not have a live card payment. Growth does. This form is the pending-stripe path.
+        Starter, Growth, and Elite do not take a card payment on this page. Growth is $199/month. The $199 one-time Impersonation Check is a separate payment, after intake.
       </p>
       <label className="mt-4 block text-sm text-frost" htmlFor="sponsor-name">
         Name

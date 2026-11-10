@@ -1,6 +1,40 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { IMPERSONATION_CHECKOUT_URL, protectionTiers, type TierId } from '../../config/platform';
+import { protectionTiers, type ProtectionTier, type TierId } from '../../config/platform';
+
+function TierCheckout({
+  tier,
+  price,
+  onAsk,
+}: {
+  tier: ProtectionTier;
+  price: string | undefined;
+  onAsk: (tier: TierId) => void;
+}) {
+  switch (tier.checkout.kind) {
+    case 'stripe':
+      return (
+        <>
+          <a className="btn-accent mt-6 w-full" href={tier.checkout.href}>
+            Pay {price} with Stripe
+          </a>
+          <p className="mt-3 text-sm text-frost">Payments by Stripe.</p>
+        </>
+      );
+    case 'pending-stripe':
+      return (
+        <>
+          <button className="btn-accent mt-6 w-full" type="button" onClick={() => onAsk(tier.id)}>
+            Ask before you pay
+          </button>
+        </>
+      );
+    default: {
+      const unreachable: never = tier.checkout;
+      return unreachable;
+    }
+  }
+}
 
 export function TierColumns({ onAsk }: { onAsk: (tier: TierId) => void }) {
   const [starterPrice, setStarterPrice] = useState<'week' | 'month'>('month');
@@ -8,7 +42,6 @@ export function TierColumns({ onAsk }: { onAsk: (tier: TierId) => void }) {
   return (
     <div className="tier-grid">
       {protectionTiers.map((tier) => {
-        const featured = tier.id === 'growth';
         const price =
           tier.id === 'starter'
             ? starterPrice === 'week'
@@ -16,8 +49,8 @@ export function TierColumns({ onAsk }: { onAsk: (tier: TierId) => void }) {
               : '$99/month'
             : tier.prices[0]?.label;
         return (
-          <article key={tier.id} id={tier.id} className={`glass tier-card ${featured ? 'tier-featured' : ''}`}>
-            <p className="eyebrow">{featured ? 'Live checkout' : tier.name}</p>
+          <article key={tier.id} id={tier.id} className="glass tier-card">
+            <p className="eyebrow">{tier.name}</p>
             <h2 className="display mt-3 text-4xl text-ice">{tier.name}</h2>
             <p className="mt-3 font-mono text-sm uppercase tracking-[0.12em] text-ice">{price}</p>
             {tier.id === 'starter' && (
@@ -47,25 +80,14 @@ export function TierColumns({ onAsk }: { onAsk: (tier: TierId) => void }) {
                 <li key={item}>{item}</li>
               ))}
             </ul>
-            {tier.checkout.kind === 'stripe' ? (
-              <a className="btn-accent mt-6 w-full" href={IMPERSONATION_CHECKOUT_URL}>
-                Pay $199 with Stripe
-              </a>
-            ) : (
-              <button className="btn-accent mt-6 w-full" type="button" onClick={() => onAsk(tier.id)}>
-                Ask before you pay
-              </button>
-            )}
-            {tier.checkout.kind === 'stripe' && (
-              <p className="mt-3 text-sm text-frost">Payments by Stripe.</p>
-            )}
-            {tier.checkout.kind === 'pending-stripe' && (
-              <p className="mt-3 text-sm text-frost">Checkout link: pending-stripe.</p>
-            )}
-            {featured && (
-              <Link className="mt-3 inline-flex min-h-12 items-center text-sm text-accent" to="/impersonation-check/thanks">
-                Paid already? Open intake
-              </Link>
+            <TierCheckout tier={tier} price={price} onAsk={onAsk} />
+            {tier.id === 'growth' && (
+              <p className="mt-3 text-sm text-frost">
+                The $199 one-time Impersonation Check is a different payment.{' '}
+                <Link className="text-accent" to="/impersonation-check">
+                  Verify suspicious accounts — $199 one-time
+                </Link>
+              </p>
             )}
           </article>
         );
