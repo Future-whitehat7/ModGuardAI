@@ -29,3 +29,4 @@ Set these in the Netlify UI, separately for preview and production. Do not commi
 - `DELIVERY_SEND_ENABLED` (`1` to send)
 - `PUBLIC_SITE_URL` (optional)
 - `ALLOW_TEST_NAMESPACE` (preview only)
+- `UPSELLS_ENABLED` (`1` only after a real offer with `placeholder: false` is in the catalog)

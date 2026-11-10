@@ -25,7 +25,8 @@ export async function kickResearch(config, target, fetchImpl = fetch) {
     console.error('RESEARCH_TRIGGER_TOKEN or the site URL is missing, so paid research was not started.');
     return { ok: false, error: 'research_trigger_unconfigured' };
   }
-  const url = `${config.functionBaseUrl}/.netlify/functions/research-background`;
+  // research-background sets config.path, so Netlify serves it only at that path.
+  const url = `${config.functionBaseUrl}/api/research-background`;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 8_000);
   try {

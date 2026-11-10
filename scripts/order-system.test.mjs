@@ -14,7 +14,8 @@ import {
   readConfig,
   readStatus,
 } from '../netlify/functions/lib/order-machine.mjs';
-import { runPaidResearch } from '../netlify/functions/lib/research-runner.mjs';
+import { kickResearch, runPaidResearch } from '../netlify/functions/lib/research-runner.mjs';
+import { offerCatalog, visibleOffers } from '../netlify/functions/lib/upsells.mjs';
 
 const NOW = 1_700_000_000_000;
 const SECRET = 'whsec_test_only';
@@ -417,9 +418,10 @@ test('a signed payment researches the submitted links and emails the buyer plus 
   assert.equal(status.body.emailSent, true);
   assert.equal(status.body.evidence.items.length, 2);
   assert.equal(status.body.evidence.items[0].httpStatus, 200);
-  assert.equal(status.body.offers.length, 2);
-  assert.equal(status.body.offers[0].placeholder, true);
-  assert.equal(status.body.offers.some((offer) => /\$\d/.test(offer.price)), false);
+  // Placeholder offers are never shown to a buyer.
+  assert.equal(status.body.offers.length, 0);
+  assert.equal(resultsMail.html.includes('Replace with'), false);
+  assert.equal(resultsMail.text.includes('Other options'), false);
   const again = await runPaidResearch({
     store,
     config: cfg,
@@ -575,4 +577,23 @@ test('production without APP_ENV refuses a signed live event out loud', async ()
   } finally {
     console.error = original;
   }
+});
+
+test('placeholder offers stay hidden unless replaced and enabled', async () => {
+  assert.deepEqual(visibleOffers(offerCatalog, {}), []);
+  assert.deepEqual(visibleOffers(offerCatalog, { UPSELLS_ENABLED: '1' }), []);
+  const real = [{ placeholder: false, title: 'Real', description: 'Real.', price: '$1', link: 'https://example.com/real' }];
+  assert.deepEqual(visibleOffers(real, {}), []);
+  assert.equal(visibleOffers(real, { UPSELLS_ENABLED: '1' }).length, 1);
+});
+
+test('research is triggered at the background function custom path', async () => {
+  const calls = [];
+  const result = await kickResearch(
+    { researchTriggerToken: 'tok', functionBaseUrl: 'https://site.example' },
+    { orderId: 'x', namespace: 'live' },
+    async (url) => { calls.push(url); return new Response(null, { status: 202 }); },
+  );
+  assert.equal(result.ok, true);
+  assert.deepEqual(calls, ['https://site.example/api/research-background']);
 });

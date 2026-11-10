@@ -285,7 +285,6 @@ function ReadyOrder({ status }: { status: ReadyStatus }) {
       {(status.offers ?? []).length > 0 ? (
         <section className="mt-8">
           <h2 className="display text-3xl text-ice">Other options</h2>
-          <p className="mt-3 text-sm text-frost">Placeholder entries. They are not offers until the title, sentence, price, and link are replaced.</p>
           <div className="mt-4 space-y-3">
             {(status.offers ?? []).map((offer) => (
               <article className="glass p-6" key={offer.link}>

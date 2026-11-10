@@ -227,14 +227,9 @@ export async function buildReportPdf(model) {
     transcript.push('');
   });
 
-  write('Other options', { font: fonts.serif, size: 16, color: ink, leading: 20, gap: 6 });
-  write('Placeholder entries follow. They are not offers until the owner replaces the title, the sentence, the price, and the link.', {
-    font: fonts.serif,
-    size: 11,
-    color: mute,
-    leading: 15,
-    gap: 12,
-  });
+  if (model.offers.length > 0) {
+    write('Other options', { font: fonts.serif, size: 16, color: ink, leading: 20, gap: 6 });
+  }
   for (const offer of model.offers) {
     ensure(72);
     write(offer.title || 'Untitled', { font: fonts.serif, size: 13, color: ink, leading: 17, gap: 3 });

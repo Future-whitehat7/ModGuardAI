@@ -117,11 +117,10 @@ export function renderResultsEmail({ summary, items, statusUrl, offers = default
      <p style="margin:16px 0 0;">A PDF of the same research is attached. Data confidence is about how much of a public page could be read. It is not a determination, and nothing here removes an account.</p>
      ${blocks}
      ${link}
-     <div style="margin:36px 0 0;padding-top:22px;border-top:1px solid #e4ddd2;">
+     ${offerBlocks ? `<div style="margin:36px 0 0;padding-top:22px;border-top:1px solid #e4ddd2;">
        <p style="margin:0;font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#6f675e;">Other options</p>
-       <p style="margin:8px 0 0;font-size:14px;color:#6f675e;">Placeholder entries. They are not offers until the title, sentence, price, and link are replaced.</p>
        ${offerBlocks}
-     </div>`,
+     </div>` : ''}`,
   );
   const textLines = [
     'Account research',
@@ -142,9 +141,12 @@ export function renderResultsEmail({ summary, items, statusUrl, offers = default
     textLines.push('');
   }
   if (statusUrl) textLines.push(`Private page: ${statusUrl}`, '');
-  textLines.push('Other options', 'Placeholder entries. They are not offers until replaced.');
-  for (const offer of offers || []) {
-    textLines.push(offer.title || '', offer.description || '', offer.price || '', offer.link || '', '');
+  const offerList = Array.isArray(offers) ? offers : [];
+  if (offerList.length > 0) {
+    textLines.push('Other options');
+    for (const offer of offerList) {
+      textLines.push(offer.title || '', offer.description || '', offer.price || '', offer.link || '', '');
+    }
   }
   textLines.push('Not a determination. Not a removal. The platform decides.');
   return { subject: 'Account research', html, text: textLines.join('\n') };
