@@ -16,9 +16,10 @@ export const ScamCheckTool = () => {
   const active = steps.find((item) => item.id === step) ?? steps[0];
 
   return (
-    <article className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
-      <p className="measure text-xl text-ice">A message can look ordinary and still be the scam.</p>
-      <p className="measure mt-3 text-frost">
+    <article className="page-wrap mx-auto w-full max-w-6xl px-4 sm:px-6">
+      <p className="eyebrow">ScamCheck</p>
+      <h1 className="display section-display mt-4 text-ice">A message can look ordinary and still be the scam.</h1>
+      <p className="measure mt-5 text-lg text-frost">
         One tool. Check the message, then the statement. The statement step lives in the same checker.
       </p>
       <div className="step-switch mt-6" role="group" aria-label="ScamCheck steps">

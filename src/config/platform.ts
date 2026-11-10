@@ -1,7 +1,9 @@
 /** Shared platform URLs and the three audience tiers. One file on purpose. */
 
 export const SCAMCHECK_URL = 'https://scamcheck.modguardai.org';
-export const OG_IMAGE_URL = 'https://scamcheck.modguardai.org/brand/og-modguardai.png';
+export const OG_IMAGE_URL = 'https://modguardai.org/og.png';
+export const OG_IMAGE_WIDTH = '1347';
+export const OG_IMAGE_HEIGHT = '380';
 export const SCAMCHECK_FAQ_URL = 'https://scamcheck.modguardai.org/faq';
 export const PLAYBOOK_URL = 'https://scamcheck.modguardai.org/playbook';
 export const PLAYBOOK_CHECKOUT_URL = 'https://buy.stripe.com/14AcN60EMdcW9Rj8gj4ZG05';
