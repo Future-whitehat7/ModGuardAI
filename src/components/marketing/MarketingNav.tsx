@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ToolTabs } from './ToolTabs';
-import { menuLinks, type SiteLink } from './site';
+import { headerLinks, menuLinks, type SiteLink } from './site';
 
 function isCurrent(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -66,18 +66,27 @@ export function MarketingNav() {
       <a href="#content" className="skip-link">
         Skip to content
       </a>
-      <div className="hud-row mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2 sm:px-6">
-        <Link to="/" className="hud-logo order-1" aria-label="ModGuard AI home">
-          <img className="brand-mark" src="/brand/modguard-mark.png" alt="" width="48" height="48" />
+      <div className="hud-row mx-auto flex w-full max-w-6xl items-center gap-x-2 px-4 sm:gap-x-3 sm:px-6">
+        <Link to="/" className="hud-logo" aria-label="ModGuard AI home">
+          <img className="brand-mark" src="/brand/modguard-mark.png" alt="" width="42" height="42" />
           ModGuard
         </Link>
-
-        <Link to="/scamcheck" className="hud-pill order-3">
+        <nav className="hud-links" aria-label="Primary">
+          {headerLinks.map((link) => (
+            <NavAnchor
+              key={link.href}
+              link={link}
+              pathname={pathname}
+              className="hud-inline"
+            />
+          ))}
+        </nav>
+        <Link to="/scamcheck" className="hud-pill">
           Open the tools
         </Link>
         <button
           type="button"
-          className="hud-menu-button order-2 ml-auto lg:order-4 lg:ml-0"
+          className="hud-menu-button"
           aria-expanded={open}
           aria-controls="site-menu"
           onClick={() => setOpen((value) => !value)}
@@ -89,7 +98,7 @@ export function MarketingNav() {
 
       {open && (
         <nav id="site-menu" className="hud-menu" aria-label="All pages">
-          <ul className="mx-auto flex w-full max-w-6xl flex-col px-3 py-2 sm:px-5">
+          <ul className="mx-auto flex w-full max-w-6xl flex-col px-1 py-3 sm:px-2">
             {menuLinks.map((link) => (
               <li key={link.href}>
                 <NavAnchor
