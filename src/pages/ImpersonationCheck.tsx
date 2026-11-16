@@ -2,6 +2,9 @@ import { brandImages } from '../components/marketing/brandImages';
 import { ImageSlot } from '../components/marketing/ImageSlot';
 import { ImpersonationChecker } from '../components/marketing/ImpersonationChecker';
 import { IntakeForm } from '../components/marketing/IntakeForm';
+import { lookalikePlatforms } from '../config/submittedAccounts';
+
+const searched = lookalikePlatforms.join(', ');
 
 const worries = [
   ['Fake profile', 'A lookalike handle', 'One extra letter, your photo, and your bio, messaging people as you.'],
@@ -11,7 +14,7 @@ const worries = [
 
 const steps = [
   ['1', 'You send what you spotted', 'Suspicious accounts or ads, plus the real accounts they are copying.'],
-  ['2', 'Automated research reads each link', 'After payment, each public page you sent is read and compared with the official handles you gave us. Data confidence is about how much of the page could be read.'],
+  ['2', 'Automated research reads each link', `After payment, each public page you sent is read and compared with the official handles you gave us. Similar public handles are checked on ${searched}. Data confidence is about how much of the page could be read.`],
   ['3', 'You get the report steps', 'Evidence, and the exact place on that platform to file a report. The platform decides.'],
 ];
 
@@ -23,7 +26,7 @@ export const ImpersonationCheck = () => {
         Send us what you’ve spotted.
       </h1>
       <p className="measure mt-6 text-xl text-frost">
-        Send us the suspicious accounts or ads you’ve spotted. After payment, automated research reads those public pages and emails you the notes, a data-confidence level for each one, and the exact platform report steps. It does not decide that an account is impersonation, and it does not remove anything.
+        Send us the suspicious accounts or ads you’ve spotted. After payment, automated research reads those public pages, checks similar public handles on {searched}, and tries the public Meta Ad Library once. It emails the notes, a data-confidence level for each one, and the exact platform report steps. The report names the sites that answered and the sites that did not. It does not decide that an account is impersonation, and it does not remove anything.
       </p>
       <div className="mt-8">
         <a className="btn-accent" href="#intake">
@@ -42,7 +45,7 @@ export const ImpersonationCheck = () => {
         <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-ice">
           <li>We verify each suspicious account or ad you send</li>
           <li>Evidence, plus the exact platform report steps</li>
-          <li>We do not search for other accounts, and we do not remove them</li>
+          <li>Similar public handles on {searched}, and one try of the public Meta Ad Library. The report names which answered. We do not remove accounts</li>
         </ul>
         <p className="mt-4 text-sm text-ice">
           $499. Over 1 million followers, or public figures booked through a manager.
@@ -71,7 +74,7 @@ export const ImpersonationCheck = () => {
           ))}
         </div>
         <p className="measure mt-8 text-ice">
-          Send the ones you have spotted. We verify those. We do not search the platforms for more.
+          Send the ones you have spotted. We read those public links. We also check similar public handles on {searched}. The report names the ones that answered and the ones that did not.
         </p>
       </section>
 
@@ -142,11 +145,11 @@ export const ImpersonationCheck = () => {
           </div>
           <div className="glass p-6">
             <dt className="eyebrow">You receive</dt>
-            <dd className="mt-3 text-ice">Evidence for each account or ad you sent, plus the exact platform report steps.</dd>
+            <dd className="mt-3 text-ice">Evidence for each account or ad you sent, similar public handles on {searched}, and the exact platform report steps. The report names the sites that answered.</dd>
           </div>
           <div className="glass p-6">
             <dt className="eyebrow">Not included</dt>
-            <dd className="mt-3 text-ice">A search for accounts you did not send. Guaranteed removals.</dd>
+            <dd className="mt-3 text-ice">A check of every platform. Guaranteed removals.</dd>
           </div>
         </dl>
       </section>
@@ -190,7 +193,7 @@ export const ImpersonationCheck = () => {
           <details className="py-4">
             <summary className="min-h-12 cursor-pointer text-ice">Will you search for fake accounts?</summary>
             <p className="mt-3 text-frost">
-              No. We verify the suspicious accounts and ads you send. We do not look for others.
+              We check similar public handles on {searched}, and we try the public Meta Ad Library once. The report names the ones that answered and the ones that did not. This is not every platform.
             </p>
           </details>
         </div>

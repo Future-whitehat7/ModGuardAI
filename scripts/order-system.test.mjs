@@ -422,6 +422,12 @@ test('a signed payment researches the submitted links and emails the buyer plus 
   assert.equal(status.body.offers.length, 0);
   assert.equal(resultsMail.html.includes('Replace with'), false);
   assert.equal(resultsMail.text.includes('Other options'), false);
+  assert.match(resultsMail.text, /Meta ads not checked/);
+  assert.match(resultsMail.text, /Platforms checked:/);
+  assert.match(resultsMail.pdfText, /Meta ads\s+not checked/);
+  assert.equal(/full sweep/i.test(resultsMail.text + resultsMail.pdfText), false);
+  assert.equal(resultsMail.text.includes('Snapchat'), false);
+  assert.equal(resultsMail.pdfText.includes('Snapchat'), false);
   const again = await runPaidResearch({
     store,
     config: cfg,
@@ -577,6 +583,88 @@ test('production without APP_ENV refuses a signed live event out loud', async ()
   } finally {
     console.error = original;
   }
+});
+
+test('a signed order still finishes when TikTok and Meta ads time out', async () => {
+  const store = memoryStore();
+  const sent = [];
+  const mailer = {
+    async send(message) {
+      sent.push(message);
+      return { ok: true, id: `email_${sent.length}` };
+    },
+  };
+  const cfg = config({
+    RESEND_API_KEY: 're_test_only',
+    RESEND_FROM: 'research@example.com',
+    DELIVERY_SEND_ENABLED: '1',
+    OPERATOR_EMAIL: 'owner@example.com',
+    PUBLIC_SITE_URL: 'https://example.com',
+    RESEARCH_TRIGGER_TOKEN: 'trigger-test',
+  });
+  const body = intakeBody();
+  body.accounts = { instagram: 'https://instagram.com/examplecreator' };
+  body.knownFakes = 'https://instagram.com/examplecreat0r\nhttps://www.tiktok.com/@notrealhandle';
+  const created = await createIntake({ store, config: cfg, body, now: NOW });
+  const raw = JSON.stringify(event('evt_partial_platforms', 'checkout.session.completed', created.body.orderId));
+  const result = await completeWebhook({
+    store,
+    config: cfg,
+    rawBody: raw,
+    signature: sign(raw),
+    now: NOW,
+    kick: async (target) => {
+      const research = await runPaidResearch({
+        store,
+        config: cfg,
+        orderId: target.orderId,
+        namespace: target.namespace,
+        now: NOW,
+        mailer,
+        resolveImpl: async () => ['93.184.216.34'],
+        fetchImpl: async (url) => {
+          const href = String(url);
+          if (href.includes('tiktok.com') || href.includes('facebook.com/ads/library')) {
+            const error = new Error('timed out');
+            error.name = 'AbortError';
+            throw error;
+          }
+          if (/github\.com\/blue$/.test(href)) {
+            return new Response('<title>blue</title>', { status: 200, headers: { 'content-type': 'text/html' } });
+          }
+          if (href.includes('github.com')) {
+            return new Response('missing', { status: 404, headers: { 'content-type': 'text/html' } });
+          }
+          if (href.includes('instagram.com/examplecreat0r')) {
+            return new Response(profileHtml('Example Creat0r'), { status: 200, headers: { 'content-type': 'text/html' } });
+          }
+          const error = new Error('timed out');
+          error.name = 'AbortError';
+          throw error;
+        },
+      });
+      assert.equal(research.status, 200);
+      assert.equal(research.body.emailSent, true);
+      return { ok: true };
+    },
+  });
+  assert.equal(result.body.result, 'paid');
+  const resultsMail = sent.find((message) => message.kind === 'results');
+  const coverage = resultsMail.text.split('Coverage')[1] || '';
+  assert.match(coverage, /Platforms checked:.*GitHub/);
+  assert.match(coverage, /Platforms checked:.*Instagram/);
+  assert.match(coverage, /TikTok not checked/);
+  assert.match(coverage, /Meta ads not checked/);
+  assert.match(coverage, /YouTube not checked/);
+  assert.equal(coverage.includes('GitHub not checked'), false);
+  assert.equal(coverage.includes('Snapchat'), false);
+  assert.equal(coverage.includes('LinkedIn'), false);
+  assert.equal(/full sweep/i.test(resultsMail.text), false);
+  assert.equal(resultsMail.text.toLowerCase().includes('modguard'), false);
+  const status = await readStatus({ store, accessToken: created.body.accessToken });
+  assert.equal(status.body.report, 'delivery_ready');
+  assert.equal(status.body.evidence.coverage.notChecked.includes('Meta ads not checked'), true);
+  assert.equal(status.body.evidence.coverage.notChecked.includes('TikTok not checked'), true);
 });
 
 test('placeholder offers stay hidden unless replaced and enabled', async () => {

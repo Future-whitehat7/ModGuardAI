@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { intakeDecision } from '../../config/impersonationHandoff';
 import { intakeTierRadios } from '../../config/platform';
+import { limitsConsent, suspiciousAccountField } from '../../config/submittedAccounts';
 
 const sections = 5;
 
@@ -246,7 +247,7 @@ export function IntakeForm() {
       <fieldset className="intake-step" data-step="3">
         <legend>3. What you’ve spotted</legend>
         <label className="mt-4 block text-sm text-frost" htmlFor="known-fakes">
-          Suspicious accounts or ads
+          {suspiciousAccountField.label}
         </label>
         <textarea
           id="known-fakes"
@@ -254,11 +255,11 @@ export function IntakeForm() {
           name="known_fakes"
           rows={3}
           required
-          placeholder="Paste each link or handle, one per line"
+          placeholder={suspiciousAccountField.placeholder}
           aria-describedby="spotted-hint"
         />
         <p className="hint" id="spotted-hint">
-          We verify these. We do not search for accounts you leave off this list.
+          {suspiciousAccountField.hint}
         </p>
         <label className="mt-4 block text-sm text-frost" htmlFor="name-variations">
           Name variations, nicknames, common misspellings <span className="opt">Optional</span>
@@ -316,7 +317,7 @@ export function IntakeForm() {
         </label>
         <label className="choice">
           <input type="checkbox" name="consent_limits" value="yes" required />
-          <span>I understand ModGuard verifies the accounts and ads I send, does not search for others, and does not guarantee removal.</span>
+          <span>{limitsConsent}</span>
         </label>
       </fieldset>
 
@@ -329,7 +330,7 @@ export function IntakeForm() {
         {sending ? 'Sending…' : 'Start my check'}
       </button>
       <p className="hint form-foot">
-        Submitting this form does not charge you. The next page has Pay now for the $199 one-time check. That payment is not the Sponsors Growth tier at $199/month. After payment is verified, automated research reads the public pages you submitted and emails the notes. We do not remove accounts.
+        Submitting this form does not charge you. The next page has Pay now for the $199 one-time check. That payment is not the Sponsors Growth tier at $199/month. After payment is verified, automated research reads the public pages you submitted, checks similar public names on the sites named on this page, and emails the notes. The report names the sites that answered. We do not remove accounts.
       </p>
     </form>
   );

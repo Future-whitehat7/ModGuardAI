@@ -95,7 +95,7 @@ export const LandingPage = () => {
       <section className="page-section">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
           <p className="eyebrow">Public counts</p>
-          <h2 className="display section-display mt-4 text-ice">Each number links to the release that states it.</h2>
+          <h2 className="display section-display mt-4 text-ice">The scale of the problem.</h2>
           <ul className="stat-row">
             {stats.map((stat) => (
               <li key={stat.value}>

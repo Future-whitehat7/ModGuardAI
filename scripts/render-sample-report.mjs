@@ -1,4 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { COVERAGE_INSTRUCTION } from '../netlify/functions/lib/coverage.mjs';
 import { buildReportModel, buildReportPdf } from '../netlify/functions/lib/report-pdf.mjs';
 import { researchIntake } from '../netlify/functions/lib/research.mjs';
 
@@ -14,6 +15,11 @@ const research = await researchIntake({
 }, {
   fetchImpl: async (url) => {
     const href = String(url);
+    if (href.includes('tiktok.com')) {
+      const error = new Error('timed out');
+      error.name = 'AbortError';
+      throw error;
+    }
     if (href.includes('examplecreat0r')) {
       return new Response(html, { status: 200, headers: { 'content-type': 'text/html' } });
     }
@@ -24,14 +30,31 @@ const research = await researchIntake({
 
 const pdf = await buildReportPdf(buildReportModel({
   orderId: `ord_${'ab'.repeat(16)}`,
-  summary: research.summary,
+  summary: `${research.summary} One possible look-alike was found. It is unverified.`,
   items: research.items,
   generatedAt: '2026-11-10T14:00:00.000Z',
   statusUrl: 'https://example.com/impersonation-check/thanks?access=sample-token',
+  lookalikes: [{
+    handle: 'examplecreat0r',
+    platform: 'YouTube',
+    url: 'https://www.youtube.com/@examplecreat0r',
+    similarity: 0.93,
+    confidence: 'medium',
+    label: 'possible, unverified',
+  }],
+  coverage: {
+    checked: ['YouTube', 'Instagram'],
+    notChecked: ['TikTok not checked', 'Meta ads not checked'],
+    notes: [],
+    skipped: [{ site: 'TikTok', reason: 'self-test' }],
+    partial: false,
+    instruction: COVERAGE_INSTRUCTION,
+  },
 }));
 
 const directory = '/opt/cursor/artifacts';
 mkdirSync(directory, { recursive: true });
 const path = `${directory}/account-research-sample.pdf`;
 writeFileSync(path, pdf.bytes);
-process.stdout.write(`${path}\n`);
+writeFileSync(`${directory}/account-research-sample.txt`, pdf.text);
+process.stdout.write(`${path}\n${pdf.text}\n`);
