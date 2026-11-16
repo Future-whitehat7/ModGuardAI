@@ -10,9 +10,9 @@ export default {
       },
       colors: {
         ink: '#FAFAFA',
-        ice: '#0A0A0A',
-        frost: '#4D515A',
-        accent: '#1F5BFF',
+        ice: '#0F172A',
+        frost: '#334155',
+        accent: '#1E3A8A',
         pearl: '#F6F6F3',
       },
     },

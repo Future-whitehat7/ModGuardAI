@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
-import { toRadarRow, type RadarRow } from '../../lib/radarBadge';
+import { toRadarRow, type RadarRow, type RadarSource } from '../../lib/radarBadge';
 import { VaultBoundary } from './VaultBoundary';
+
+const PREVIEW_COUNT = 6;
 
 interface ThreatStat {
   label: string;
@@ -31,12 +33,32 @@ function readFile(value: unknown): { asOf: string; stats: ThreatStat[]; rows: Ra
   const rows = Array.isArray(record.items)
     ? record.items.flatMap((item) => {
       if (typeof item !== 'object' || item === null) return [];
-      const row = toRadarRow(item as Record<string, unknown>);
+      const row = toRadarRow(item as RadarSource);
       return row ? [row] : [];
     })
     : [];
   if (!stats.length && !rows.length) return null;
   return { asOf: typeof record.asOf === 'string' ? record.asOf : '', stats, rows };
+}
+
+function RadarRows({ rows }: { rows: RadarRow[] }) {
+  return (
+    <ul className="radar-list">
+      {rows.map((row) => (
+        <li key={row.url}>
+          <article>
+            <p className="radar-meta">
+              <span className={`radar-badge radar-badge-${row.badge.kind}`}>{row.badge.label}</span>
+              {row.date ? <time dateTime={row.date}>{row.date}</time> : null}
+              {row.source ? <span>{row.source}</span> : null}
+            </p>
+            <h3><a href={row.url}>{row.title}</a></h3>
+            {row.summary ? <p>{row.summary}</p> : null}
+          </article>
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 function ThreatRadarBody() {
@@ -58,7 +80,7 @@ function ThreatRadarBody() {
           return;
         }
       } catch {
-        // The scheduled function is absent in local preview. The cached file is the same feed.
+        // Local preview has no scheduled function. The cached file is the same feed.
       }
       try {
         const cached = await load('/threats.json');
@@ -74,12 +96,11 @@ function ThreatRadarBody() {
     };
   }, []);
 
-  if (failed) {
-    return <p className="radar-empty">The public feed is not available right now.</p>;
-  }
-  if (!data) {
-    return <p className="radar-empty">Loading the public feed.</p>;
-  }
+  if (failed) return <p className="radar-empty">The public feed is not available right now.</p>;
+  if (!data) return <p className="radar-empty">Loading the public feed.</p>;
+
+  const preview = data.rows.slice(0, PREVIEW_COUNT);
+  const rest = data.rows.slice(PREVIEW_COUNT);
 
   return (
     <>
@@ -97,21 +118,13 @@ function ThreatRadarBody() {
           ))}
         </ul>
       ) : null}
-      <ul className="radar-list">
-        {data.rows.map((row) => (
-          <li key={row.url}>
-            <article>
-              <p className="radar-meta">
-                <span className={`radar-badge radar-badge-${row.badge.kind}`}>{row.badge.label}</span>
-                {row.date ? <time dateTime={row.date}>{row.date}</time> : null}
-                {row.source ? <span>{row.source}</span> : null}
-              </p>
-              <h3><a href={row.url}>{row.title}</a></h3>
-              {row.summary ? <p>{row.summary}</p> : null}
-            </article>
-          </li>
-        ))}
-      </ul>
+      <RadarRows rows={preview} />
+      {rest.length > 0 ? (
+        <details className="radar-more">
+          <summary>View all</summary>
+          <RadarRows rows={rest} />
+        </details>
+      ) : null}
     </>
   );
 }
@@ -119,26 +132,16 @@ function ThreatRadarBody() {
 export function ThreatRadar() {
   return (
     <section className="threat-radar" aria-labelledby="threat-radar-title">
-      <img
-        className="radar-backdrop"
-        src="/textures/radar-backdrop-obsidian.webp"
-        alt=""
-        loading="lazy"
-        decoding="async"
-        onError={(event) => {
-          event.currentTarget.hidden = true;
-        }}
-      />
-      <div className="radar-scrim" aria-hidden="true" />
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        <p className="eyebrow">Public record</p>
-        <h2 id="threat-radar-title" className="display mt-3 text-4xl">Threat radar</h2>
-        <p className="mt-3 max-w-2xl text-base">
-          Headlines from the public feeds this site already collects. A severity badge appears only when that item includes CVSS, EPSS, or KEV data.
-        </p>
-        <VaultBoundary fallback={<p className="radar-empty">The feed could not be shown.</p>}>
-          <ThreatRadarBody />
-        </VaultBoundary>
+        <details className="radar-fold">
+          <summary id="threat-radar-title">Threat radar</summary>
+          <p className="mt-3 max-w-2xl text-base">
+            Headlines from the public feeds this site already collects. A severity badge appears only when that item includes CVSS, EPSS, or KEV data.
+          </p>
+          <VaultBoundary fallback={<p className="radar-empty">The feed could not be shown.</p>}>
+            <ThreatRadarBody />
+          </VaultBoundary>
+        </details>
       </div>
     </section>
   );

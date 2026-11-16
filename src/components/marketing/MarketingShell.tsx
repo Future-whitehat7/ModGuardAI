@@ -12,17 +12,14 @@ export function MarketingShell() {
       ? new MutationObserver(() => observeRises(content))
       : null;
     changes?.observe(content as HTMLElement, { childList: true, subtree: true });
-    const timer = window.setTimeout(() => {
-      void import('./smoothScroll').then((module) => module.startSmoothScroll());
-    }, 3200);
     return () => {
       changes?.disconnect();
-      window.clearTimeout(timer);
     };
   }, []);
 
   return (
     <div className="marketing-frame min-h-screen bg-ink text-ice">
+      <div className="cosmic-glow" aria-hidden="true" />
       <div className="grain" aria-hidden="true" />
       <MarketingNav />
       <div id="content">
