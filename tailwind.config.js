@@ -4,15 +4,15 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Inter Tight"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['Inter', '"Inter Tight"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         serif: ['"Instrument Serif"', 'Georgia', 'serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       colors: {
-        ink: '#ffffff',
-        ice: '#0E0F12',
-        frost: '#4A4E57',
-        accent: '#2B4BFF',
+        ink: '#FAFAFA',
+        ice: '#0F172A',
+        frost: '#334155',
+        accent: '#1E3A8A',
         pearl: '#F6F6F3',
       },
     },

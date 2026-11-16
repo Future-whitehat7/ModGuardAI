@@ -9,8 +9,9 @@ export const Sponsor = () => {
   const [asked, setAsked] = useState<TierId>('starter');
 
   return (
-    <article className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
-      <p className="measure text-xl text-ice">The audience is already deciding whether to trust something.</p>
+    <article className="page-wrap mx-auto w-full max-w-6xl px-4 sm:px-6">
+      <p className="eyebrow">Sponsors</p>
+      <h1 className="display section-display mt-4 text-ice">The audience is already deciding whether to trust something.</h1>
       <ImageSlot image={brandImages.sponsor} priority />
       <div className="mt-8">
         <TierColumns onAsk={(tier) => {

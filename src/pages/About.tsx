@@ -2,9 +2,9 @@ import { SCAMCHECK_LABEL, SCAMCHECK_URL } from '../components/marketing/site';
 
 export const About = () => {
   return (
-    <main className="page-section mx-auto w-full max-w-3xl px-4 sm:px-6">
+    <main className="page-wrap mx-auto w-full max-w-3xl px-4 sm:px-6">
       <p className="eyebrow">About</p>
-      <h1 className="rise display mt-4 text-4xl text-ice sm:text-5xl">
+      <h1 className="rise display section-display mt-4 text-ice">
         An AI safety studio
       </h1>
       <div className="rise mt-8 space-y-5 text-lg leading-relaxed text-ice/80">

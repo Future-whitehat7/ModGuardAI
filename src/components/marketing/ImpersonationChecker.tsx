@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { CHECKER_ENDPOINT } from '../../config/platform';
+import { riskTier } from '../../lib/riskTier';
 
 const platforms = ['X', 'Instagram', 'TikTok', 'YouTube', 'Facebook', 'Other'] as const;
 
@@ -31,14 +32,33 @@ function readResult(value: unknown): CheckerResult | null {
   };
 }
 
-function isLikelyFake(verdict: string) {
-  return /fake|scam/i.test(verdict);
+const CHECK_STAGES = [
+  'Reading the profile details...',
+  'Comparing against known impersonation patterns...',
+  'Preparing your summary...',
+] as const;
+
+function useCheckStage(active: boolean) {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    if (!active) {
+      setIndex(0);
+      return undefined;
+    }
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const timer = window.setInterval(() => {
+      setIndex((current) => (current + 1) % CHECK_STAGES.length);
+    }, 900);
+    return () => window.clearInterval(timer);
+  }, [active]);
+  return CHECK_STAGES[index];
 }
 
 export function ImpersonationChecker() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
   const [error, setError] = useState('');
   const [result, setResult] = useState<CheckerResult | null>(null);
+  const stage = useCheckStage(status === 'sending');
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -106,6 +126,7 @@ export function ImpersonationChecker() {
         <button className="btn-accent mt-4" type="submit" disabled={status === 'sending'}>
           {status === 'sending' ? 'Checking…' : 'Check this account'}
         </button>
+        {status === 'sending' ? <p className="check-stage" role="status">{stage}</p> : null}
       </form>
 
       {status === 'error' && (
@@ -116,10 +137,14 @@ export function ImpersonationChecker() {
 
       {result && (
         <div className="glass mt-4 p-6" aria-live="polite">
-          <p className="eyebrow">Verdict</p>
-          <p className={`mt-3 font-mono text-2xl ${isLikelyFake(result.verdict) ? 'verdict-fake' : 'text-ice'}`}>
+          <p className={`risk-badge risk-${riskTier({ verdict: result.verdict }).id}`}>
+            {riskTier({ verdict: result.verdict }).label}
+          </p>
+          <p className="eyebrow mt-4">Verdict</p>
+          <p className="num mt-3 text-2xl">
             {result.verdict}
           </p>
+          <p className="mt-3 text-sm">A warning sign from this free read. Not a determination. The platform decides, and this does not remove an account.</p>
           {result.summary && <p className="measure mt-4 text-ice">{result.summary}</p>}
           {result.redFlags.length > 0 && (
             <>

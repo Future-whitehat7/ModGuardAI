@@ -19,7 +19,7 @@ export const InsightArticle = () => {
 
   if (!post) {
     return (
-      <article className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
+      <article className="page-wrap mx-auto w-full max-w-3xl px-4 sm:px-6">
         <h1 className="display text-4xl text-ice">That note is not on this site.</h1>
         <Link className="btn-accent mt-6" to="/insights">
           All insights
@@ -29,7 +29,7 @@ export const InsightArticle = () => {
   }
 
   return (
-    <article className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6">
+    <article className="essay page-wrap mx-auto w-full max-w-3xl px-4 sm:px-6">
       <p className="eyebrow">{post.kicker}</p>
       <h1 className="display mt-3 text-4xl text-ice sm:text-5xl">{post.title}</h1>
       <time className="mt-4 block font-mono text-xs text-frost" dateTime={post.published}>

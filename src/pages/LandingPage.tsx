@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
-import { brandImages } from '../components/marketing/brandImages';
-import { ImageSlot } from '../components/marketing/ImageSlot';
-import { SponsorSlot } from '../components/marketing/SponsorSlot';
+import { ThreatRadar } from '../components/marketing/ThreatRadar';
+import { VaultHero } from '../components/marketing/VaultHero';
 
 const fbi = 'https://www.fbi.gov/news/press-releases/cryptocurrency-and-ai-scams-bilk-americans-of-billions';
 const ftc = 'https://www.ftc.gov/news-events/news/press-releases/2026/10/ftc-issues-annual-report-congress-agencys-actions-protect-older-adults';
@@ -12,84 +11,65 @@ const stats = [
   { value: '22,364', label: '2025 AI-related IC3 complaints', href: fbi, source: 'FBI, 6 April 2026' },
 ];
 
-const checks = [
-  ['Messages', 'A text, email, or DM that is pushing you to pay or to click.'],
-  ['Statements', 'Step 2 of the same ScamCheck tool: lines from a bank or card statement.'],
-  ['Fake accounts', 'A profile using a real person’s name, face, or handle.'],
+const pains = [
+  {
+    fear: 'A text is pushing you to pay.',
+    answer: 'ScamCheck reads that message, and the links in it, before the transfer.',
+    href: '/scamcheck',
+    cta: 'Open ScamCheck',
+  },
+  {
+    fear: 'A statement line does not look like yours.',
+    answer: 'The same free tool has a second step for bank or card lines.',
+    href: '/scamcheck',
+    cta: 'Check a statement',
+  },
+  {
+    fear: 'Someone is using your name.',
+    answer: 'Impersonation Check is $199, one time. We read the accounts and ads you submit. We do not search every platform, and we do not remove accounts.',
+    href: '/impersonation-check',
+    cta: 'Start the $199 check',
+  },
 ];
 
 const audiences = [
-  { title: 'People', copy: 'Check the message before the transfer leaves the account.', image: brandImages.whoPeople, offer: false },
-  { title: 'Creators', copy: 'A copy of the account can ask the audience for money.', image: brandImages.whoCreators, offer: true },
-  { title: 'Brands', copy: 'A labeled placement sits next to people who are already checking.', image: brandImages.whoBrands, offer: false },
+  { title: 'People', copy: 'Check the message before the transfer leaves the account.', href: '/scamcheck', cta: 'Open ScamCheck' },
+  { title: 'Creators', copy: 'A copy of the account can ask the audience for money.', href: '/impersonation-check', cta: 'Verify suspicious accounts — $199 one-time' },
+  { title: 'Brands', copy: 'A labeled placement sits next to people who are already checking.', href: '/sponsor', cta: 'See sponsor spots' },
 ];
 
 export const LandingPage = () => {
   return (
     <div>
-      <section className="hero mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
-        <div className="measure">
-          <h1 className="fade-up display text-5xl leading-[0.95] text-ice sm:text-7xl">
-            Check it before you trust it.
-          </h1>
-          <p className="fade-up mt-6 text-xl leading-relaxed text-frost">
-            One place for the message, the statement, and the account that is not yours.
-          </p>
-          <Link className="btn-accent mt-8" to="/scamcheck">
-            Open the tools
-          </Link>
-        </div>
-        <ImageSlot image={brandImages.hero} priority />
-        <ul className="stat-row">
-          {stats.map((stat) => (
-            <li key={stat.value}>
-              <a href={stat.href}>
-                <span className="stat-value">{stat.value}</span>
-                <span className="stat-label">{stat.label}</span>
-                <span className="stat-source">{stat.source}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="page-section">
-        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-          <p className="eyebrow">What we check</p>
-          <h2 className="display mt-4 text-4xl text-ice">Three things, before you act.</h2>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {checks.map(([title, copy]) => (
-              <article key={title} className="glass p-6">
-                <h3 className="display text-3xl text-ice">{title}</h3>
-                <p className="mt-3 text-frost">{copy}</p>
-              </article>
-            ))}
+      <section className="hero mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <div className="hero-layout">
+          <div className="hero-copy">
+            <p className="eyebrow">AI safety studio</p>
+            <h1 className="display hero-display text-ice">
+              A scam can wear your name.
+            </h1>
+            <p className="hero-lede">
+              Check the message before you pay. Check the account before it asks as you.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link className="btn-accent" to="/scamcheck">Open ScamCheck</Link>
+              <Link className="btn-ghost" to="/impersonation-check">Impersonation Check, $199</Link>
+            </div>
           </div>
+          <VaultHero />
         </div>
       </section>
-
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        <SponsorSlot id="home-between" />
-      </div>
 
       <section className="page-section">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
           <p className="eyebrow">Who it is for</p>
-          <h2 className="display mt-4 text-4xl text-ice">People, creators, brands.</h2>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <h2 className="display section-display mt-4 text-ice">People, creators, brands.</h2>
+          <div className="mt-8 grid gap-5 md:grid-cols-3">
             {audiences.map((audience) => (
-              <article key={audience.title} className="glass who-card p-6">
-                <ImageSlot image={audience.image} />
+              <article key={audience.title} className="glass plate">
                 <h3 className="display text-3xl text-ice">{audience.title}</h3>
-                <p className="mt-3 text-frost">{audience.copy}</p>
-                {audience.offer && (
-                  <Link
-                    className="mt-6 block min-h-12 rounded-[20px] border border-[#E6E6E1] bg-white p-5 text-ice focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7dd3fc]"
-                    to="/impersonation-check"
-                  >
-                    Verify suspicious accounts — $199 one-time
-                  </Link>
-                )}
+                <p className="mt-3 leading-relaxed text-frost">{audience.copy}</p>
+                <Link className="offer-link" to={audience.href}>{audience.cta}</Link>
               </article>
             ))}
           </div>
@@ -97,22 +77,49 @@ export const LandingPage = () => {
       </section>
 
       <section className="page-section">
-        <div className="measure mx-auto w-full px-4 sm:px-6">
-          <p className="eyebrow">Real proof</p>
-          <h2 className="display mt-4 text-4xl text-ice">Public counts, with the source on the number.</h2>
-          <p className="mt-4 text-lg text-frost">
-            The FBI’s 6 April 2026 release of the 2025 IC3 report records nearly $21 billion in reported losses and 22,364 artificial-intelligence complaints, nearly $893 million. The FTC’s 19 October 2026 report to Congress says adults 60 and over reported about $3 billion in fraud losses for 2025.
-          </p>
-          <p className="mt-4 text-frost">
-            <a className="text-accent" href={fbi}>FBI press release</a>
-            {' · '}
-            <a className="text-accent" href={ftc}>FTC press release</a>
-          </p>
-          <Link className="btn-ghost mt-8" to="/scamcheck">
-            Open the tools
-          </Link>
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+          <p className="eyebrow">The worry, then the tool</p>
+          <h2 className="display section-display mt-4 text-ice">Three fears. A tool for each.</h2>
+          <div className="mt-8 grid gap-5">
+            {pains.map((pain) => (
+              <article key={pain.fear} className="glass plate pain-row">
+                <h3 className="display text-3xl text-ice">{pain.fear}</h3>
+                <p className="mt-3 leading-relaxed text-frost">{pain.answer}</p>
+                <Link className="btn-accent mt-5" to={pain.href}>{pain.cta}</Link>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
+
+      <section className="page-section">
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+          <p className="eyebrow">Public counts</p>
+          <h2 className="display section-display mt-4 text-ice">The scale of the problem.</h2>
+          <ul className="stat-row">
+            {stats.map((stat) => (
+              <li key={stat.value}>
+                <a href={stat.href}>
+                  <span className="stat-value">{stat.value}</span>
+                  <span className="stat-label">{stat.label}</span>
+                  <span className="stat-source">{stat.source}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-8 max-w-3xl text-lg leading-relaxed text-frost">
+            The FBI’s 6 April 2026 release of the 2025 IC3 report records{' '}
+            <a href={fbi}>nearly $21 billion in reported losses</a>
+            {' '}and{' '}
+            <a href={fbi}>22,364 artificial-intelligence complaints</a>
+            . The FTC’s 19 October 2026 report to Congress says adults 60 and over reported{' '}
+            <a href={ftc}>about $3 billion in fraud losses for 2025</a>
+            .
+          </p>
+        </div>
+      </section>
+
+      <ThreatRadar />
     </div>
   );
 };

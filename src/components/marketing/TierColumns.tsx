@@ -52,7 +52,7 @@ export function TierColumns({ onAsk }: { onAsk: (tier: TierId) => void }) {
           <article key={tier.id} id={tier.id} className="glass tier-card">
             <p className="eyebrow">{tier.name}</p>
             <h2 className="display mt-3 text-4xl text-ice">{tier.name}</h2>
-            <p className="mt-3 font-mono text-sm uppercase tracking-[0.12em] text-ice">{price}</p>
+            <p className="tier-price">{price}</p>
             {tier.id === 'starter' && (
               <div className="mt-4 flex gap-2" role="group" aria-label="Starter price">
                 <button

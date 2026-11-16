@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ACCESS_TOKEN_KEY, readAccessToken } from '../config/accessToken';
+import { riskTier } from '../lib/riskTier';
 
 const CONTACT = 'mailto:samuel.fagbamigbe@modguardai.org?subject=Impersonation%20Check';
 
@@ -258,7 +259,10 @@ function ReadyOrder({ status }: { status: ReadyStatus }) {
           </div>
           {items.map((item, index) => (
             <article className="glass p-6" key={`${item.url || 'item'}-${index}`}>
-              <p className="eyebrow">{item.platform || 'Account'} · data confidence {item.confidence || 'low'}</p>
+              <p className={`risk-badge risk-${riskTier({ similarity: item.similarity, confidence: item.confidence, httpStatus: item.httpStatus }).id}`}>
+                {riskTier({ similarity: item.similarity, confidence: item.confidence, httpStatus: item.httpStatus }).label}
+              </p>
+              <p className="eyebrow mt-4">{item.platform || 'Account'} · data confidence {item.confidence || 'low'}</p>
               <h2 className="display mt-3 text-3xl text-ice">{item.handle ? `@${item.handle}` : 'No handle parsed'}</h2>
               <p className="mt-3 text-sm text-frost">
                 {item.httpStatus == null ? 'No HTTP status' : `HTTP ${item.httpStatus}`}

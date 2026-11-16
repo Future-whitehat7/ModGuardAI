@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Logo } from '../brand/Logo';
 import { PLAYBOOK_URL, SCAMCHECK_URL } from '../../config/platform';
 
 const links = [
@@ -14,14 +15,13 @@ const links = [
 
 export function MarketingFooter() {
   return (
-    <footer className="border-t border-ice/10 bg-ink text-ice">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2">
+    <footer className="site-footer">
+      <div className="site-footer-grid">
         <div>
-          <Link to="/" className="hud-logo">
-            <img className="brand-mark" src="/brand/modguard-mark.png" alt="" width="48" height="48" />
-            ModGuard
+          <Link to="/" className="logo-link" aria-label="ModGuard AI home">
+            <Logo surface="light" />
           </Link>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-frost">
+          <p className="mt-5 max-w-md text-base leading-relaxed text-frost">
             ModGuard AI is an AI safety studio. ScamCheck is the first live tool: a free AI scam checker.
           </p>
           <Link to="/scamcheck" className="mt-5 inline-flex min-h-12 items-center text-sm text-accent">
@@ -29,8 +29,8 @@ export function MarketingFooter() {
           </Link>
         </div>
         <div>
-          <h2 className="font-mono text-[11px] uppercase tracking-[0.14em] text-frost">On this site</h2>
-          <ul className="mt-4 space-y-2">
+          <h2 className="eyebrow">On this site</h2>
+          <ul className="mt-4 space-y-1">
             {links.map((link) => (
               <li key={link.href}>
                 {link.external ? (
@@ -47,9 +47,9 @@ export function MarketingFooter() {
           </ul>
         </div>
       </div>
-      <div className="border-t border-ice/10">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-6 text-sm text-frost sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <p className="text-frost">© 2026 ModGuard AI.</p>
+      <div className="site-footer-base">
+        <div className="site-footer-base-inner">
+          <p>© 2026 ModGuard AI.</p>
           <a href={SCAMCHECK_URL} className="inline-flex min-h-12 items-center hover:text-ice">
             ScamCheck
           </a>
@@ -57,4 +57,4 @@ export function MarketingFooter() {
       </div>
     </footer>
   );
-}
+};

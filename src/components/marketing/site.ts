@@ -88,6 +88,11 @@ export const primaryLinks: SiteLink[] = [
   { label: 'Sponsors', href: '/sponsor' },
 ];
 
+export const headerLinks: SiteLink[] = [
+  ...primaryLinks,
+  { label: 'About', href: '/about' },
+];
+
 export const menuLinks: SiteLink[] = [
   { label: 'Home', href: '/' },
   ...primaryLinks,

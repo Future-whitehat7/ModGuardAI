@@ -16,7 +16,6 @@ export function ImageSlot({ image, priority = false, className }: ImageSlotProps
         width={image.width}
         height={image.height}
         loading={priority ? 'eager' : 'lazy'}
-        fetchPriority={priority ? 'high' : 'auto'}
         decoding="async"
       />
     </picture>

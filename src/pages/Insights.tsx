@@ -5,17 +5,18 @@ import { insightPosts } from '../content/insights';
 
 export const Insights = () => {
   return (
-    <article className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
+    <article className="page-wrap mx-auto w-full max-w-6xl px-4 sm:px-6">
+      <p className="eyebrow">Insights</p>
+      <h1 className="display section-display mt-4 text-ice">The patterns change. The public record is the place to read them.</h1>
       <ImageSlot image={brandImages.insights} priority />
-      <p className="measure mt-8 text-xl text-ice">The patterns change. The public record is the place to read them.</p>
-      <ul className="mt-8 divide-y divide-[#E6E6E1] border-y border-[#E6E6E1]">
+      <ul className="ledger">
         {insightPosts.map((post) => (
           <li key={post.slug}>
-            <Link className="block py-6" to={`/insights/${post.slug}`}>
+            <Link className="ledger-link" to={`/insights/${post.slug}`}>
               <span className="eyebrow">{post.kicker}</span>
-              <span className="mt-2 block text-2xl text-ice">{post.title}</span>
-              <span className="mt-2 block max-w-[680px] text-frost">{post.description}</span>
-              <time className="mt-2 block font-mono text-xs text-frost" dateTime={post.published}>
+              <span className="ledger-title">{post.title}</span>
+              <span className="mt-2 block max-w-[40rem] leading-relaxed text-frost">{post.description}</span>
+              <time className="mt-3 block font-mono text-xs text-frost" dateTime={post.published}>
                 {post.published}
               </time>
             </Link>
