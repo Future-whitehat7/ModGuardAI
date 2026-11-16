@@ -57,6 +57,8 @@ export async function sendResults({ order, accessToken, config, mailer, now }) {
     generatedAt: new Date(now).toISOString(),
     statusUrl: statusUrlFor(config, accessToken),
     offers: upsells,
+    lookalikes: evidence.lookalikes,
+    coverage: evidence.coverage,
   });
   let pdf;
   try {
@@ -69,6 +71,8 @@ export async function sendResults({ order, accessToken, config, mailer, now }) {
     items: model.items,
     statusUrl: model.statusUrl,
     offers: model.offers,
+    lookalikes: model.lookalikes,
+    coverage: model.coverage,
   });
   return sendOrSkip({
     config,

@@ -2,6 +2,8 @@ import { randomBytes } from 'node:crypto';
 import { sendConfirmation, sendOperatorCopy, sendResults } from './deliver.mjs';
 import { accessSecretKey, orderStorageKey } from './order-machine.mjs';
 import { researchIntake } from './research.mjs';
+import { mergeSubmittedCoverage } from './coverage.mjs';
+import { DISCOVERY_BUDGET_MS, DISCOVERY_INTERVAL_MS, discoverLookalikes, emptyDiscovery } from './sherlock-check.mjs';
 
 const LOCK_MS = 12 * 60 * 1000;
 
@@ -101,7 +103,33 @@ export async function runPaidResearch({
         resolveImpl,
         timeoutMs: config.researchTimeoutMs,
       });
-      working.evidence = { ...researched, recordedAt: now };
+      let discovery = emptyDiscovery({
+        partial: true,
+        notes: ['The look-alike search did not finish. Submitted links were still read.'],
+      });
+      try {
+        discovery = await discoverLookalikes({
+          intake: working.intake,
+          fetchImpl,
+          resolveImpl,
+          store,
+          now,
+          deadline: Date.now() + DISCOVERY_BUDGET_MS,
+          minIntervalMs: DISCOVERY_INTERVAL_MS,
+        });
+      } catch {
+        discovery = emptyDiscovery({
+          partial: true,
+          notes: ['The look-alike search did not finish. Submitted links were still read.'],
+        });
+      }
+      working.evidence = {
+        ...researched,
+        summary: `${researched.summary} ${discovery.summary}`.trim(),
+        lookalikes: discovery.lookalikes,
+        coverage: mergeSubmittedCoverage(researched.items, discovery.coverage),
+        recordedAt: now,
+      };
       await store.set(key, working);
     }
     let customerResult = working.delivery?.results;

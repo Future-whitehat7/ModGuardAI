@@ -1,3 +1,4 @@
+import { coverageLines } from './coverage.mjs';
 import { platformLabel } from './research.mjs';
 import { upsells as defaultOffers } from './upsells.mjs';
 
@@ -36,6 +37,26 @@ function linked(text) {
   return safe.replace(/https:\/\/[^\s<]+/g, (url) => `<a href="${url}" style="color:#3f3a34;text-decoration:underline;">${url}</a>`);
 }
 
+function discoveryHtml(lookalikes, coverage) {
+  const matches = Array.isArray(lookalikes) ? lookalikes : [];
+  const rows = matches.map((match) => {
+    const pct = typeof match.similarity === 'number' ? `${Math.round(match.similarity * 100)}%` : 'n/a';
+    return `<div style="margin:18px 0 0;">
+      <p style="margin:0;font-size:18px;">${escapeHtml(match.platform || '')} · @${escapeHtml(match.handle || '')}</p>
+      <p style="margin:6px 0 0;font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#6f675e;">Similarity ${pct} · data confidence ${escapeHtml(match.confidence || 'low')} · possible, unverified</p>
+      <p style="margin:6px 0 0;font-family:Helvetica,Arial,sans-serif;font-size:12px;word-break:break-all;">${escapeHtml(match.url || '')}</p>
+    </div>`;
+  }).join('');
+  const lines = coverageLines(coverage).map((line) => `<p style="margin:8px 0 0;">${escapeHtml(line)}</p>`).join('');
+  return `<div style="margin:32px 0 0;padding-top:22px;border-top:1px solid #e4ddd2;">
+    <p style="margin:0;font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#6f675e;">Possible look-alike accounts found</p>
+    <p style="margin:8px 0 0;">Each match is possible and unverified. This is not a determination and it does not remove an account.</p>
+    ${rows || '<p style="margin:12px 0 0;">No possible look-alike was confirmed on the sites that returned a public page. That is not proof that none exist.</p>'}
+    <p style="margin:22px 0 0;font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#6f675e;">Coverage</p>
+    ${lines}
+  </div>`;
+}
+
 function layout(title, bodyHtml) {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -65,14 +86,15 @@ export function renderConfirmationEmail({ statusUrl }) {
     : '<p style="margin:24px 0 0;color:#6f675e;">The private link is not available because the site address is not configured.</p>';
   const html = layout(
     'Payment verified',
-    `<p style="margin:0;">Payment for this check is verified. Automated research is reading the public pages you submitted. The notes, a data-confidence level for each one, and the platform report steps will follow in a second email, with a PDF attached.</p>
+    `<p style="margin:0;">Payment for this check is verified. Automated research is reading the public pages you submitted and checking similar public names on the sites that answer. The notes, a data-confidence level for each one, and the platform report steps will follow in a second email, with a PDF attached. The report names the sites that returned a page and the sites that did not.</p>
      <p style="margin:16px 0 0;">This is not a determination and it does not remove accounts. You can close this tab. The private page keeps the same notes.</p>
      ${link}`,
   );
   const text = [
     'Payment verified',
     '',
-    'Payment for this check is verified. Automated research is reading the public pages you submitted.',
+    'Payment for this check is verified. Automated research is reading the public pages you submitted and checking similar public names on the sites that answer.',
+    'The report names the sites that returned a page and the sites that did not.',
     'The notes will follow in a second email, with a PDF attached.',
     'This is not a determination and it does not remove accounts.',
     statusUrl ? `Private page: ${statusUrl}` : 'The private link is not available because the site address is not configured.',
@@ -82,7 +104,7 @@ export function renderConfirmationEmail({ statusUrl }) {
   return { subject: 'Payment verified', html, text };
 }
 
-export function renderResultsEmail({ summary, items, statusUrl, offers = defaultOffers }) {
+export function renderResultsEmail({ summary, items, statusUrl, offers = defaultOffers, lookalikes = [], coverage = null }) {
   const blocks = (Array.isArray(items) ? items : []).map((item) => {
     const platform = platformLabel(knownPlatform(item.platform));
     const handle = item.handle ? `@${escapeHtml(item.handle)}` : 'No handle parsed';
@@ -117,6 +139,7 @@ export function renderResultsEmail({ summary, items, statusUrl, offers = default
      <p style="margin:16px 0 0;">A PDF of the same research is attached. Data confidence is about how much of a public page could be read. It is not a determination, and nothing here removes an account.</p>
      ${blocks}
      ${link}
+     ${discoveryHtml(lookalikes, coverage)}
      ${offerBlocks ? `<div style="margin:36px 0 0;padding-top:22px;border-top:1px solid #e4ddd2;">
        <p style="margin:0;font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#6f675e;">Other options</p>
        ${offerBlocks}
@@ -141,6 +164,15 @@ export function renderResultsEmail({ summary, items, statusUrl, offers = default
     textLines.push('');
   }
   if (statusUrl) textLines.push(`Private page: ${statusUrl}`, '');
+  textLines.push('Possible look-alike accounts found', 'Each match is possible, unverified. This is not a determination and it does not remove an account.');
+  if (!Array.isArray(lookalikes) || lookalikes.length === 0) {
+    textLines.push('No possible look-alike was confirmed on the sites that returned a public page. That is not proof that none exist.');
+  }
+  for (const match of lookalikes || []) {
+    const pct = typeof match.similarity === 'number' ? `${Math.round(match.similarity * 100)}%` : 'n/a';
+    textLines.push(`${match.platform} @${match.handle}`, match.url || '', `Similarity ${pct}`, `Data confidence ${match.confidence || 'low'}`, 'possible, unverified', '');
+  }
+  textLines.push('Coverage', ...coverageLines(coverage));
   const offerList = Array.isArray(offers) ? offers : [];
   if (offerList.length > 0) {
     textLines.push('Other options');

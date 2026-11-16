@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "node scripts/fetch-threats.mjs && vite build",
     "lint": "eslint .",
-    "test": "node --experimental-strip-types --test scripts/impersonation-handoff.test.mjs scripts/order-system.test.mjs scripts/research.test.mjs",
+    "test": "node --experimental-strip-types --test scripts/impersonation-handoff.test.mjs scripts/order-system.test.mjs scripts/research.test.mjs scripts/lookalike.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
