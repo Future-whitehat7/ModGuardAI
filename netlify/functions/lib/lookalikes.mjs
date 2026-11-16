@@ -104,17 +104,6 @@ export function searchSeeds(intake) {
   return seeds;
 }
 
-export const UNCHECKED_PLATFORMS = [
-  'Instagram',
-  'Facebook',
-  'X',
-  'LinkedIn',
-  'Threads',
-  'Snapchat',
-];
-
-export const UNCHECKED_INSTRUCTION = 'These platforms cannot be checked reliably from this server. Paste a full https profile link for any account on them. A link you send is read on its own. This is not a determination and it does not remove an account.';
-
 export function maxCandidates({ remainingMs, siteCount, concurrency, timeoutMs }) {
   if (remainingMs <= 0 || siteCount <= 0 || concurrency <= 0 || timeoutMs <= 0) return 0;
   const perCandidate = Math.ceil(siteCount / concurrency) * timeoutMs;

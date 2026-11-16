@@ -1,4 +1,5 @@
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { coverageLines } from './coverage.mjs';
 import { platformLabel } from './research.mjs';
 import { upsells as defaultOffers } from './upsells.mjs';
 
@@ -102,10 +103,11 @@ export function buildReportModel({
     lookalikes: Array.isArray(lookalikes) ? lookalikes : [],
     coverage: coverage && typeof coverage === 'object' ? coverage : {
       checked: [],
+      notChecked: [],
+      notes: [],
       skipped: [],
       partial: false,
-      uncheckedPlatforms: ['Instagram', 'Facebook', 'X', 'LinkedIn', 'Threads', 'Snapchat'],
-      instruction: 'These platforms cannot be checked reliably from this server. Paste a full https profile link for any account on them.',
+      instruction: '',
     },
   };
 }
@@ -246,7 +248,7 @@ export async function buildReportPdf(model) {
     gap: 8,
   });
   if (model.lookalikes.length === 0) {
-    write('No possible look-alike was confirmed on the sites this server could read. That is not proof that none exist.', {
+    write('No possible look-alike was confirmed on the sites that returned a public page. That is not proof that none exist.', {
       font: fonts.serif,
       size: 11,
       color: ink,
@@ -272,27 +274,9 @@ export async function buildReportPdf(model) {
       gap: 8,
     });
   }
-  write('Platforms not checked from the server', { font: fonts.serif, size: 16, color: ink, leading: 20, gap: 6 });
-  write((model.coverage.uncheckedPlatforms || []).join(', '), { font: fonts.serif, size: 12, color: ink, leading: 16, gap: 4 });
-  write(model.coverage.instruction || '', { font: fonts.serif, size: 11, color: mute, leading: 15, gap: 6 });
-  if (model.coverage.partial) {
-    write('The look-alike search stopped early so the time limit would not be exceeded. Coverage is partial.', {
-      font: fonts.serif,
-      size: 11,
-      color: mute,
-      leading: 15,
-      gap: 6,
-    });
-  }
-  const skippedNames = (model.coverage.skipped || []).filter((item) => item?.reason === 'self-test').map((item) => item.site);
-  if (skippedNames.length > 0) {
-    write(`Skipped after the daily self-test failed: ${skippedNames.join(', ')}.`, {
-      font: fonts.sans,
-      size: 9,
-      color: mute,
-      leading: 12,
-      gap: 8,
-    });
+  write('Coverage', { font: fonts.serif, size: 16, color: ink, leading: 20, gap: 6 });
+  for (const line of coverageLines(model.coverage)) {
+    write(line, { font: fonts.serif, size: 12, color: ink, leading: 16, gap: 4 });
   }
 
   if (model.offers.length > 0) {

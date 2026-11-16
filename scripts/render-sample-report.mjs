@@ -1,4 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { COVERAGE_INSTRUCTION } from '../netlify/functions/lib/coverage.mjs';
 import { buildReportModel, buildReportPdf } from '../netlify/functions/lib/report-pdf.mjs';
 import { researchIntake } from '../netlify/functions/lib/research.mjs';
 
@@ -14,6 +15,11 @@ const research = await researchIntake({
 }, {
   fetchImpl: async (url) => {
     const href = String(url);
+    if (href.includes('tiktok.com')) {
+      const error = new Error('timed out');
+      error.name = 'AbortError';
+      throw error;
+    }
     if (href.includes('examplecreat0r')) {
       return new Response(html, { status: 200, headers: { 'content-type': 'text/html' } });
     }
@@ -37,11 +43,12 @@ const pdf = await buildReportPdf(buildReportModel({
     label: 'possible, unverified',
   }],
   coverage: {
-    checked: ['YouTube', 'TikTok', 'GitHub'],
-    skipped: [{ site: 'Patreon', reason: 'self-test' }],
+    checked: ['YouTube', 'Instagram'],
+    notChecked: ['TikTok not checked', 'Meta ads not checked'],
+    notes: [],
+    skipped: [{ site: 'TikTok', reason: 'self-test' }],
     partial: false,
-    uncheckedPlatforms: ['Instagram', 'Facebook', 'X', 'LinkedIn', 'Threads', 'Snapchat'],
-    instruction: 'These platforms cannot be checked reliably from this server. Paste a full https profile link for any account on them. This is not a determination and it does not remove an account.',
+    instruction: COVERAGE_INSTRUCTION,
   },
 }));
 
@@ -49,4 +56,5 @@ const directory = '/opt/cursor/artifacts';
 mkdirSync(directory, { recursive: true });
 const path = `${directory}/account-research-sample.pdf`;
 writeFileSync(path, pdf.bytes);
-process.stdout.write(`${path}\n`);
+writeFileSync(`${directory}/account-research-sample.txt`, pdf.text);
+process.stdout.write(`${path}\n${pdf.text}\n`);

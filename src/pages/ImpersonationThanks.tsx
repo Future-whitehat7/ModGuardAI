@@ -310,16 +310,23 @@ function ReadyOrder({ status }: { status: ReadyStatus }) {
 }
 
 function Lookalikes({ evidence }: { evidence: ReadyStatus['evidence'] }) {
-  const record = evidence as { lookalikes?: { handle?: string; platform?: string; url?: string; similarity?: number | null; confidence?: string; label?: string }[]; coverage?: { uncheckedPlatforms?: string[]; instruction?: string; partial?: boolean } } | null;
-  const matches = record?.lookalikes ?? [];
-  const platforms = record?.coverage?.uncheckedPlatforms ?? ['Instagram', 'Facebook', 'X', 'LinkedIn', 'Threads', 'Snapchat'];
+  const record = evidence as {
+    lookalikes?: { handle?: string; platform?: string; url?: string; similarity?: number | null; confidence?: string; label?: string }[];
+    coverage?: { checked?: string[]; notChecked?: string[]; notes?: string[]; instruction?: string; partial?: boolean };
+  } | null;
+  if (!record || (record.lookalikes == null && record.coverage == null)) return null;
+  const matches = record.lookalikes ?? [];
+  const checked = record.coverage?.checked ?? [];
+  const notChecked = record.coverage?.notChecked ?? [];
+  const notes = record.coverage?.notes ?? [];
+  const searchedNothing = checked.length === 0 && notChecked.length === 0;
   return (
     <>
       <article className="glass p-6">
         <p className="eyebrow">Possible look-alike accounts found</p>
         <p className="mt-3 text-sm text-frost">Each match is possible and unverified. This is not a determination and it does not remove an account.</p>
         {matches.length === 0 ? (
-          <p className="mt-3 text-ice">No possible look-alike was confirmed on the sites this server could read. That is not proof that none exist.</p>
+          <p className="mt-3 text-ice">No possible look-alike was confirmed on the sites that returned a public page. That is not proof that none exist.</p>
         ) : matches.map((match) => (
           <div className="mt-4" key={`${match.platform}-${match.handle}`}>
             <h2 className="text-ice">{match.platform} · @{match.handle}</h2>
@@ -335,13 +342,23 @@ function Lookalikes({ evidence }: { evidence: ReadyStatus['evidence'] }) {
         ))}
       </article>
       <article className="glass p-6">
-        <p className="eyebrow">Platforms not checked from the server</p>
-        <p className="mt-3 text-ice">{platforms.join(', ')}</p>
-        <p className="mt-3 text-sm text-frost">
-          {record?.coverage?.instruction || 'Paste a full https profile link for any account on those platforms.'}
-        </p>
-        {record?.coverage?.partial ? (
+        <p className="eyebrow">Coverage</p>
+        {searchedNothing ? (
+          <p className="mt-3 text-ice">No platform was searched for this order.</p>
+        ) : (
+          <>
+            <p className="mt-3 text-ice">{checked.length > 0 ? `Platforms checked: ${checked.join(', ')}.` : 'Platforms checked: none.'}</p>
+            <p className="mt-3 text-ice">{notChecked.length > 0 ? `Platforms not checked: ${notChecked.join('. ')}.` : 'Platforms not checked: none.'}</p>
+          </>
+        )}
+        {notes.map((note) => (
+          <p className="mt-3 text-sm text-frost" key={note}>{note}</p>
+        ))}
+        {record.coverage?.partial ? (
           <p className="mt-3 text-sm text-frost">The look-alike search stopped early so the time limit would not be exceeded. Coverage is partial.</p>
+        ) : null}
+        {record.coverage?.instruction ? (
+          <p className="mt-3 text-sm text-frost">{record.coverage.instruction}</p>
         ) : null}
       </article>
     </>
@@ -359,7 +376,7 @@ function bodyCopy(status: ReadyStatus, paid: boolean) {
     case 'email_failed':
       return 'The research is on this page. The results email did not send, so the failure is recorded and can be retried. Nothing here removes an account.';
     case 'researching':
-      return 'Payment is verified. Automated research is reading the public pages you submitted. This page updates when the notes are stored. The email also brings you back here if you close the tab. This is not a determination and it does not remove accounts.';
+      return 'Payment is verified. Automated research is reading the public pages you submitted and similar public names on the sites that answer. This page updates when the notes are stored. The report names the sites that returned a page and the sites that did not. This is not a determination and it does not remove accounts.';
     case 'research_failed':
       return 'Payment is verified. Automated research did not finish. The failure is recorded. This page does not invent a finding, and it does not remove accounts.';
     case 'draft':

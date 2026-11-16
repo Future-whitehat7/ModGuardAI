@@ -23,3 +23,5 @@ SOFTWARE.
 
 This product uses a Node port of Sherlock's detection rules and a copy of its
 site data (sherlock-data.json). It does not bypass logins, CAPTCHAs, or proxies.
+Requests are public https only. Cookies, authorization headers, and private
+addresses are not used. A block or a timeout stays unknown.
