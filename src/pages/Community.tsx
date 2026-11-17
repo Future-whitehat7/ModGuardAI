@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { readBoard, type CommunityBoard } from '../community/board';
 import { emptyProgress, PROGRESS_KEY, readProgress, recordTask, type Progress } from '../community/progress';
 import { CampusKit } from '../components/community/CampusKit';
+import { CommunityForm } from '../components/community/CommunityForm';
 import { FiveMinute } from '../components/community/FiveMinute';
 import { Founding } from '../components/community/Founding';
 import { Hackathons } from '../components/community/Hackathons';
 import { Mission } from '../components/community/Mission';
+import { PlayerPath } from '../components/community/PlayerPath';
 
 const emptyBoard: CommunityBoard = { contributors: [], shipped: [], hackathons: [] };
 
@@ -42,13 +44,24 @@ export function Community() {
   return (
     <article className="page-wrap community-page mx-auto w-full max-w-6xl px-4 sm:px-6">
       <p className="eyebrow">Community</p>
-      <h1 className="display section-display mt-4 text-ice">Be here before it&apos;s big.</h1>
-      <p className="community-copy">
-        Five parts. A doorway task, a game you can build, and a public name when the work is confirmed.
-      </p>
-      <Founding board={board} progress={progress} animate={animate} />
-      <Hackathons board={board} now={now} />
+      <h1 className="display section-display mt-4 text-ice">The ModGuard community.</h1>
+      <p className="community-copy">A doorway task, a build, then a public name.</p>
+      <PlayerPath progress={progress} animate={animate} />
+      <Founding board={board} />
       <FiveMinute progress={progress} onDone={onDone} />
+      <CommunityForm
+        id="join"
+        formName="community-join"
+        title="I'm in"
+        lede="We read every one and reply by email."
+        fields={[
+          { name: 'name', label: 'Name' },
+          { name: 'email', label: 'Email', type: 'email' },
+          { name: 'handle', label: 'Handle, if you want it public', required: false },
+          { name: 'focus', label: 'What do you want to help build?', type: 'textarea' },
+        ]}
+      />
+      <Hackathons board={board} now={now} />
       <Mission />
       <CampusKit />
     </article>

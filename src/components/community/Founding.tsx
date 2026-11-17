@@ -1,9 +1,6 @@
 import type { CommunityBoard } from '../../community/board';
-import type { Progress } from '../../community/progress';
-import { PlayerPath } from './PlayerPath';
-import { CommunityForm } from './CommunityForm';
 
-export function Founding({ board, progress, animate }: { board: CommunityBoard; progress: Progress; animate: boolean }) {
+export function Founding({ board }: { board: CommunityBoard }) {
   return (
     <section id="founding" className="community-block" aria-labelledby="founding-title">
       <p className="eyebrow">A. Founding Contributor</p>
@@ -23,7 +20,6 @@ export function Founding({ board, progress, animate }: { board: CommunityBoard; 
           <p className="honest-line">The honest part: no salary or equity yet. What you get is real: the title when your name is added, the credit, and a voice in the next ship.</p>
         </article>
       </div>
-      <PlayerPath progress={progress} animate={animate} />
       {board.contributors.length === 0 && board.shipped.length === 0 ? (
         <p className="community-empty">The board opens with its first name. Could be yours.</p>
       ) : (
@@ -51,18 +47,6 @@ export function Founding({ board, progress, animate }: { board: CommunityBoard; 
           ) : null}
         </>
       )}
-      <CommunityForm
-        id="join"
-        formName="community-join"
-        title="I'm in"
-        lede="We read every one and reply by email."
-        fields={[
-          { name: 'name', label: 'Name' },
-          { name: 'email', label: 'Email', type: 'email' },
-          { name: 'handle', label: 'Handle, if you want it public', required: false },
-          { name: 'focus', label: 'What do you want to help build?', type: 'textarea' },
-        ]}
-      />
     </section>
   );
 }

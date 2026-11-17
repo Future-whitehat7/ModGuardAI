@@ -2518,8 +2518,38 @@ h2,
   text-transform: uppercase;
 }
 
-.path-steps li[data-state='locked'] {
+.path-steps li[data-state='locked'],
+.level-names li[data-state='locked'] {
   opacity: 0.72;
+}
+
+.path-steps li[data-state='now'],
+.level-names li[data-state='now'] {
+  background: #1E3A8A;
+  color: #FAFAFA;
+  border-color: #D4AF37;
+}
+
+.path-steps li[data-state='now'] span,
+.level-names li[data-state='now'] {
+  color: #FAFAFA;
+}
+
+.level-names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.level-names li {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid #C5A059;
+  border-radius: 999px;
+  color: #0F172A;
+  font-size: 0.85rem;
 }
 
 .recognition-tiles {
