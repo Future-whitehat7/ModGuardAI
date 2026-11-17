@@ -8,6 +8,26 @@
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ModGuard AI — Free AI Scam Checker | ScamCheck</title>
+    <script>
+      (function () {
+        var path = location.pathname.replace(/\/$/, '') || '/';
+        if (path !== '/give-back') return;
+        var title = 'Give back | ModGuard AI';
+        var description = 'The Give back hiring principle for early-career community members. It is a stated principle, not a contract. The hire log lists only confirmed hires.';
+        document.title = title;
+        var set = function (selector, content) {
+          var node = document.head.querySelector(selector);
+          if (node) node.setAttribute('content', content);
+        };
+        set('meta[name="description"]', description);
+        set('meta[property="og:title"]', title);
+        set('meta[property="og:description"]', description);
+        set('meta[name="twitter:title"]', title);
+        set('meta[name="twitter:description"]', description);
+        var canonical = document.head.querySelector('link[rel="canonical"]');
+        if (canonical) canonical.setAttribute('href', 'https://modguardai.org/give-back');
+      })();
+    </script>
     <meta name="description" content="Check if a message is a scam. ModGuard ScamCheck is a free AI scam checker and phishing link checker for texts, emails, and links." />
     <meta name="keywords" content="AI scam checker, is this message a scam, phishing link checker" />
     <meta name="robots" content="index, follow" />
