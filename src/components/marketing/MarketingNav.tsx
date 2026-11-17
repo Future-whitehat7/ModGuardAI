@@ -63,7 +63,7 @@ export function MarketingNav() {
   }, [open]);
 
   return (
-    <header className="hud-nav">
+    <header className={open ? 'hud-nav menu-open' : 'hud-nav'}>
       <a href="#content" className="skip-link">
         Skip to content
       </a>

@@ -13,6 +13,12 @@
 [functions."research-background"]
   included_files = ["netlify/functions/lib/sherlock-data.json", "netlify/functions/lib/SHERLOCK-NOTICE.txt"]
 
+[functions."scamcheck-relay"]
+  timeout = 26
+
+[functions."daily"]
+  timeout = 26
+
 # Former pages described products that are not shipped. Send them home.
 [[redirects]]
   from = "/pulse.json"
@@ -161,6 +167,18 @@
 [[redirects]]
   from = "/api/operator"
   to = "/.netlify/functions/operator"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/scamcheck"
+  to = "/.netlify/functions/scamcheck-relay"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/daily"
+  to = "/.netlify/functions/daily"
   status = 200
   force = true
 

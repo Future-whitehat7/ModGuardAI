@@ -70,6 +70,21 @@ function classify(feedTag, title) {
   return null;
 }
 
+function imageOf(block) {
+  const patterns = [
+    /<media:content[^>]+medium=["']image["'][^>]+url=["']([^"']+)["']/i,
+    /<media:content[^>]+url=["']([^"']+)["'][^>]+medium=["']image["']/i,
+    /<media:thumbnail[^>]+url=["']([^"']+)["']/i,
+    /<enclosure[^>]+type=["']image\/[^"']+["'][^>]+url=["']([^"']+)["']/i,
+    /<enclosure[^>]+url=["']([^"']+)["'][^>]+type=["']image\/[^"']+["']/i,
+  ];
+  for (const pattern of patterns) {
+    const match = block.match(pattern);
+    if (match && /^https:\/\//.test(match[1])) return match[1];
+  }
+  return '';
+}
+
 function feedItems(xml, source, feedTag) {
   if (!xml) return [];
   const parts = (/<entry[\s>]/i.test(xml) ? xml.split(/<entry[\s>]/i) : xml.split(/<item[\s>]/i)).slice(1, 7);
@@ -89,6 +104,8 @@ function feedItems(xml, source, feedTag) {
       summary,
       tag: topic,
       date: Number.isNaN(time) ? rawDate : new Date(time).toISOString().slice(0, 10),
+      published: Number.isNaN(time) ? '' : new Date(time).toISOString(),
+      image: imageOf(block),
       time: Number.isNaN(time) ? null : time,
     };
   }).filter((item) => item && item.title && item.url.startsWith('http'));
@@ -186,6 +203,47 @@ export async function collectThreats(now = Date.now()) {
       items.push(item);
     });
   });
+
+  const hnFeeds = await Promise.all([
+    load('https://hn.algolia.com/api/v1/search_by_date?query=cybersecurity&tags=story&hitsPerPage=5'),
+    load('https://hn.algolia.com/api/v1/search_by_date?query=AI%20tools&tags=story&hitsPerPage=5'),
+  ]);
+  let hnCount = 0;
+  hnFeeds.forEach((text, index) => {
+    if (!text) return;
+    try {
+      const data = JSON.parse(text);
+      (Array.isArray(data.hits) ? data.hits : []).forEach((hit) => {
+        const title = typeof hit.title === 'string' ? hit.title.trim() : '';
+        const url = typeof hit.url === 'string' && hit.url.startsWith('http')
+          ? hit.url
+          : (hit.objectID ? `https://news.ycombinator.com/item?id=${hit.objectID}` : '');
+        if (!title || !url.startsWith('http')) return;
+        const titleKey = title.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().slice(0, 90);
+        const urlKey = url.replace(/[?#].*$/, '');
+        if (seen.has(titleKey) || seen.has(urlKey)) return;
+        seen.add(titleKey);
+        seen.add(urlKey);
+        const time = Date.parse(hit.created_at);
+        items.push({
+          title,
+          url,
+          source: 'Hacker News',
+          summary: '',
+          tag: index === 0 ? 'Cyber' : 'AI',
+          date: Number.isNaN(time) ? '' : new Date(time).toISOString().slice(0, 10),
+          published: Number.isNaN(time) ? '' : new Date(time).toISOString(),
+          image: '',
+          time: Number.isNaN(time) ? null : time,
+        });
+        hnCount += 1;
+      });
+    } catch {
+      hnCount = -1;
+    }
+  });
+  if (hnCount <= 0) skipped.push('Hacker News stories');
+
   items.sort((a, b) => (b.time ?? 0) - (a.time ?? 0));
   const seenUrl = new Set();
   const picked = [];
@@ -206,7 +264,11 @@ export async function collectThreats(now = Date.now()) {
     seenUrl.add(item.url);
   });
   picked.sort((a, b) => (b.time ?? 0) - (a.time ?? 0));
-  const headlines = picked.map(({ time, ...item }) => item);
+  const headlines = picked.map(({ time, image, published, ...item }) => ({
+    ...item,
+    ...(published ? { published } : {}),
+    ...(image ? { image } : {}),
+  }));
 
   skipped.push('URLhaus and ThreatFox require an API key, so they are omitted.');
   skipped.push('VentureBeat and Reuters did not return a public feed, so they are omitted.');

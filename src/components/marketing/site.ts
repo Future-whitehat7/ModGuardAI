@@ -65,6 +65,13 @@ export function metaForPath(pathname: string): RouteMeta {
       return { title: `${post.title} | ModGuard AI`, description: post.description };
     }
   }
+  if (pathname === '/daily') {
+    return {
+      title: 'ModGuard Daily | ModGuard AI',
+      description:
+        'Public cybersecurity and AI reporting, posts from public platforms, a prompt generator, and sponsor placements. Every item links to its source.',
+    };
+  }
   if (pathname === '/sponsor') {
     return {
       title: 'Sponsors | ModGuard AI',
@@ -83,6 +90,7 @@ export interface SiteLink {
 
 export const primaryLinks: SiteLink[] = [
   { label: 'ScamCheck', href: '/scamcheck' },
+  { label: 'Daily', href: '/daily' },
   { label: 'Impersonation Check', href: '/impersonation-check' },
   { label: 'Insights', href: '/insights' },
   { label: 'Sponsors', href: '/sponsor' },
