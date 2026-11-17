@@ -72,7 +72,7 @@ export function metaForPath(pathname: string): RouteMeta {
         'Public cybersecurity and AI reporting, posts from public platforms, a prompt generator, and sponsor placements. Every item links to its source.',
     };
   }
-  if (pathname === '/give-back') {
+  if (pathname === '/give-back' || pathname === '/give-back/') {
     return {
       title: 'Give back | ModGuard AI',
       description:
