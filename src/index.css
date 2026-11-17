@@ -2296,3 +2296,32 @@ h2,
   width: 1px;
   overflow: hidden;
 }
+
+.give-back-page ul {
+  padding-left: 1.15rem;
+}
+
+.hire-scroll {
+  overflow-x: auto;
+}
+
+.hire-log {
+  width: 100%;
+  border-collapse: collapse;
+  color: #0F172A;
+  background: #FFFFFF;
+}
+
+.hire-log th,
+.hire-log td {
+  padding: 0.75rem 0.7rem;
+  border-bottom: 1px solid #C5A059;
+  text-align: left;
+  vertical-align: top;
+}
+
+.hire-log th {
+  color: #1E3A8A;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
