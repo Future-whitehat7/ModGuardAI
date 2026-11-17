@@ -3,7 +3,7 @@ export const partnerTypes = [
   'Research and data',
   'Education and campus',
   'Distribution',
-  'Bank / Telco / Platform integration',
+  'Integration',
 ] as const;
 
 export const sponsorTiers = [
@@ -12,17 +12,16 @@ export const sponsorTiers = [
   { name: 'Founding sponsor', note: 'Pricing on request' },
 ] as const;
 
-export const waitlistInterests = [
-  'Forward on WhatsApp or Telegram',
-  'Free scam-check button',
-  'Multilingual scam library',
-] as const;
+export const communityTitle = 'Community | ModGuard AI';
 
-export const publicLines = [
-  'The ModGuard community.',
-  'Five ways to raise a hand. Games are coming soon.',
-  'No partner is named here.',
-  'No sponsor is named here.',
-  'Example',
-  'Games are coming soon. This sample is not a score and not a vote count.',
-];
+export const communityDescription =
+  'Join the ModGuard community, ask about a partnership, or inquire about a sponsorship tier.';
+
+export const sectionLines = {
+  hero: 'Raise a hand. We read every note and write back.',
+  partner: 'Tell us the work you want to do with ModGuard.',
+  updates: "We'll email you when something new is ready.",
+  join: 'Leave your name and the kind of help you want to give.',
+  sponsor: 'Supporter, hackathon, or founding. Pricing is on request.',
+  card: 'Example card. Daily games are coming soon; this is not a real score.',
+} as const;

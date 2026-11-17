@@ -8,6 +8,30 @@
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ModGuard AI — Free AI Scam Checker | ScamCheck</title>
+    <script>
+      (function () {
+        var path = location.pathname.replace(/\/$/, '') || '/';
+        var page = {
+          '/community': {
+            title: 'Community | ModGuard AI',
+            description: 'Join the ModGuard community, ask about a partnership, or inquire about a sponsorship tier.'
+          }
+        }[path];
+        if (!page) return;
+        document.title = page.title;
+        var set = function (selector, content) {
+          var node = document.head.querySelector(selector);
+          if (node) node.setAttribute('content', content);
+        };
+        set('meta[name="description"]', page.description);
+        set('meta[property="og:title"]', page.title);
+        set('meta[property="og:description"]', page.description);
+        set('meta[name="twitter:title"]', page.title);
+        set('meta[name="twitter:description"]', page.description);
+        var canonical = document.head.querySelector('link[rel="canonical"]');
+        if (canonical) canonical.setAttribute('href', 'https://modguardai.org' + path);
+      })();
+    </script>
     <meta name="description" content="Check if a message is a scam. ModGuard ScamCheck is a free AI scam checker and phishing link checker for texts, emails, and links." />
     <meta name="keywords" content="AI scam checker, is this message a scam, phishing link checker" />
     <meta name="robots" content="index, follow" />
@@ -153,7 +177,7 @@
         <option>Research and data</option>
         <option>Education and campus</option>
         <option>Distribution</option>
-        <option>Bank / Telco / Platform integration</option>
+        <option>Integration</option>
       </select>
       <input type="text" name="region" />
       <input type="checkbox" name="give_back" value="yes" />
@@ -161,18 +185,8 @@
       <input name="bot-field" />
     </form>
     <form name="community-waitlist" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
       <input type="email" name="email" />
-      <input type="checkbox" name="interest" value="Forward on WhatsApp or Telegram" />
-      <input type="checkbox" name="interest" value="Free scam-check button" />
-      <input type="checkbox" name="interest" value="Multilingual scam library" />
-      <select name="app">
-        <option>WhatsApp</option>
-        <option>Telegram</option>
-        <option>Either</option>
-      </select>
-      <input type="text" name="country" />
-      <input type="text" name="site" />
-      <textarea name="languages"></textarea>
       <input name="bot-field" />
     </form>
     <form name="community-join" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
