@@ -72,6 +72,13 @@ export function metaForPath(pathname: string): RouteMeta {
         'Public cybersecurity and AI reporting, posts from public platforms, a prompt generator, and sponsor placements. Every item links to its source.',
     };
   }
+  if (pathname === '/community') {
+    return {
+      title: 'Community | ModGuard AI',
+      description:
+        'Partnership, waitlist, and sponsorship inquiries. Sponsorship tiers are pricing on request. Games are coming soon.',
+    };
+  }
   if (pathname === '/sponsor') {
     return {
       title: 'Sponsors | ModGuard AI',

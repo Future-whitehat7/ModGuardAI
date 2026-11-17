@@ -2169,3 +2169,130 @@ h2,
     box-shadow: 0 20px 44px rgba(30, 58, 138, 0.14);
   }
 }
+
+.community-lean .form-fold {
+  margin-top: 0.9rem;
+  border: 1px solid #D4AF37;
+  border-radius: 999px;
+  background: #1E3A8A;
+}
+
+.community-lean .form-fold summary {
+  padding: 0.8rem 1.15rem;
+  color: #FAFAFA;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.community-lean .form-fold summary::-webkit-details-marker {
+  display: none;
+}
+
+.community-lean .form-fold[open] {
+  border-radius: 22px;
+  background: #FFFFFF;
+}
+
+.community-lean .form-fold[open] summary {
+  color: #1E3A8A;
+}
+
+.community-form {
+  padding: 0 1.1rem 1.15rem;
+  color: #0F172A;
+}
+
+.community-form label {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.8rem;
+}
+
+.community-form input,
+.community-form textarea,
+.community-form select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #C5A059;
+  border-radius: 16px;
+  background: #FFFFFF;
+  color: #0F172A;
+}
+
+.community-form .check-set {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+  padding: 0;
+  border: 0;
+}
+
+.community-form .check-set legend {
+  width: 100%;
+}
+
+.community-form .check-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: auto;
+  margin: 0;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #C5A059;
+  border-radius: 999px;
+}
+
+.community-form .check-row input {
+  width: 1.1rem;
+  min-height: 1.1rem;
+}
+
+.community-form .check-row:has(input:checked) {
+  background: #1E3A8A;
+  color: #FAFAFA;
+}
+
+.tier-notes,
+.example-card {
+  margin-top: 1rem;
+}
+
+.tier-notes {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0;
+  list-style: none;
+}
+
+.tier-notes li,
+.example-card {
+  padding: 0.9rem 1rem;
+  border: 1px solid #C5A059;
+  border-radius: 18px;
+  background: #FFFFFF;
+  color: #0F172A;
+}
+
+.tier-notes span,
+.example-card p {
+  display: block;
+  color: #334155;
+}
+
+.badge-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+.hidden {
+  position: absolute;
+  left: -10000px;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+}

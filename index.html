@@ -144,6 +144,55 @@
       <textarea name="message"></textarea>
       <input name="bot-field" />
     </form>
+    <form name="community-partner" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="organization" />
+      <input type="text" name="contact" />
+      <input type="email" name="email" />
+      <select name="partnership">
+        <option>Platform and trust</option>
+        <option>Research and data</option>
+        <option>Education and campus</option>
+        <option>Distribution</option>
+        <option>Bank / Telco / Platform integration</option>
+      </select>
+      <input type="text" name="region" />
+      <input type="checkbox" name="give_back" value="yes" />
+      <textarea name="message"></textarea>
+      <input name="bot-field" />
+    </form>
+    <form name="community-waitlist" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="email" name="email" />
+      <input type="checkbox" name="interest" value="Forward on WhatsApp or Telegram" />
+      <input type="checkbox" name="interest" value="Free scam-check button" />
+      <input type="checkbox" name="interest" value="Multilingual scam library" />
+      <select name="app">
+        <option>WhatsApp</option>
+        <option>Telegram</option>
+        <option>Either</option>
+      </select>
+      <input type="text" name="country" />
+      <input type="text" name="site" />
+      <textarea name="languages"></textarea>
+      <input name="bot-field" />
+    </form>
+    <form name="community-join" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <textarea name="focus"></textarea>
+      <input name="bot-field" />
+    </form>
+    <form name="community-sponsor" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="company" />
+      <input type="text" name="contact" />
+      <input type="email" name="email" />
+      <select name="tier">
+        <option>Supporter</option>
+        <option>Hackathon sponsor</option>
+        <option>Founding sponsor</option>
+      </select>
+      <textarea name="message"></textarea>
+      <input name="bot-field" />
+    </form>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
