@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 const tabs = [
   { href: '/scamcheck', label: 'ScamCheck' },
   { href: '/daily', label: 'Daily' },
+  { href: '/community', label: 'Community' },
   { href: '/impersonation-check', label: 'Impersonation Check' },
   { href: '/insights', label: 'Insights' },
   { href: '/sponsor', label: 'Sponsors' },

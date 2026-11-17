@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { CommunityTeaser } from '../components/community/CommunityTeaser';
 import { DailyHub } from '../components/daily/DailyHub';
 import { PromptGenerator } from '../components/daily/PromptGenerator';
 import { SocialBuzz } from '../components/daily/SocialBuzz';
@@ -203,6 +204,8 @@ export const LandingPage = () => {
           <PromptGenerator />
         </div>
       </section>
+
+      <CommunityTeaser />
 
       <section className="page-section" aria-labelledby="sponsor-title">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">

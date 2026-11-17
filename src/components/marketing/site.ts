@@ -72,6 +72,13 @@ export function metaForPath(pathname: string): RouteMeta {
         'Public cybersecurity and AI reporting, posts from public platforms, a prompt generator, and sponsor placements. Every item links to its source.',
     };
   }
+  if (pathname === '/community') {
+    return {
+      title: 'Community | ModGuard AI',
+      description:
+        'Founding Contributor, hackathons, a five-minute doorway task, and a campus kit. Early and unpaid. The public board lists a name only after it is confirmed.',
+    };
+  }
   if (pathname === '/sponsor') {
     return {
       title: 'Sponsors | ModGuard AI',
@@ -91,6 +98,7 @@ export interface SiteLink {
 export const primaryLinks: SiteLink[] = [
   { label: 'ScamCheck', href: '/scamcheck' },
   { label: 'Daily', href: '/daily' },
+  { label: 'Community', href: '/community' },
   { label: 'Impersonation Check', href: '/impersonation-check' },
   { label: 'Insights', href: '/insights' },
   { label: 'Sponsors', href: '/sponsor' },

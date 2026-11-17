@@ -6,6 +6,7 @@ const links = [
   { label: 'Home', href: '/' },
   { label: 'ScamCheck', href: '/scamcheck' },
   { label: 'Daily', href: '/daily' },
+  { label: 'Community', href: '/community' },
   { label: 'Impersonation Check', href: '/impersonation-check' },
   { label: 'Insights', href: '/insights' },
   { label: 'Sponsors', href: '/sponsor' },

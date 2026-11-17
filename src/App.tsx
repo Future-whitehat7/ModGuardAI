@@ -5,6 +5,7 @@ import { ImpersonationThanks } from './pages/ImpersonationThanks';
 import { Operator } from './pages/Operator';
 import { InsightArticle } from './pages/InsightArticle';
 import { Insights } from './pages/Insights';
+import { Community } from './pages/Community';
 import { Daily } from './pages/Daily';
 import { LandingPage } from './pages/LandingPage';
 import { ScamCheckTool } from './pages/ScamCheckTool';
@@ -20,6 +21,7 @@ function App() {
         <Route element={<MarketingShell />}>
           <Route path="/" element={<LandingPage />} />
           <Route path="/daily" element={<Daily />} />
+          <Route path="/community" element={<Community />} />
           <Route path="/about" element={<About />} />
           <Route path="/scamcheck" element={<ScamCheckTool />} />
           <Route path="/impersonation-check" element={<ImpersonationCheck />} />
