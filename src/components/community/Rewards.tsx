@@ -1,3 +1,5 @@
+import { GuardianCard } from './GuardianCard';
+
 const perks = [
   {
     name: 'Spotted by you',
@@ -27,7 +29,7 @@ export function Rewards() {
       <p className="eyebrow">Rewards and perks</p>
       <h2 id="rewards-title" className="display section-display text-ice">The work should feel like a win.</h2>
       <p className="community-copy">
-        Recognition here is access and a record of the work. ModGuard runs two of these. The other two open when a partner brings them. None of them are live yet.
+        Recognition here is access and a record of the work. ModGuard runs two of these. The other two open when a partner brings them.
       </p>
       <ul className="perk-grid">
         {perks.map((perk) => (
@@ -38,6 +40,7 @@ export function Rewards() {
           </li>
         ))}
       </ul>
+      <GuardianCard />
     </section>
   );
 }

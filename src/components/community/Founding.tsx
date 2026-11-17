@@ -3,7 +3,7 @@ import type { CommunityBoard } from '../../community/board';
 export function Founding({ board }: { board: CommunityBoard }) {
   return (
     <section id="founding" className="community-block" aria-labelledby="founding-title">
-      <p className="eyebrow">A. Founding Contributor</p>
+      <p className="eyebrow">Founding Contributor</p>
       <h2 id="founding-title" className="display section-display text-ice">Be here before it&apos;s big.</h2>
       <p className="community-lede">Founding Contributors shape what ships.</p>
       <p className="community-copy">

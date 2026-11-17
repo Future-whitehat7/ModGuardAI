@@ -28,7 +28,7 @@ export function CampusKit() {
 
   return (
     <section id="campus" className="community-block" aria-labelledby="campus-title">
-      <p className="eyebrow">E. Start a ModGuard chapter</p>
+      <p className="eyebrow">Start a chapter</p>
       <h2 id="campus-title" className="display section-display text-ice">Your club can run the night.</h2>
       <p className="community-copy">
         A chapter is self-run. It uses this campus kit and a Guardian Squad. The kit has the run of show, the themes, the rubric, and the game prompts.

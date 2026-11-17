@@ -25,7 +25,7 @@ export function Hackathons({ board, now }: { board: CommunityBoard; now: number 
 
   return (
     <section id="sprints" className="community-block" aria-labelledby="sprint-title">
-      <p className="eyebrow">B. Vibe Code Sprints</p>
+      <p className="eyebrow">Vibe Code Sprints</p>
       <h2 id="sprint-title" className="display section-display text-ice">Idea to shipped, in a weekend.</h2>
       <p className="community-copy">
         If you can vibe code, you can ship. Use any AI coding tool. Pick a window, build something about AI safety, and show it. Top builds can earn Spotted by you credit or a Guardian Card tier. Partner prizes unlock as partners join.

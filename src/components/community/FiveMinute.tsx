@@ -94,7 +94,7 @@ export function FiveMinute({
 
   return (
     <section id="five" className="community-block" aria-labelledby="five-title">
-      <p className="eyebrow">C. Start in 5 minutes</p>
+      <p className="eyebrow">Start in 5 minutes</p>
       <h2 id="five-title" className="display section-display text-ice">Your first win takes one example.</h2>
       <p className="community-copy">
         Three labeled examples. Finish one and you leave with a card, a streak, and a step on the path. These are practice cases, so you can learn the check before a real one lands.

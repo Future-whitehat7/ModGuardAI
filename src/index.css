@@ -2175,8 +2175,8 @@ h2,
 }
 
 .community-block {
-  margin-top: 3.5rem;
-  padding-top: 2rem;
+  margin-top: 2.2rem;
+  padding-top: 1.35rem;
   border-top: 1px solid #C5A059;
 }
 
@@ -2732,21 +2732,35 @@ h2,
 }
 
 .check-set {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
   margin-top: 0.9rem;
   padding: 0;
   border: 0;
 }
 
-.check-set legend,
-.check-row {
+.check-set legend {
+  width: 100%;
   color: #0F172A;
 }
 
-.check-row {
-  display: flex;
+.community-form .check-row {
+  display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  margin-top: 0.45rem;
+  gap: 0.45rem;
+  width: auto;
+  margin: 0;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #C5A059;
+  border-radius: 999px;
+  background: #FFFFFF;
+  color: #0F172A;
+}
+
+.community-form .check-row:has(input:checked) {
+  background: #1E3A8A;
+  color: #FAFAFA;
 }
 
 .community-form input[type='checkbox'] {
@@ -2932,5 +2946,136 @@ h2,
 @media (min-width: 800px) {
   .habit-loop {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.form-fold {
+  margin-top: 0.9rem;
+  border: 1px solid #D4AF37;
+  border-radius: 999px;
+  background: #1E3A8A;
+}
+
+.form-fold summary {
+  padding: 0.8rem 1.15rem;
+  color: #FAFAFA;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.form-fold summary::-webkit-details-marker {
+  display: none;
+}
+
+.form-fold[open] {
+  border-radius: 22px;
+  background: #FFFFFF;
+}
+
+.form-fold[open] summary {
+  color: #1E3A8A;
+}
+
+.form-fold .community-form {
+  margin: 0;
+  border: 0;
+  box-shadow: none;
+}
+
+.region-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.region-row li {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #C5A059;
+  border-radius: 999px;
+  color: #0F172A;
+  background: #FFFFFF;
+}
+
+.region-row li.featured {
+  padding: 0.6rem 1.05rem;
+  background: #1E3A8A;
+  color: #FAFAFA;
+  font-size: 1.15rem;
+}
+
+.guardian-preview ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guardian-preview li {
+  min-width: 8.4rem;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid #C5A059;
+  border-radius: 18px;
+  background: #FFFFFF;
+  color: #0F172A;
+}
+
+.guardian-preview li span {
+  display: block;
+  color: #1E3A8A;
+  font-size: 0.75rem;
+}
+
+.guardian-preview li.locked {
+  background-image: linear-gradient(110deg, #FFFFFF 35%, rgba(212, 175, 55, 0.35) 50%, #FFFFFF 65%);
+  background-size: 220% 100%;
+  animation: gold-shimmer 2.8s linear infinite;
+}
+
+.play-hero {
+  padding: 1.3rem 1rem 1.5rem;
+  border: 1px solid #C5A059;
+  border-radius: 28px;
+  background: linear-gradient(180deg, #FFFFFF, #F8F4E8);
+}
+
+.play-hero .play-card h3 {
+  font-size: 2.15rem;
+}
+
+.duel-pair button.is-correct {
+  background: #1E3A8A;
+  color: #FAFAFA;
+  border-color: #D4AF37;
+}
+
+.duel-pair button.is-wrong {
+  color: #334155;
+  opacity: 0.72;
+}
+
+.sprint-tickets button {
+  background-image: linear-gradient(160deg, rgba(212, 175, 55, 0.22), transparent 46%), linear-gradient(#FFFFFF, #FFFFFF);
+}
+
+@media (min-width: 900px) {
+  .play-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  #scam-duel {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guardian-preview li.locked {
+    animation: none;
   }
 }

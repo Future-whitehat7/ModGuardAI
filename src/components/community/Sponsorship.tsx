@@ -22,7 +22,7 @@ const tiers = [
 export function Sponsorship() {
   return (
     <section id="sponsor-community" className="community-block" aria-labelledby="sponsor-community-title">
-      <p className="eyebrow">F. Sponsor the community</p>
+      <p className="eyebrow">Sponsor the community</p>
       <h2 id="sponsor-community-title" className="display section-display text-ice">Sponsor the people building the check.</h2>
       <p className="community-copy">
         Companies can back Founding Contributors, hackathons and campus kits, and ModGuard Daily. Pricing is on request. Talk to us, and we will reply with a scope.

@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { readHires, type GiveBackHire } from '../../community/hires';
+import { GuardianCard } from './GuardianCard';
 
 const steps = [
   { name: 'Contribute', detail: 'A doorway task, a build, or a campus night that you actually did.' },
   { name: 'Guardian Card tiers', detail: 'Scout, Spotter, Analyst, Guardian, then Founding Contributor. A tier follows the work, and the higher ones stay locked until that work exists.' },
   { name: 'Reference letter', detail: 'A letter that names the work on your record. A title alone is not the letter.' },
-  { name: 'Give back hiring', detail: 'Partners are asked to open 1 to 2 percent of relevant roles to early-career members. Age is not the rule. No partner has committed yet.' },
+  { name: 'Give back hiring', detail: 'Partners are asked to open 1 to 2 percent of relevant roles to early-career members. Age is not the rule.' },
 ];
 
 const rules = [
@@ -36,6 +37,7 @@ export function Career() {
       <p className="eyebrow">Career path</p>
       <h2 id="career-title" className="display section-display text-ice">The work can become a next step.</h2>
       <p className="community-copy">Access, a record of what you shipped, and a door a partner can open. Nothing here is a job offer.</p>
+      <GuardianCard />
       <ol className="path-steps">
         {steps.map((step, index) => (
           <li key={step.name}>

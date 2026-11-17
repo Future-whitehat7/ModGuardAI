@@ -201,23 +201,18 @@
       <textarea name="message"></textarea>
       <input name="bot-field" />
     </form>
-    <form name="community-forward" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+    <form name="community-waitlist" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
       <input type="email" name="email" />
+      <input type="checkbox" name="interest" value="Forward on WhatsApp or Telegram" />
+      <input type="checkbox" name="interest" value="Free scam-check button" />
+      <input type="checkbox" name="interest" value="Multilingual scam library" />
       <select name="app">
         <option>WhatsApp</option>
         <option>Telegram</option>
+        <option>Either</option>
       </select>
       <input type="text" name="country" />
-      <input name="bot-field" />
-    </form>
-    <form name="community-widget" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
-      <input type="email" name="email" />
       <input type="text" name="site" />
-      <input name="bot-field" />
-    </form>
-    <form name="community-library" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
-      <input type="text" name="name" />
-      <input type="email" name="email" />
       <textarea name="languages"></textarea>
       <input name="bot-field" />
     </form>

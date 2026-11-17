@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { markDuel, skipDuel, type PlayHabit } from '../../community/habits';
 import { pairForDay, votePercent, type DuelPair } from '../../community/play';
+import { Burst } from './Burst';
 import { ShareActions } from './ShareActions';
 
 const SECONDS = 10;
@@ -82,9 +83,19 @@ export function ScamDuel({
             </svg>
             <span>{reveal ? 'Round closed' : `${left}s`}</span>
           </div>
+          <Burst active={reveal && right} />
           <div className="duel-pair">
-            <button type="button" disabled={reveal} onClick={() => choose('left')}>{sides.left}</button>
-            <button type="button" disabled={reveal} onClick={() => choose('right')}>{sides.right}</button>
+            {(['left', 'right'] as const).map((side) => (
+              <button
+                key={side}
+                type="button"
+                className={reveal && side === sides.scamSide ? 'is-correct' : reveal && side === pick ? 'is-wrong' : undefined}
+                disabled={reveal}
+                onClick={() => choose(side)}
+              >
+                {side === 'left' ? sides.left : sides.right}
+              </button>
+            ))}
           </div>
           <button type="button" className="skip-round" onClick={() => { setPick('skip'); onHabit(skipDuel(habit, day)); }}>
             Skip this round

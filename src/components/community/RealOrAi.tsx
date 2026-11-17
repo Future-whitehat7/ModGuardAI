@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { arcadeRemaining, markArcade, type PlayHabit } from '../../community/habits';
 import { arcadeCards } from '../../community/play';
+import { Burst } from './Burst';
 import { ShareActions } from './ShareActions';
 
 export function RealOrAi({
@@ -14,6 +15,7 @@ export function RealOrAi({
   const remaining = arcadeRemaining(habit, day);
   const [skipped, setSkipped] = useState(0);
   const [note, setNote] = useState('');
+  const [burst, setBurst] = useState(false);
   const played = habit.arcadeDay === day ? habit.arcadePlayed : 0;
   const index = played + skipped;
   const card = arcadeCards[index];
@@ -23,6 +25,7 @@ export function RealOrAi({
     if (!card || finished) return;
     const hit = kind === card.kind;
     onHabit(markArcade(habit, day, hit));
+    setBurst(hit);
     setNote(hit ? `Yes. ${card.credit}` : `The other label. ${card.credit}`);
   };
 
@@ -35,6 +38,7 @@ export function RealOrAi({
       <p>Content note: still photos of Earth, the Moon, and generated objects. Nothing graphic. Audio round coming soon. Daily cap: {arcadeCards.length} cards.</p>
       {card && !finished ? (
         <figure>
+          <Burst active={burst} />
           <img src={card.src} alt="" />
           <div className="duel-pair">
             <button type="button" onClick={() => guess('real')}>Real</button>

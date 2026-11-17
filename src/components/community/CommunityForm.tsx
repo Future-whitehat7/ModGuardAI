@@ -11,7 +11,7 @@ export function CommunityForm({
   fields,
 }: {
   id: string;
-  formName: 'community-join' | 'campus-kit' | 'community-sponsor' | 'community-partner' | 'community-squad' | 'community-sprint' | 'community-readiness' | 'community-forward' | 'community-widget' | 'community-library' | 'community-chapter';
+  formName: 'community-join' | 'campus-kit' | 'community-sponsor' | 'community-partner' | 'community-squad' | 'community-sprint' | 'community-readiness' | 'community-waitlist' | 'community-chapter';
   title: string;
   lede: string;
   fields: { name: string; label: string; type?: string; required?: boolean; options?: string[]; defaultOption?: string }[];
@@ -49,7 +49,9 @@ export function CommunityForm({
   }
 
   return (
-    <form id={id} className="community-form" name={formName} method="POST" data-netlify="true" data-netlify-honeypot="bot-field" onSubmit={onSubmit}>
+    <details className="form-fold">
+      <summary>{title}</summary>
+      <form id={id} className="community-form" name={formName} method="POST" data-netlify="true" data-netlify-honeypot="bot-field" onSubmit={onSubmit}>
       <input type="hidden" name="form-name" value={formName} />
       <p className="hidden">
         <label>
@@ -57,7 +59,6 @@ export function CommunityForm({
           <input name="bot-field" />
         </label>
       </p>
-      <h3>{title}</h3>
       <p>{lede}</p>
       {fields.map((field) => field.type === 'checks' && field.options ? (
         <fieldset key={field.name} className="check-set">
@@ -93,6 +94,7 @@ export function CommunityForm({
       <button className="btn-accent" type="submit" disabled={status === 'sending'}>
         {status === 'sending' ? 'Sending…' : 'Send'}
       </button>
-    </form>
+      </form>
+    </details>
   );
 }

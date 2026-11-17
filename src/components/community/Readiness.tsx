@@ -22,7 +22,7 @@ export function Readiness() {
         <article>
           <p className="community-kicker">Coming soon</p>
           <h3>Executive Deepfake Readiness</h3>
-          <p>The next step after the one-time check. No price yet.</p>
+          <p>The next step after the one-time check.</p>
           <ul>
             {coming.map((item) => (
               <li key={item}>{item}</li>

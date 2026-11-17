@@ -1,5 +1,5 @@
 import { partnerTypes } from '../../community/partners';
-import { anchorRegions, globalChips, otherGulf, regionChoices } from '../../community/regions';
+import { anchorRegions, otherGulf, regionChoices } from '../../community/regions';
 import { CommunityForm } from './CommunityForm';
 
 const kinds = [
@@ -34,37 +34,22 @@ const steps = [
 export function Partnerships() {
   return (
     <section id="partnerships" className="community-block" aria-labelledby="partner-title">
-      <p className="eyebrow">G. Partner with ModGuard</p>
+      <p className="eyebrow">Partner with ModGuard</p>
       <h2 id="partner-title" className="display section-display text-ice">A global community. Your country included.</h2>
       <p className="community-copy">
         We grow by opening access. The whole world can contribute. This is a search for partners, not a map of offices, and not a government endorsement.
       </p>
       <div className="global-band">
         <p className="community-kicker">First anchor partner regions we&apos;re seeking</p>
-        <ul className="region-chips">
+        <ul className="region-row">
           {anchorRegions.map((chip) => (
-            <li key={chip}>{chip}</li>
+            <li key={chip} className="featured">{chip}</li>
           ))}
-        </ul>
-        <p>Abu Dhabi, Dubai, Qatar, and everywhere else are invited the same way.</p>
-        <ul className="region-chips">
           {otherGulf.map((chip) => (
             <li key={chip}>{chip}</li>
           ))}
-        </ul>
-        <p className="community-kicker">Global by design</p>
-        <svg className="region-line" viewBox="0 0 640 72" aria-hidden="true">
-          <path d="M8 36h624" />
-          <circle cx="80" cy="36" r="5" />
-          <circle cx="200" cy="36" r="5" />
-          <circle cx="320" cy="36" r="5" />
-          <circle cx="440" cy="36" r="5" />
-          <circle cx="560" cy="36" r="5" />
-        </svg>
-        <ul className="region-chips">
-          {globalChips.filter((chip) => chip === 'Your country' || chip === 'Anywhere in the world').map((chip) => (
-            <li key={chip}>{chip}</li>
-          ))}
+          <li>Your country</li>
+          <li>Anywhere</li>
         </ul>
       </div>
       <ul className="sponsor-tiers">
