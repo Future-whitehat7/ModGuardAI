@@ -186,6 +186,45 @@ export async function collectThreats(now = Date.now()) {
       items.push(item);
     });
   });
+
+  const hnFeeds = await Promise.all([
+    load('https://hn.algolia.com/api/v1/search_by_date?query=cybersecurity&tags=story&hitsPerPage=5'),
+    load('https://hn.algolia.com/api/v1/search_by_date?query=AI%20tools&tags=story&hitsPerPage=5'),
+  ]);
+  let hnCount = 0;
+  hnFeeds.forEach((text, index) => {
+    if (!text) return;
+    try {
+      const data = JSON.parse(text);
+      (Array.isArray(data.hits) ? data.hits : []).forEach((hit) => {
+        const title = typeof hit.title === 'string' ? hit.title.trim() : '';
+        const url = typeof hit.url === 'string' && hit.url.startsWith('http')
+          ? hit.url
+          : (hit.objectID ? `https://news.ycombinator.com/item?id=${hit.objectID}` : '');
+        if (!title || !url.startsWith('http')) return;
+        const titleKey = title.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().slice(0, 90);
+        const urlKey = url.replace(/[?#].*$/, '');
+        if (seen.has(titleKey) || seen.has(urlKey)) return;
+        seen.add(titleKey);
+        seen.add(urlKey);
+        const time = Date.parse(hit.created_at);
+        items.push({
+          title,
+          url,
+          source: 'Hacker News',
+          summary: '',
+          tag: index === 0 ? 'Cyber' : 'AI',
+          date: Number.isNaN(time) ? '' : new Date(time).toISOString().slice(0, 10),
+          time: Number.isNaN(time) ? null : time,
+        });
+        hnCount += 1;
+      });
+    } catch {
+      hnCount = -1;
+    }
+  });
+  if (hnCount <= 0) skipped.push('Hacker News stories');
+
   items.sort((a, b) => (b.time ?? 0) - (a.time ?? 0));
   const seenUrl = new Set();
   const picked = [];

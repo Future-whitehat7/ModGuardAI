@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "node scripts/fetch-threats.mjs && vite build",
     "lint": "eslint .",
-    "test": "node --experimental-strip-types --test scripts/impersonation-handoff.test.mjs scripts/order-system.test.mjs scripts/research.test.mjs scripts/lookalike.test.mjs scripts/risk-tier.test.mjs scripts/radar-badge.test.mjs scripts/scamcheck-relay.test.mjs",
+    "test": "node --experimental-strip-types --test scripts/impersonation-handoff.test.mjs scripts/order-system.test.mjs scripts/research.test.mjs scripts/lookalike.test.mjs scripts/risk-tier.test.mjs scripts/radar-badge.test.mjs scripts/scamcheck-relay.test.mjs scripts/daily.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -17,8 +17,6 @@
     "@fontsource/inter-tight": "^5.3.0",
     "@fontsource/jetbrains-mono": "^5.3.0",
     "@netlify/blobs": "^10.7.13",
-    "@react-three/drei": "^9.92.7",
-    "@react-three/fiber": "^8.15.12",
     "@realitydefender/realitydefender": "^0.1.15",
     "framer-motion": "^11.0.3",
     "gsap": "^3.12.4",
@@ -27,8 +25,7 @@
     "pdf-lib": "1.17.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.21.1",
-    "three": "^0.160.0"
+    "react-router-dom": "^6.21.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
