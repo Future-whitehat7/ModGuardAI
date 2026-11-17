@@ -1,18 +1,35 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { excerpt, fromBluesky, fromHackerNews, fromReddit, fromX } from '../netlify/functions/lib/buzz.mjs';
-import { cleanText, dailyCategory, isPublishable, sponsoredCard } from '../src/lib/daily.ts';
+import { excerpt, fromBluesky, fromHackerNews, fromReddit, fromX, keepBuzz } from '../netlify/functions/lib/buzz.mjs';
+import { keepPublicPost } from '../src/lib/buzzQuality.ts';
+import { cleanText, dailyCategory, freshness, isDailyRelevant, isPublishable, rankDaily, sponsoredCard, strongStats } from '../src/lib/daily.ts';
 import { buildPrompt } from '../src/lib/prompts.ts';
 
 test('daily categories follow the headline, and an unrelated title stays unlabeled', () => {
   assert.equal(dailyCategory({ title: 'Ransomware crew lists a hospital', summary: '', tag: 'Cyber' }), 'Cybersecurity');
-  assert.equal(dailyCategory({ title: 'OpenAI ships a new model', summary: '', tag: 'AI' }), 'AI');
+  assert.equal(dailyCategory({ title: 'OpenAI ships a new model', summary: '', tag: 'AI' }), 'AI tools');
   assert.equal(dailyCategory({ title: 'ChatGPT adds a workspace tool', summary: '', tag: 'AI' }), 'AI tools');
   assert.equal(dailyCategory({ title: 'A bank deployed the checker in production', summary: 'case study', tag: 'AI' }), 'Use cases');
   assert.equal(dailyCategory({ title: 'Quarterly earnings', summary: '', tag: 'Tech' }), null);
   assert.equal(cleanText('Hello&nbsp;world&#8230;'), 'Hello world…');
   assert.equal(isPublishable({ title: 'A school deepfake story about a student that is sexual', summary: '' }), false);
   assert.equal(isPublishable({ title: 'Researchers detect a new deepfake scam', summary: '' }), true);
+  assert.equal(isDailyRelevant({ title: "The AI start-ups fixing India's broken roads", summary: '', tag: 'AI' }), false);
+  assert.equal(isDailyRelevant({ title: "Tech leaders are convinced that Jensen Huang’s exit was a plot against him", summary: '', tag: 'AI' }), false);
+  assert.equal(isDailyRelevant({ title: 'Ransomware crew lists a hospital', summary: '', tag: 'Cyber' }), true);
+  const ranked = rankDaily([
+    { title: 'A chatbot ships', url: 'https://example.com/a', source: 'The Verge AI', date: '2026-11-16', summary: 'ChatGPT', tag: 'AI' },
+    { title: 'CISA adds a vulnerability', url: 'https://example.com/b', source: 'CISA', date: '2026-11-15', summary: 'Known exploited', tag: 'Cyber' },
+  ]);
+  assert.equal(ranked[0].source, 'CISA');
+  assert.equal(freshness('2026-11-16T12:00:00.000Z', Date.parse('2026-11-16T12:20:00.000Z'))?.fresh, true);
+  assert.equal(freshness('2026-11-16', Date.parse('2026-11-16T18:00:00.000Z'))?.fresh, false);
+  const stats = strongStats([
+    { label: 'Known exploited vulnerabilities', value: 1700, source: 'CISA KEV', url: 'https://www.cisa.gov/known-exploited-vulnerabilities-catalog' },
+    { label: 'Online botnet C2 hosts', value: 1, source: 'abuse.ch', url: 'https://feodotracker.abuse.ch/' },
+    { label: 'CVEs published in the last 7 days', value: 400, source: 'NVD', url: 'https://services.nvd.nist.gov/rest/json/cves/2.0' },
+  ]);
+  assert.deepEqual(stats.map((stat) => stat.label), ['Known exploited vulnerabilities', 'New CVEs this week']);
 });
 
 test('buzz rows keep real posts and drop blanks', () => {
@@ -47,6 +64,17 @@ test('buzz rows keep real posts and drop blanks', () => {
   assert.equal(hn.length, 1);
   assert.equal(hn[0].url, 'https://news.ycombinator.com/item?id=42');
   assert.equal(excerpt('<p>Hello&amp;nbsp;</p>').includes('<'), false);
+  const bot = { platform: 'Bluesky', author: 'words.bot', text: 'Bluesky Top 10 Trending Words today', url: 'https://bsky.app/profile/words.bot/post/1', time: '', likes: 4 };
+  const promo = { platform: 'Bluesky', author: 'ads.example', text: 'Heurisko reward site harvests passwords. Sign up now.', url: 'https://bsky.app/profile/ads/post/1', time: '', likes: 9 };
+  const quiet = { platform: 'Bluesky', author: 'ada.bsky.social', text: 'This phishing page asks for a bank code.', url: 'https://bsky.app/profile/ada/post/1', time: '', likes: 0, replies: 0, reposts: 0 };
+  const heard = { platform: 'Hacker News', author: 'lee', text: 'The ransomware note asks for bitcoin.', url: 'https://news.ycombinator.com/item?id=7', time: '', likes: 0 };
+  assert.equal(keepBuzz(bot), false);
+  assert.equal(keepBuzz(promo), false);
+  assert.equal(keepBuzz(quiet), false);
+  assert.equal(keepBuzz(heard), true);
+  assert.equal(keepBuzz({ platform: 'Bluesky', author: 'fan', text: 'Sam Altman and Elon Musk are running a giant scam.', url: 'https://bsky.app/profile/fan/post/1', time: '', likes: 8 }), false);
+  assert.equal(keepPublicPost(quiet), false);
+  assert.equal(keepPublicPost(heard), true);
 });
 
 test('X posts are parsed only from a payload, and the deck has no sponsor until one is configured', () => {

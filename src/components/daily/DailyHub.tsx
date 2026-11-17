@@ -1,11 +1,42 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { adSlots } from '../../config/adSlots';
-import { DAILY_CATEGORIES, dailyCategory, sponsoredCard, type DailyCategory, type DailyItem } from '../../lib/daily';
+import { DAILY_CATEGORIES, dailyCategory, freshness, sponsoredCard, type DailyCategory, type DailyItem } from '../../lib/daily';
 import { SwipeDeck } from './SwipeDeck';
 import type { DailyStat } from './useDailyFeed';
 
 type Filter = 'All' | DailyCategory;
+
+function monogram(source: string) {
+  const parts = source.split(/[^A-Za-z0-9]+/).filter(Boolean);
+  return `${parts[0]?.[0] ?? 'M'}${parts[1]?.[0] ?? ''}`.toUpperCase();
+}
+
+function StoryCard({ item }: { item: DailyItem }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const category = dailyCategory(item);
+  const when = freshness(item.published || '');
+  const showImage = Boolean(item.image) && !imageFailed;
+  return (
+    <article className="daily-story" data-category={category ?? 'Cybersecurity'}>
+      {showImage ? (
+        <img src={item.image ?? ''} alt="" onError={() => setImageFailed(true)} />
+      ) : (
+        <div className="daily-tile" aria-hidden="true">{monogram(item.source)}</div>
+      )}
+      <div className="daily-story-body">
+        <p className="daily-kicker">
+          {category ? <span className="daily-chip">{category}</span> : null}
+          <span>{item.source || 'Source'}</span>
+          {when ? <time dateTime={item.published}>{when.label}</time> : null}
+          {when?.fresh ? <span className="daily-new">New</span> : null}
+        </p>
+        <h3><a href={item.url}>{item.title}</a></h3>
+        {item.summary ? <p>{item.summary}</p> : null}
+      </div>
+    </article>
+  );
+}
 
 function matches(item: DailyItem, filter: Filter) {
   if (filter === 'All') return true;
@@ -71,15 +102,7 @@ export function DailyHub({
               <p>{entry.sponsor.message}</p>
             </article>
           ) : (
-            <article className="daily-story">
-              <p className="daily-kicker">
-                <span>{entry.item.source || 'Source'}</span>
-                {entry.item.date ? <time dateTime={entry.item.date}>{entry.item.date}</time> : null}
-                {dailyCategory(entry.item) ? <span>{dailyCategory(entry.item)}</span> : null}
-              </p>
-              <h3><a href={entry.item.url}>{entry.item.title}</a></h3>
-              {entry.item.summary ? <p>{entry.item.summary}</p> : null}
-            </article>
+            <StoryCard item={entry.item} />
           ))}
         />
       )}

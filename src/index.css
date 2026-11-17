@@ -1053,9 +1053,8 @@ html.motion-js .reveal.is-in {
 
 .hero-layout {
   display: grid;
-  gap: 1.25rem;
-  max-width: 44rem;
-  margin-inline: auto;
+  gap: 2.5rem;
+  align-items: center;
 }
 
 .hero-display {
@@ -1289,7 +1288,8 @@ p a.text-accent,
   }
 
   .hero-layout {
-    grid-template-columns: minmax(0, 44rem);
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+    column-gap: 3.5rem;
   }
 
   .hero-plate.brand-picture {
@@ -1856,8 +1856,158 @@ h2,
 }
 
 .swipe-card {
-  flex: 0 0 min(84%, 26rem);
-  scroll-snap-align: start;
+  flex: 0 0 min(86%, 22rem);
+  scroll-snap-align: center;
+}
+
+@media (min-width: 800px) {
+  .swipe-card {
+    flex-basis: min(68%, 34rem);
+  }
+}
+
+.swipe-track.is-dragging .swipe-card {
+  transform: scale(0.975);
+}
+
+.swipe-progress {
+  height: 3px;
+  margin-top: 0.85rem;
+  border-radius: 999px;
+  background: rgba(197, 160, 89, 0.35);
+  overflow: hidden;
+}
+
+.swipe-progress span {
+  display: block;
+  height: 100%;
+  background: #1E3A8A;
+  box-shadow: 0 0 0 1px #D4AF37;
+}
+
+.daily-story {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+
+.daily-story img,
+.daily-tile {
+  display: block;
+  width: 100%;
+  height: 11.5rem;
+  object-fit: cover;
+}
+
+.daily-tile {
+  display: grid;
+  place-items: center;
+  color: #0F172A;
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: 2.6rem;
+  letter-spacing: 0.04em;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.45), transparent 42%),
+    radial-gradient(circle at 80% 80%, rgba(30, 58, 138, 0.28), transparent 46%),
+    #FAFAFA;
+}
+
+.daily-story-body {
+  padding: 1rem 1.15rem 1.2rem;
+}
+
+.daily-chip,
+.daily-new {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5rem;
+  padding: 0 0.55rem;
+  border: 1px solid #C5A059;
+  border-radius: 999px;
+  color: #0F172A;
+  letter-spacing: 0.04em;
+}
+
+.daily-new {
+  background: #1E3A8A;
+  color: #FAFAFA;
+  border-color: #D4AF37;
+}
+
+.hero-panel {
+  padding: 1.35rem 1.35rem 1.15rem;
+  border: 1px solid #C5A059;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 24px 60px rgba(30, 58, 138, 0.1);
+}
+
+.hero-panel ol {
+  display: grid;
+  gap: 0.85rem;
+  margin: 1rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hero-panel a {
+  color: #1E3A8A;
+}
+
+.hero-panel li a {
+  display: grid;
+  gap: 0.15rem;
+  color: #0F172A;
+}
+
+.hero-panel small,
+.hero-kev small {
+  color: #334155;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hero-kev {
+  display: grid;
+  gap: 0.1rem;
+  margin-top: 0.8rem;
+  color: #0F172A;
+}
+
+.hero-kev span {
+  color: #0F172A;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.hero-emblem {
+  display: grid;
+  place-items: center;
+  width: min(100%, 280px);
+  height: 280px;
+  margin-inline: auto;
+  border: 1px solid #C5A059;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 16px rgba(212, 175, 55, 0.2),
+    0 0 0 32px rgba(30, 58, 138, 0.08);
+}
+
+.hero-emblem img {
+  width: 132px;
+  height: 132px;
+  object-fit: contain;
+}
+
+.buzz-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #C5A059;
 }
 
 .daily-story,
@@ -1953,8 +2103,36 @@ h2,
   white-space: pre-wrap;
 }
 
+.prompt-tool select,
+.prompt-tool textarea {
+  width: 100%;
+  appearance: none;
+  border: 1px solid #C5A059;
+  border-radius: 16px;
+  background: #FFFFFF;
+  color: #0F172A;
+  font: inherit;
+}
+
 .prompt-tool select {
-  width: min(100%, 22rem);
+  width: min(100%, 24rem);
+  min-height: 48px;
+  padding: 0 2.4rem 0 0.95rem;
+  background-image: linear-gradient(45deg, transparent 50%, #1E3A8A 50%), linear-gradient(135deg, #1E3A8A 50%, transparent 50%);
+  background-position: calc(100% - 18px) 52%, calc(100% - 12px) 52%;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.prompt-tool textarea {
+  min-height: 8rem;
+  padding: 0.9rem 1rem;
+}
+
+.prompt-tool select:focus-visible,
+.prompt-tool textarea:focus-visible {
+  outline: 2px solid #1E3A8A;
+  outline-offset: 3px;
 }
 
 .sponsor-daily ul {
@@ -1970,8 +2148,12 @@ h2,
 
 
 @media (prefers-reduced-motion: reduce) {
-  .swipe-track {
+  .swipe-track,
+  .swipe-track.is-dragging .swipe-card,
+  .swipe-progress span {
     scroll-behavior: auto;
+    transform: none;
+    transition: none;
   }
 }
 

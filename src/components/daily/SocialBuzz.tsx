@@ -9,9 +9,9 @@ function when(value: string) {
 
 function counts(post: BuzzPost) {
   const parts: string[] = [];
-  if (typeof post.likes === 'number') parts.push(`${post.likes.toLocaleString('en-US')} likes`);
-  if (typeof post.replies === 'number') parts.push(`${post.replies.toLocaleString('en-US')} replies`);
-  if (typeof post.reposts === 'number') parts.push(`${post.reposts.toLocaleString('en-US')} reposts`);
+  if (typeof post.likes === 'number' && post.likes > 0) parts.push(`${post.likes.toLocaleString('en-US')} likes`);
+  if (typeof post.replies === 'number' && post.replies > 0) parts.push(`${post.replies.toLocaleString('en-US')} replies`);
+  if (typeof post.reposts === 'number' && post.reposts > 0) parts.push(`${post.reposts.toLocaleString('en-US')} reposts`);
   return parts.join(' · ');
 }
 
@@ -27,6 +27,7 @@ export function SocialBuzz({ posts }: { posts: BuzzPost[] }) {
         render={(post) => (
           <article className="buzz-card">
             <p className="daily-kicker">
+              {post.avatar ? <img className="buzz-avatar" src={post.avatar} alt="" /> : null}
               <span>{post.platform}</span>
               <span>@{post.author}</span>
               {post.time ? <time dateTime={post.time}>{when(post.time)}</time> : null}

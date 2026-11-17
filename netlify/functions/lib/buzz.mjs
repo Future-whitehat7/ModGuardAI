@@ -1,6 +1,6 @@
 /** Public posts only. Nothing here is written by ModGuard, and nothing is stored. */
 
-const QUERIES = ['cybersecurity', 'AI scam', 'phishing'];
+const QUERIES = ['phishing', 'ransomware', 'data breach', 'deepfake scam'];
 
 function plain(value) {
   return String(value ?? '')
@@ -62,6 +62,9 @@ export function fromBluesky(payload) {
       replies: item?.replyCount,
       reposts: item?.repostCount,
     });
+    if (row && typeof item?.author?.avatar === 'string' && item.author.avatar.startsWith('https://')) {
+      row.avatar = item.author.avatar;
+    }
     return row ? [row] : [];
   });
 }
@@ -140,16 +143,43 @@ async function readJson(url, headers) {
   }
 }
 
+const BUZZ_TOPIC = /\b(cyber\w*|scams?|phish\w*|frauds?|deepfakes?|privacy|malware|ransom\w*|breach\w*|security|credentials?|impersonat\w*|2fa|mfa|hack\w*)\b/i;
+const BUZZ_BOT = /\.bot\b|trending words|top 10 trending/i;
+const BUZZ_PROMO = /\b(heurisko|use code|discount code|sign up now|sponsored post|buy now|reward site)\b/i;
+const BUZZ_POLITICS = /\b(trump|biden|election|democrat|republican|maga|epstein|tariff)\b/i;
+const BUZZ_CELEB = /\b(altman|musk|zuckerberg|pichai|amodei|huang)\b/i;
+const BUZZ_CONCRETE = /\b(phish\w*|ransom\w*|malware|breach\w*|credential\w*|deepfake\w*|exploit\w*)\b/i;
+
+export function buzzEngagement(row) {
+  return (row.likes || 0) + (row.replies || 0) + (row.reposts || 0);
+}
+
+export function keepBuzz(row) {
+  if (!row?.text || !row?.url) return false;
+  const text = `${row.author ?? ''} ${row.text}`;
+  if (BUZZ_BOT.test(text)) return false;
+  const emoji = text.match(/\p{Extended_Pictographic}/gu) ?? [];
+  if (emoji.length > 5) return false;
+  if (BUZZ_PROMO.test(text)) return false;
+  const onTopic = BUZZ_TOPIC.test(text);
+  if (BUZZ_POLITICS.test(text) && !BUZZ_CONCRETE.test(text)) return false;
+  if (BUZZ_CELEB.test(text) && !BUZZ_CONCRETE.test(text)) return false;
+  if (!onTopic) return false;
+  const counted = ['likes', 'replies', 'reposts'].some((key) => typeof row[key] === 'number');
+  if (row.platform !== 'Hacker News' && counted && buzzEngagement(row) < 1) return false;
+  return true;
+}
+
 function dedupe(rows) {
   const seen = new Set();
   const kept = [];
   rows.forEach((row) => {
-    if (!row || seen.has(row.url)) return;
+    if (!keepBuzz(row) || seen.has(row.url)) return;
     seen.add(row.url);
     kept.push(row);
   });
-  kept.sort((a, b) => Date.parse(b.time || 0) - Date.parse(a.time || 0));
-  return kept.slice(0, 18);
+  kept.sort((a, b) => buzzEngagement(b) - buzzEngagement(a) || Date.parse(b.time || 0) - Date.parse(a.time || 0));
+  return kept.slice(0, 12);
 }
 
 export async function collectBuzz(env = {}) {
@@ -158,7 +188,7 @@ export async function collectBuzz(env = {}) {
   const rows = [];
 
   const bluesky = await Promise.all(QUERIES.map((query) => readJson(
-    `https://api.bsky.app/xrpc/app.bsky.feed.searchPosts?q=${encodeURIComponent(query)}&limit=4&sort=latest`,
+    `https://api.bsky.app/xrpc/app.bsky.feed.searchPosts?q=${encodeURIComponent(query)}&limit=8&sort=latest`,
   )));
   const bluePosts = bluesky.flatMap((payload) => (payload ? fromBluesky(payload) : []));
   if (bluePosts.length) live.push('Bluesky');
@@ -174,7 +204,7 @@ export async function collectBuzz(env = {}) {
   rows.push(...redditPosts);
 
   const comments = await Promise.all(QUERIES.map((query) => readJson(
-    `https://hn.algolia.com/api/v1/search_by_date?query=${encodeURIComponent(query)}&tags=comment&hitsPerPage=5`,
+    `https://hn.algolia.com/api/v1/search_by_date?query=${encodeURIComponent(query)}&tags=comment&hitsPerPage=8`,
   )));
   const hnPosts = comments.flatMap((payload) => (payload ? fromHackerNews(payload) : []));
   if (hnPosts.length) live.push('Hacker News');

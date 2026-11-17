@@ -41,6 +41,50 @@ const audiences = [
   { title: 'Brands', copy: 'A labeled placement sits next to people who are already checking.', href: '/sponsor', cta: 'See sponsor spots' },
 ];
 
+function HeroPanel({
+  ready,
+  news,
+  kev,
+}: {
+  ready: boolean;
+  news: { title: string; url: string; source: string }[];
+  kev: { value: number; url: string; source: string } | null;
+}) {
+  const headlines = news.slice(0, 3);
+  if (!ready || (headlines.length === 0 && !kev)) {
+    return (
+      <div className="hero-emblem" aria-hidden="true">
+        <img src="/brand/modguard-mark-512.png" alt="" />
+      </div>
+    );
+  }
+  return (
+    <aside className="hero-panel" aria-label="Latest from ModGuard Daily">
+      <p className="eyebrow">ModGuard Daily</p>
+      {kev ? (
+        <a className="hero-kev" href={kev.url}>
+          <span>{kev.value.toLocaleString('en-US')}</span>
+          Known exploited vulnerabilities
+          <small>{kev.source}</small>
+        </a>
+      ) : null}
+      {headlines.length > 0 ? (
+        <ol>
+          {headlines.map((item) => (
+            <li key={item.url}>
+              <a href={item.url}>
+                <small>{item.source}</small>
+                {item.title}
+              </a>
+            </li>
+          ))}
+        </ol>
+      ) : null}
+      <Link to="/daily">Open the day’s reporting</Link>
+    </aside>
+  );
+}
+
 export const LandingPage = () => {
   const { feed, ready } = useDailyFeed();
   return (
@@ -62,6 +106,7 @@ export const LandingPage = () => {
               <Link className="btn-ghost" to="/impersonation-check">Impersonation Check, $199</Link>
             </div>
           </div>
+          <HeroPanel ready={ready} news={feed?.news ?? []} kev={feed?.stats.find((stat) => /known exploited/i.test(stat.label)) ?? null} />
         </div>
       </section>
 
@@ -164,7 +209,7 @@ export const LandingPage = () => {
           <p className="eyebrow">Sponsors</p>
           <h2 id="sponsor-title" className="display section-display mt-4 text-ice">Sponsor ModGuard Daily</h2>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-frost">
-            A placement is labeled Sponsored. The deck has none until a sponsor is on the books.
+            Put a labeled placement in front of people who are already checking a message.
           </p>
           <SponsorDaily />
         </div>

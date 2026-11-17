@@ -1,16 +1,8 @@
 import { useEffect, useState } from 'react';
-import { readDailyItems, type DailyItem } from '../../lib/daily';
+import { rankDaily, readDailyItems, strongStats, type DailyItem } from '../../lib/daily';
+import { selectPublicPosts, type PublicPost } from '../../lib/buzzQuality';
 
-export interface BuzzPost {
-  platform: string;
-  author: string;
-  text: string;
-  url: string;
-  time: string;
-  likes?: number;
-  replies?: number;
-  reposts?: number;
-}
+export type BuzzPost = PublicPost;
 
 export interface DailyStat {
   label: string;
@@ -48,6 +40,7 @@ function readPosts(value: unknown): BuzzPost[] {
       url: item.url,
       time: item.time,
     };
+    if (typeof item.avatar === 'string' && item.avatar.startsWith('https://')) post.avatar = item.avatar;
     if (typeof item.likes === 'number') post.likes = item.likes;
     if (typeof item.replies === 'number') post.replies = item.replies;
     if (typeof item.reposts === 'number') post.reposts = item.reposts;
@@ -90,9 +83,9 @@ export function useDailyFeed() {
       let asOf = '';
       try {
         const liveFeed = await readJson('/api/daily') as Record<string, unknown>;
-        news = readDailyItems(liveFeed.news);
-        stats = readStats(liveFeed.stats);
-        posts = readPosts(liveFeed.posts);
+        news = rankDaily(readDailyItems(liveFeed.news));
+        stats = strongStats(readStats(liveFeed.stats));
+        posts = selectPublicPosts(readPosts(liveFeed.posts));
         live = Array.isArray(liveFeed.live) ? liveFeed.live.filter((item) => typeof item === 'string') : [];
         asOf = typeof liveFeed.asOf === 'string' ? liveFeed.asOf : '';
       } catch {
@@ -101,8 +94,8 @@ export function useDailyFeed() {
       if (!news.length) {
         try {
           const cached = await readJson('/threats.json') as Record<string, unknown>;
-          news = readDailyItems(cached.items);
-          if (!stats.length) stats = readStats(cached.stats);
+          news = rankDaily(readDailyItems(cached.items));
+          if (!stats.length) stats = strongStats(readStats(cached.stats));
           if (!asOf && typeof cached.asOf === 'string') asOf = cached.asOf;
         } catch {
           news = [];
@@ -111,7 +104,7 @@ export function useDailyFeed() {
       if (!posts.length) {
         try {
           const cached = await readJson('/buzz.json') as Record<string, unknown>;
-          posts = readPosts(cached.posts);
+          posts = selectPublicPosts(readPosts(cached.posts));
           if (!live.length && Array.isArray(cached.live)) {
             live = cached.live.filter((item) => typeof item === 'string');
           }

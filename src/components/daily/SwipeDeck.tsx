@@ -24,20 +24,27 @@ function scrollToIndex(track: HTMLElement, index: number) {
   const card = track.children[index] as HTMLElement | undefined;
   if (!card) return;
   const left = card.offsetLeft;
+  const previous = Number(track.dataset.frame ?? 0);
+  if (previous) cancelAnimationFrame(previous);
   if (reducedMotion()) {
     track.scrollLeft = left;
     return;
   }
-  const start = track.scrollLeft;
-  const change = left - start;
-  const began = performance.now();
-  const step = (now: number) => {
-    const progress = Math.min(1, (now - began) / 420);
-    const eased = 1 - (1 - progress) ** 3;
-    track.scrollLeft = start + change * eased;
-    if (progress < 1) requestAnimationFrame(step);
+  let current = track.scrollLeft;
+  let velocity = 0;
+  const step = () => {
+    const force = (left - current) * 0.18;
+    velocity = (velocity + force) * 0.72;
+    current += velocity;
+    if (Math.abs(left - current) < 0.6 && Math.abs(velocity) < 0.6) {
+      track.scrollLeft = left;
+      delete track.dataset.frame;
+      return;
+    }
+    track.scrollLeft = current;
+    track.dataset.frame = String(requestAnimationFrame(step));
   };
-  requestAnimationFrame(step);
+  track.dataset.frame = String(requestAnimationFrame(step));
 }
 
 export function SwipeDeck<T>({
@@ -142,6 +149,9 @@ export function SwipeDeck<T>({
             {render(item)}
           </div>
         ))}
+      </div>
+      <div className="swipe-progress" aria-hidden="true">
+        <span style={{ width: `${((index + 1) / items.length) * 100}%` }} />
       </div>
       <div className="swipe-dots" role="tablist" aria-label="Card position">
         {items.map((item, dot) => (

@@ -1,9 +1,14 @@
 import { Link } from 'react-router-dom';
 
 const placements = [
-  { name: 'Featured story', detail: 'A card in the Daily deck, labeled Sponsored, when a placement is agreed.' },
-  { name: 'Tool spotlight', detail: 'A labeled spot beside the tools on this site.' },
-  { name: 'Newsletter slot', detail: 'Ask about a labeled mention. This site does not send a newsletter.' },
+  {
+    name: 'Featured story',
+    detail: 'A labeled card at the front of ModGuard Daily.',
+  },
+  {
+    name: 'Tool spotlight',
+    detail: 'A labeled place beside ScamCheck.',
+  },
 ];
 
 export function SponsorDaily() {
@@ -17,7 +22,7 @@ export function SponsorDaily() {
           </li>
         ))}
       </ul>
-      <Link className="btn-accent" to="/sponsor#inquiry">Ask about a placement</Link>
+      <Link className="btn-accent" to="/sponsor#inquiry">Become a sponsor</Link>
     </div>
   );
 }

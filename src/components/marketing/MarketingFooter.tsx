@@ -11,7 +11,7 @@ const links = [
   { label: 'Sponsors', href: '/sponsor' },
   { label: 'About', href: '/about' },
   { label: 'AI Scam Shield Playbook', href: PLAYBOOK_URL, external: true },
-  { label: 'Get the weekly Scam Alert', href: SCAMCHECK_URL, external: true },
+  { label: 'Get the weekly Scam Alert', href: `${SCAMCHECK_URL}/#playbook`, external: true },
 ];
 
 export function MarketingFooter() {
