@@ -61,7 +61,8 @@ export function isDailyRelevant(item: Pick<DailyItem, 'title' | 'summary' | 'tag
   if (!isPublishable(item)) return false;
   const text = `${item.title} ${item.summary}`;
   if (OFF_BEAT.test(text)) return false;
-  if (GOSSIP.test(text) && !SECURITY.test(text)) return false;
+  const incident = /\b(hack\w*|ransom\w*|breach\w*|phish\w*|exploit\w*|vulnerab\w*|malware|scams?|frauds?|deepfakes?)\b/i.test(text);
+  if (GOSSIP.test(text) && !incident) return false;
   if (SECURITY.test(text)) return true;
   if ((item.tag === 'Cyber' || item.tag === 'Scam' || item.tag === 'Deepfake') && /deepfake|scam|phish|fraud/i.test(text)) return true;
   if (AI_TOOL.test(text)) return true;
