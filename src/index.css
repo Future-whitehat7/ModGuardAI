@@ -2886,3 +2886,51 @@ h2,
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+.habit-loop {
+  display: grid;
+  gap: 0.6rem;
+  margin: 1rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.habit-loop li {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: #0F172A;
+}
+
+.habit-loop span {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid #C5A059;
+  border-radius: 999px;
+  color: #1E3A8A;
+}
+
+.habit-toggle button,
+.skip-round {
+  margin-top: 0.7rem;
+  border: 1px solid #C5A059;
+  border-radius: 999px;
+  background: #FAFAFA;
+  color: #1E3A8A;
+  padding: 0.35rem 0.8rem;
+}
+
+.founding-spot {
+  background:
+    linear-gradient(#FFFFFF, #FFFFFF) padding-box,
+    linear-gradient(120deg, #C5A059, #1E3A8A, #C5A059) border-box;
+  border: 1px solid transparent;
+}
+
+@media (min-width: 800px) {
+  .habit-loop {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

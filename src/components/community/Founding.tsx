@@ -7,7 +7,7 @@ export function Founding({ board }: { board: CommunityBoard }) {
       <h2 id="founding-title" className="display section-display text-ice">Be here before it&apos;s big.</h2>
       <p className="community-lede">Founding Contributors shape what ships.</p>
       <p className="community-copy">
-        Samuel Fagbamigbe started ModGuard so people can check a message, a voice, or a copied account before it takes their money, their privacy, or their name. The people in this room decide what the check becomes while it is still early.
+        Samuel Fagbamigbe started ModGuard so people can check a message, a voice, or a copied account before it takes their money, their privacy, or their name. The room grows by handing the next person access, a resource, and a real chance to ship.
       </p>
       <div className="community-split">
         <article>

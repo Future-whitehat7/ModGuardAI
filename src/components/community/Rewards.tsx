@@ -27,7 +27,7 @@ export function Rewards() {
       <p className="eyebrow">Rewards and perks</p>
       <h2 id="rewards-title" className="display section-display text-ice">The work should feel like a win.</h2>
       <p className="community-copy">
-        Unpaid does not mean unseen. ModGuard runs two of these. The other two open when a partner brings them. None of them are live yet.
+        Recognition here is access and a record of the work. ModGuard runs two of these. The other two open when a partner brings them. None of them are live yet.
       </p>
       <ul className="perk-grid">
         {perks.map((perk) => (

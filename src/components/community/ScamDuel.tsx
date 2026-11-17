@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
+import { markDuel, skipDuel, type PlayHabit } from '../../community/habits';
 import { pairForDay, votePercent, type DuelPair } from '../../community/play';
+import { ShareActions } from './ShareActions';
 
-const DUEL_KEY = 'modguard-duel-streak';
 const SECONDS = 10;
 
 function layout(day: string, pair: DuelPair) {
@@ -13,54 +14,52 @@ function layout(day: string, pair: DuelPair) {
   };
 }
 
-export function ScamDuel() {
+export function ScamDuel({
+  habit,
+  onHabit,
+}: {
+  habit: PlayHabit;
+  onHabit: (next: PlayHabit) => void;
+}) {
   const day = new Date().toISOString().slice(0, 10);
   const pair = pairForDay(day);
   const sides = layout(day, pair);
+  const open = habit.duelDay !== day;
   const [left, setLeft] = useState(SECONDS);
   const [pick, setPick] = useState('');
-  const [streak, setStreak] = useState(0);
+  const [note, setNote] = useState('');
   const [community, setCommunity] = useState<number | null>(null);
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(DUEL_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved) as { streak?: number };
-        if (typeof parsed.streak === 'number') setStreak(parsed.streak);
-      } catch {
-        setStreak(0);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    if (pick) return undefined;
+    if (!open || pick) return undefined;
     const timer = window.setInterval(() => {
       setLeft((value) => (value <= 1 ? 0 : value - 1));
     }, 1000);
     return () => window.clearInterval(timer);
-  }, [pick]);
+  }, [open, pick]);
 
   useEffect(() => {
-    if (left === 0 && !pick) setPick('timeout');
-  }, [left, pick]);
+    if (left === 0 && open && !pick) {
+      setPick('timeout');
+      onHabit(skipDuel(habit, day));
+    }
+  }, [left, open, pick, habit, day, onHabit]);
 
   const reveal = pick !== '';
   const right = pick === sides.scamSide;
+  const turn = 2 * Math.PI * 18;
 
   const choose = (side: 'left' | 'right') => {
-    if (pick) return;
+    if (!open || pick) return;
     setPick(side);
-    if (side === sides.scamSide) {
-      const stored = { streak: streak > 0 ? streak + 1 : 1, day };
-      window.localStorage.setItem(DUEL_KEY, JSON.stringify(stored));
-      setStreak(stored.streak);
-    }
+    const correct = side === sides.scamSide;
+    const next = markDuel(habit, day, correct);
+    onHabit(next.habit);
+    setNote(next.usedFreeze ? 'A freeze covered the day in between.' : '');
     void fetch(`/api/scam-vote?pair=${pair.id}`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ scam: side === sides.scamSide }),
+      body: JSON.stringify({ scam: correct }),
     })
       .then((response) => response.json())
       .then((data: { total?: number | null; scam?: number }) => {
@@ -69,32 +68,47 @@ export function ScamDuel() {
       .catch(() => setCommunity(null));
   };
 
-  const turn = 2 * Math.PI * 18;
-  const filled = left / SECONDS;
-
   return (
     <article className="play-card" id="scam-duel">
       <p className="community-kicker">Scam of the day</p>
       <h3>Which text is the scam?</h3>
-      <p>Representative examples. Not a real person’s message. {day}</p>
-      <div className="duel-ring" aria-live="polite">
-        <svg viewBox="0 0 48 48" aria-hidden="true">
-          <circle cx="24" cy="24" r="18" />
-          <circle cx="24" cy="24" r="18" strokeDasharray={`${turn * filled} ${turn}`} />
-        </svg>
-        <span>{reveal ? 'Time' : `${left}s`}</span>
-      </div>
-      <div className="duel-pair">
-        <button type="button" disabled={reveal} onClick={() => choose('left')}>{sides.left}</button>
-        <button type="button" disabled={reveal} onClick={() => choose('right')}>{sides.right}</button>
-      </div>
-      {reveal ? (
-        <p role="status">
-          {pick === 'timeout' ? 'Time. ' : right ? 'You found it. ' : 'Not that one. '}
-          {pair.flags}
-          {streak > 0 ? ` Streak on this browser: ${streak}.` : ''}
-        </p>
+      <p>Content note: an example text, not a real person’s message. Nothing graphic. You can skip it.</p>
+      {open ? (
+        <>
+          <div className="duel-ring" aria-live="polite">
+            <svg viewBox="0 0 48 48" aria-hidden="true">
+              <circle cx="24" cy="24" r="18" />
+              <circle cx="24" cy="24" r="18" strokeDasharray={`${turn * (left / SECONDS)} ${turn}`} />
+            </svg>
+            <span>{reveal ? 'Round closed' : `${left}s`}</span>
+          </div>
+          <div className="duel-pair">
+            <button type="button" disabled={reveal} onClick={() => choose('left')}>{sides.left}</button>
+            <button type="button" disabled={reveal} onClick={() => choose('right')}>{sides.right}</button>
+          </div>
+          <button type="button" className="skip-round" onClick={() => { setPick('skip'); onHabit(skipDuel(habit, day)); }}>
+            Skip this round
+          </button>
+        </>
+      ) : (
+        <p>Today’s duel is done. The next pair arrives with the next day.</p>
+      )}
+      {reveal && pick !== 'skip' ? (
+        <>
+          <p role="status">
+            {pick === 'timeout' ? 'The clock finished. ' : right ? 'That was the scam. ' : 'The other one was the scam. '}
+            {pair.flags}
+          </p>
+          <ShareActions
+            headline={right ? 'I spotted it' : 'I practiced today’s scam'}
+            detail="Scam of the Day, on this browser"
+            lines={[right ? 'I spotted it' : 'I practiced it', 'Scam of the Day', day]}
+            filename="modguard-i-spotted-it.png"
+          />
+        </>
       ) : null}
+      {habit.streaksOn && habit.streak > 0 ? <p>Skill streak: {habit.streak}. It counts correct finds, not visits.</p> : null}
+      {note ? <p>{note}</p> : null}
       <p className="badge-fine">
         {community === null
           ? 'Community results reveal once votes come in.'

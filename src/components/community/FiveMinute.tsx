@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Progress } from '../../community/progress';
 import { choiceIsRight, flagTask, labelTask, promptIsReady, promptTask, type ChoiceTask } from '../../community/samples';
+import { shareOrCopy } from '../../community/share';
 import { Burst } from './Burst';
 
 const taskTitle: Record<string, string> = {
@@ -13,7 +14,7 @@ function todayStamp() {
   return new Date().toISOString().slice(0, 10);
 }
 
-async function downloadBadge(name: string, task: string, date: string) {
+async function paintBadge(name: string, task: string, date: string) {
   const canvas = document.createElement('canvas');
   canvas.width = 800;
   canvas.height = 1000;
@@ -41,6 +42,10 @@ async function downloadBadge(name: string, task: string, date: string) {
   ctx.font = '24px Inter, sans-serif';
   ctx.fillText(date, 400, 760);
   ctx.fillText('modguardai.org/community', 400, 820);
+  return canvas;
+}
+
+function downloadBadge(canvas: HTMLCanvasElement) {
   const link = document.createElement('a');
   link.href = canvas.toDataURL('image/png');
   link.download = 'modguard-doorway-badge.png';
@@ -121,16 +126,20 @@ export function FiveMinute({
             <p>{shownTask}</p>
             <time dateTime={shownDate}>{shownDate}</time>
             <div className="badge-actions">
-              <button type="button" className="btn-accent" onClick={() => void downloadBadge(shownName, shownTask, shownDate)}>
+              <button type="button" className="btn-accent" onClick={() => void paintBadge(shownName, shownTask, shownDate).then((canvas) => { if (canvas) downloadBadge(canvas); })}>
                 Download badge
               </button>
               <button
                 type="button"
                 onClick={() => {
-                  void navigator.clipboard.writeText(shareText).then(() => setCopied(true));
+                  void paintBadge(shownName, shownTask, shownDate).then(async (canvas) => {
+                    if (!canvas) return;
+                    const result = await shareOrCopy(shareText, canvas, 'modguard-doorway-badge.png');
+                    if (result === 'copied' || result === 'shared') setCopied(true);
+                  });
                 }}
               >
-                {copied ? 'Copied' : 'Copy share text'}
+                {copied ? 'Copied' : 'Share or copy'}
               </button>
             </div>
           </article>

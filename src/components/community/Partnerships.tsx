@@ -1,4 +1,5 @@
-import { globalChips, regionChoices } from '../../community/regions';
+import { partnerTypes } from '../../community/partners';
+import { anchorRegions, globalChips, otherGulf, regionChoices } from '../../community/regions';
 import { CommunityForm } from './CommunityForm';
 
 const kinds = [
@@ -36,9 +37,21 @@ export function Partnerships() {
       <p className="eyebrow">G. Partner with ModGuard</p>
       <h2 id="partner-title" className="display section-display text-ice">A global community. Your country included.</h2>
       <p className="community-copy">
-        The whole world can contribute. We are inviting partners and builders from the UAE, Abu Dhabi, Dubai, Saudi Arabia, Qatar, and everywhere else. The community is largely Gen Z and millennial builders. This list is an invitation, not a map of offices or events.
+        We grow by opening access. The whole world can contribute. This is a search for partners, not a map of offices, and not a government endorsement.
       </p>
       <div className="global-band">
+        <p className="community-kicker">First anchor partner regions we&apos;re seeking</p>
+        <ul className="region-chips">
+          {anchorRegions.map((chip) => (
+            <li key={chip}>{chip}</li>
+          ))}
+        </ul>
+        <p>Abu Dhabi, Dubai, Qatar, and everywhere else are invited the same way.</p>
+        <ul className="region-chips">
+          {otherGulf.map((chip) => (
+            <li key={chip}>{chip}</li>
+          ))}
+        </ul>
         <p className="community-kicker">Global by design</p>
         <svg className="region-line" viewBox="0 0 640 72" aria-hidden="true">
           <path d="M8 36h624" />
@@ -49,7 +62,7 @@ export function Partnerships() {
           <circle cx="560" cy="36" r="5" />
         </svg>
         <ul className="region-chips">
-          {globalChips.map((chip) => (
+          {globalChips.filter((chip) => chip === 'Your country' || chip === 'Anywhere in the world').map((chip) => (
             <li key={chip}>{chip}</li>
           ))}
         </ul>
@@ -87,7 +100,7 @@ export function Partnerships() {
           { name: 'organization', label: 'Organization' },
           { name: 'contact', label: 'Contact name' },
           { name: 'email', label: 'Email', type: 'email' },
-          { name: 'partnership', label: 'Partnership type', options: kinds.map((kind) => kind.name) },
+          { name: 'partnership', label: 'Partnership type', options: [...partnerTypes] },
           { name: 'region', label: 'Region', options: [...regionChoices] },
           { name: 'give_back', label: 'We are open to the Give back hiring principle', type: 'checkbox', required: false },
           {

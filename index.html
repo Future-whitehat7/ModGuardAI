@@ -152,6 +152,13 @@
       <textarea name="build"></textarea>
       <input name="bot-field" />
     </form>
+    <form name="community-readiness" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="text" name="company" />
+      <input type="text" name="role" />
+      <input type="text" name="executives" />
+      <input name="bot-field" />
+    </form>
     <form name="community-sponsor" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
       <input type="text" name="company" />
       <input type="text" name="contact" />
@@ -174,6 +181,8 @@
         <option>Research and data</option>
         <option>Education and campus</option>
         <option>Distribution</option>
+        <option>Bank / Telco / Platform integration</option>
+        <option>Government / public agency</option>
       </select>
       <select name="region">
         <option>UAE</option>
@@ -190,6 +199,32 @@
       <input type="checkbox" name="rewards" value="Event invites" />
       <input type="checkbox" name="rewards" value="Other" />
       <textarea name="message"></textarea>
+      <input name="bot-field" />
+    </form>
+    <form name="community-forward" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="email" name="email" />
+      <select name="app">
+        <option>WhatsApp</option>
+        <option>Telegram</option>
+      </select>
+      <input type="text" name="country" />
+      <input name="bot-field" />
+    </form>
+    <form name="community-widget" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="email" name="email" />
+      <input type="text" name="site" />
+      <input name="bot-field" />
+    </form>
+    <form name="community-library" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <textarea name="languages"></textarea>
+      <input name="bot-field" />
+    </form>
+    <form name="community-chapter" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="school" />
+      <input type="text" name="country" />
+      <input type="text" name="contact" />
       <input name="bot-field" />
     </form>
     <form name="community-squad" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>

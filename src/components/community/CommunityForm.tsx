@@ -11,7 +11,7 @@ export function CommunityForm({
   fields,
 }: {
   id: string;
-  formName: 'community-join' | 'campus-kit' | 'community-sponsor' | 'community-partner' | 'community-squad' | 'community-sprint';
+  formName: 'community-join' | 'campus-kit' | 'community-sponsor' | 'community-partner' | 'community-squad' | 'community-sprint' | 'community-readiness' | 'community-forward' | 'community-widget' | 'community-library' | 'community-chapter';
   title: string;
   lede: string;
   fields: { name: string; label: string; type?: string; required?: boolean; options?: string[]; defaultOption?: string }[];

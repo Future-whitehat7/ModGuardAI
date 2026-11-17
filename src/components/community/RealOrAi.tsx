@@ -1,58 +1,38 @@
 import { useState } from 'react';
+import { arcadeRemaining, markArcade, type PlayHabit } from '../../community/habits';
 import { arcadeCards } from '../../community/play';
+import { ShareActions } from './ShareActions';
 
-export function RealOrAi() {
-  const [index, setIndex] = useState(0);
-  const [correct, setCorrect] = useState(0);
-  const [answered, setAnswered] = useState(0);
+export function RealOrAi({
+  habit,
+  onHabit,
+}: {
+  habit: PlayHabit;
+  onHabit: (next: PlayHabit) => void;
+}) {
+  const day = new Date().toISOString().slice(0, 10);
+  const remaining = arcadeRemaining(habit, day);
+  const [skipped, setSkipped] = useState(0);
   const [note, setNote] = useState('');
-  const [copied, setCopied] = useState(false);
+  const played = habit.arcadeDay === day ? habit.arcadePlayed : 0;
+  const index = played + skipped;
   const card = arcadeCards[index];
-  const finished = answered === arcadeCards.length;
+  const finished = remaining === 0 || index >= arcadeCards.length;
 
   const guess = (kind: 'real' | 'ai') => {
     if (!card || finished) return;
     const hit = kind === card.kind;
-    setCorrect((value) => value + (hit ? 1 : 0));
-    setAnswered((value) => value + 1);
-    setNote(hit ? `Yes. ${card.credit}` : `Not this time. ${card.credit}`);
-    setIndex((value) => Math.min(value + 1, arcadeCards.length));
+    onHabit(markArcade(habit, day, hit));
+    setNote(hit ? `Yes. ${card.credit}` : `The other label. ${card.credit}`);
   };
 
-  const share = `I scored ${correct} of ${arcadeCards.length} on ModGuard Real or AI. https://modguardai.org/community`;
-
-  const download = async () => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 800;
-    canvas.height = 800;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    ctx.fillStyle = '#FAFAFA';
-    ctx.fillRect(0, 0, 800, 800);
-    ctx.strokeStyle = '#C5A059';
-    ctx.lineWidth = 10;
-    ctx.strokeRect(28, 28, 744, 744);
-    ctx.fillStyle = '#1E3A8A';
-    ctx.font = '28px Inter, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('REAL OR AI', 400, 220);
-    ctx.fillStyle = '#0F172A';
-    ctx.font = '92px Georgia, serif';
-    ctx.fillText(`${correct}/${arcadeCards.length}`, 400, 380);
-    ctx.fillStyle = '#334155';
-    ctx.font = '24px Inter, sans-serif';
-    ctx.fillText('On this browser. Not a global board.', 400, 470);
-    const link = document.createElement('a');
-    link.href = canvas.toDataURL('image/png');
-    link.download = 'modguard-real-or-ai.png';
-    link.click();
-  };
+  const correct = habit.arcadeDay === day ? habit.arcadeCorrect : 0;
 
   return (
     <article className="play-card" id="real-or-ai">
       <p className="community-kicker">Real or AI?</p>
-      <h3>Tap the picture. Keep your score.</h3>
-      <p>Credits are on each reveal. Audio round coming soon.</p>
+      <h3>Tap the picture. Keep the skill score.</h3>
+      <p>Content note: still photos of Earth, the Moon, and generated objects. Nothing graphic. Audio round coming soon. Daily cap: {arcadeCards.length} cards.</p>
       {card && !finished ? (
         <figure>
           <img src={card.src} alt="" />
@@ -60,21 +40,25 @@ export function RealOrAi() {
             <button type="button" onClick={() => guess('real')}>Real</button>
             <button type="button" onClick={() => guess('ai')}>AI-made</button>
           </div>
+          <button type="button" className="skip-round" onClick={() => { setSkipped((value) => value + 1); setNote('Skipped. It does not count.'); }}>
+            Skip this card
+          </button>
         </figure>
       ) : (
         <div className="badge-card" id="arcade-score">
           <p className="eyebrow">Your score</p>
-          <h3>{correct} of {arcadeCards.length}</h3>
-          <div className="badge-actions">
-            <button type="button" className="btn-accent" onClick={() => void download()}>Download score</button>
-            <button type="button" onClick={() => { void navigator.clipboard.writeText(share).then(() => setCopied(true)); }}>
-              {copied ? 'Copied' : 'Copy share text'}
-            </button>
-          </div>
+          <h3>{correct} of {played}</h3>
+          <p>Today’s round is done. The score is the skill, not a visit.</p>
+          <ShareActions
+            headline="I spotted it"
+            detail={`${correct} of ${played} on Real or AI, on this browser`}
+            lines={['Real or AI', `${correct} of ${played}`, 'On this browser']}
+            filename="modguard-real-or-ai.png"
+          />
         </div>
       )}
       {note ? <p role="status">{note}</p> : null}
-      <p className="badge-fine">{answered} played on this browser. There is no global leaderboard.</p>
+      <p className="badge-fine">On this browser. There is no global leaderboard.</p>
     </article>
   );
 }

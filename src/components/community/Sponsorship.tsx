@@ -4,15 +4,18 @@ import { CommunityForm } from './CommunityForm';
 const tiers = [
   {
     name: 'Supporter',
+    kicker: 'Pricing on request',
     gets: 'Your logo on the community page once a sponsorship is agreed, next to the people doing the work.',
   },
   {
     name: 'Hackathon sponsor',
+    kicker: 'Pricing on request',
     gets: 'A named hackathon or a named track in the campus kit, plus the Supporter logo placement.',
   },
   {
     name: 'Founding sponsor',
-    gets: 'A labeled Sponsored slot in ModGuard Daily, a mention on recognition badges, and the placements above.',
+    kicker: 'Coming soon. Pricing on request. 3 to 5 spots.',
+    gets: 'A hosted vibe-code sprint, Red Team Seats, and early access to community members who opt in to be introduced. The Daily slot and badge mention come with it once a sponsorship is agreed.',
   },
 ];
 
@@ -26,9 +29,9 @@ export function Sponsorship() {
       </p>
       <ul className="sponsor-tiers">
         {tiers.map((tier) => (
-          <li key={tier.name}>
-            <p className="community-kicker">Pricing on request</p>
-            <h3>{tier.name}</h3>
+          <li key={tier.name} className={tier.name === 'Founding sponsor' ? 'founding-spot' : undefined}>
+            <p className="community-kicker">{tier.kicker}</p>
+            <h3>{tier.name === 'Founding sponsor' ? 'Founding Sponsors' : tier.name}</h3>
             <p>{tier.gets}</p>
           </li>
         ))}
