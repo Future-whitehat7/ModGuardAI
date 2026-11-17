@@ -13,6 +13,7 @@ export function Community() {
   const [board, setBoard] = useState<CommunityBoard>(emptyBoard);
   const [progress, setProgress] = useState<Progress>(emptyProgress);
   const [now] = useState(() => Date.now());
+  const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
     setProgress(readProgress(window.localStorage.getItem(PROGRESS_KEY)));
@@ -33,6 +34,7 @@ export function Community() {
     setProgress((current) => {
       const next = { ...recordTask(current, taskId, today), displayName: displayName || current.displayName };
       window.localStorage.setItem(PROGRESS_KEY, JSON.stringify(next));
+      setAnimate(true);
       return next;
     });
   };
@@ -40,11 +42,11 @@ export function Community() {
   return (
     <article className="page-wrap community-page mx-auto w-full max-w-6xl px-4 sm:px-6">
       <p className="eyebrow">Community</p>
-      <h1 className="display section-display mt-4 text-ice">Come build the check.</h1>
+      <h1 className="display section-display mt-4 text-ice">Be here before it&apos;s big.</h1>
       <p className="community-copy">
-        Early, public, and unpaid. Five parts. Each one says what is real and what is still empty.
+        Five parts. A doorway task, a game you can build, and a public name when the work is confirmed.
       </p>
-      <Founding board={board} progress={progress} />
+      <Founding board={board} progress={progress} animate={animate} />
       <Hackathons board={board} now={now} />
       <FiveMinute progress={progress} onDone={onDone} />
       <Mission />

@@ -1,7 +1,7 @@
 import { CommunityForm } from './CommunityForm';
 
 const pieces = [
-  { name: 'Run of show', detail: 'Ninety minutes, with times, and no promise of money or a job.' },
+  { name: 'Run of show', detail: 'Ninety minutes, timed, with a turn for every team.' },
   { name: 'Themes', detail: 'AI safety, deepfake detection, privacy, and content moderation.' },
   { name: 'Judging rubric', detail: 'Honest, useful, specific, kind. Scores are 0, 1, or 2.' },
   { name: 'Game prompts', detail: 'Labeled examples a team can play in the room.' },
@@ -12,9 +12,9 @@ export function CampusKit() {
   return (
     <section id="campus" className="community-block" aria-labelledby="campus-title">
       <p className="eyebrow">E. Run it on your campus</p>
-      <h2 id="campus-title" className="display section-display text-ice">A club can run the night alone.</h2>
+      <h2 id="campus-title" className="display section-display text-ice">Your club can run the night.</h2>
       <p className="community-copy">
-        No ModGuard staff have to be in the room. The kit is a file. The results come back through the form. A name reaches the public board only after the person asks and we confirm the work.
+        The kit has the run of show, the themes, the rubric, and the game prompts. Send the night back through the form, and a confirmed build can open a name on the board.
       </p>
       <ul className="community-tiers">
         {pieces.map((piece) => (
@@ -33,7 +33,7 @@ export function CampusKit() {
         id="campus-form"
         formName="campus-kit"
         title="Send the night back"
-        lede="School, club, and what you built. This does not list a name by itself."
+        lede="We read every one and reply by email."
         fields={[
           { name: 'name', label: 'Your name' },
           { name: 'email', label: 'Email', type: 'email' },

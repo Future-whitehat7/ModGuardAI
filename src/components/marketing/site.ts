@@ -76,7 +76,7 @@ export function metaForPath(pathname: string): RouteMeta {
     return {
       title: 'Community | ModGuard AI',
       description:
-        'Founding Contributor, hackathons, a five-minute doorway task, and a campus kit. Early and unpaid. The public board lists a name only after it is confirmed.',
+        'Founding Contributor, hackathons, a five-minute doorway task, and a campus kit. A public name is added when the work is confirmed.',
     };
   }
   if (pathname === '/sponsor') {

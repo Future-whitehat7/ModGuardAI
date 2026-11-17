@@ -1,61 +1,61 @@
 import type { CommunityBoard } from '../../community/board';
 import type { Progress } from '../../community/progress';
+import { PlayerPath } from './PlayerPath';
 import { CommunityForm } from './CommunityForm';
 
-export function Founding({ board, progress }: { board: CommunityBoard; progress: Progress }) {
+export function Founding({ board, progress, animate }: { board: CommunityBoard; progress: Progress; animate: boolean }) {
   return (
     <section id="founding" className="community-block" aria-labelledby="founding-title">
       <p className="eyebrow">A. Founding Contributor</p>
-      <h2 id="founding-title" className="display section-display text-ice">Show up before there is a budget.</h2>
+      <h2 id="founding-title" className="display section-display text-ice">Be here before it&apos;s big.</h2>
+      <p className="community-lede">Founding Contributors shape what ships.</p>
       <p className="community-copy">
-        Samuel Fagbamigbe started ModGuard so a person can check a message, a voice, or a copied account before it takes their money or their name. There is no payroll for this work. That is the opening. The people who show up now decide what gets built while it is still small.
+        Samuel Fagbamigbe started ModGuard so people can check a message, a voice, or a copied account before it takes their money, their privacy, or their name. The people in this room decide what the check becomes while it is still early.
       </p>
       <div className="community-split">
         <article>
           <h3>What you do</h3>
-          <p>Label a sample, write a safety prompt, test a moderation case, host a campus night, or ship a small build. The first one takes a few minutes and lives on this page.</p>
+          <p>Label a sample, write a safety prompt, test a moderation case, host a campus night, or ship a small build. The first one takes a few minutes, right here.</p>
         </article>
         <article>
           <h3>What you get</h3>
-          <p>The public title Founding Contributor when your name is added here, credit next to the work, a say in what ships next, the campus kit, and a record you can point to. No salary. No equity. No job offer.</p>
+          <p>A real title, public credit next to the work, a say in what ships, the campus kit, and a path that grows as the community does.</p>
+          <p className="honest-line">The honest part: no salary or equity yet. What you get is real: the title when your name is added, the credit, and a voice in the next ship.</p>
         </article>
       </div>
-      <div className="community-meters" aria-label="Public counts from the board file">
-        <p><strong>{board.contributors.length}</strong> names on the public list</p>
-        <p><strong>{board.shipped.length}</strong> shipped pieces with a name</p>
-        <p><strong>{progress.tasks.length}</strong> doorway tasks on this browser</p>
-        <p><strong>{progress.streak}</strong> day streak on this browser</p>
-      </div>
-      {board.contributors.length === 0 ? (
-        <p className="community-empty">Be the first name on the board. A name is added only after you ask and we confirm it.</p>
+      <PlayerPath progress={progress} animate={animate} />
+      {board.contributors.length === 0 && board.shipped.length === 0 ? (
+        <p className="community-empty">The board opens with its first name. Could be yours.</p>
       ) : (
-        <ol className="community-board">
-          {board.contributors.map((person) => (
-            <li key={`${person.name}-${person.handle}`}>
-              <strong>{person.name}</strong>
-              {person.handle ? <span> @{person.handle}</span> : null}
-              {person.focus ? <small>{person.focus}</small> : null}
-            </li>
-          ))}
-        </ol>
-      )}
-      {board.shipped.length === 0 ? (
-        <p className="community-empty">No shipped work is listed yet. The first real ship gets the first mark.</p>
-      ) : (
-        <ul className="community-board">
-          {board.shipped.map((item) => (
-            <li key={item.title}>
-              {item.url ? <a href={item.url}>{item.title}</a> : item.title}
-              <small>{item.by}</small>
-            </li>
-          ))}
-        </ul>
+        <>
+          {board.contributors.length > 0 ? (
+            <ol className="community-board">
+              {board.contributors.map((person) => (
+                <li key={`${person.name}-${person.handle}`}>
+                  <strong>{person.name}</strong>
+                  {person.handle ? <span> @{person.handle}</span> : null}
+                  {person.focus ? <small>{person.focus}</small> : null}
+                </li>
+              ))}
+            </ol>
+          ) : null}
+          {board.shipped.length > 0 ? (
+            <ul className="community-board">
+              {board.shipped.map((item) => (
+                <li key={item.title}>
+                  {item.url ? <a href={item.url}>{item.title}</a> : item.title}
+                  <small>{item.by}</small>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </>
       )}
       <CommunityForm
         id="join"
         formName="community-join"
-        title="Ask to be considered"
-        lede="Sending this does not list your name and does not pay you. We reply by email if it arrives."
+        title="I'm in"
+        lede="We read every one and reply by email."
         fields={[
           { name: 'name', label: 'Name' },
           { name: 'email', label: 'Email', type: 'email' },

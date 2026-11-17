@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { countdown, readBoard } from '../src/community/board.ts';
-import { emptyProgress, readProgress, recordTask } from '../src/community/progress.ts';
+import { emptyProgress, levelProgress, pathSteps, readProgress, recordTask } from '../src/community/progress.ts';
 import { choiceIsRight, labelTask, promptIsReady } from '../src/community/samples.ts';
 
 test('the public board ships empty and ignores a nameless row', () => {
@@ -39,4 +39,12 @@ test('doorway progress stays on this browser and does not invent a public title'
   assert.equal(promptIsReady('too short'), false);
   assert.equal(promptIsReady('Tell the assistant not to invent a safe verdict without the message.'), true);
   assert.equal(readProgress('not json').tasks.length, 0);
+  assert.equal(levelProgress(1).name, 'Scout');
+  assert.equal(levelProgress(1).done, 1);
+  assert.equal(levelProgress(1).next, 'Spotter');
+  assert.equal(levelProgress(3).name, 'Spotter');
+  assert.equal(pathSteps(0)[0].state, 'now');
+  assert.equal(pathSteps(1)[0].state, 'done');
+  assert.equal(pathSteps(3)[1].state, 'locked');
+  assert.equal(pathSteps(3)[2].state, 'locked');
 });

@@ -5,9 +5,9 @@ export function CommunityTeaser() {
     <section className="page-section" aria-labelledby="community-teaser">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <p className="eyebrow">Community</p>
-        <h2 id="community-teaser" className="display section-display mt-4 text-ice">No budget. The first names shape the check.</h2>
+        <h2 id="community-teaser" className="display section-display mt-4 text-ice">Be here before it&apos;s big.</h2>
         <p className="mt-4 max-w-2xl text-lg leading-relaxed text-frost">
-          Founding Contributor, a hackathon you can host, a five-minute doorway task, and a campus kit a club can run alone. No pay, no equity, no job offer.
+          Five minutes to a badge. Then a build, a campus night, and a public name when the work is confirmed.
         </p>
         <Link className="btn-accent mt-6" to="/community">Open Community</Link>
       </div>

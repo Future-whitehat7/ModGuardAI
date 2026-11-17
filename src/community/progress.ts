@@ -23,6 +23,31 @@ export function recordTask(current: Progress, taskId: string, today: string): Pr
   return { ...current, tasks, streak, lastDay: today };
 }
 
+export const SPOTTER_TASKS = 3;
+
+export interface LevelProgress {
+  name: 'Scout' | 'Spotter';
+  done: number;
+  goal: number;
+  next: 'Spotter' | 'Analyst';
+}
+
+export function levelProgress(taskCount: number): LevelProgress {
+  const done = Math.min(Math.max(taskCount, 0), SPOTTER_TASKS);
+  if (taskCount >= SPOTTER_TASKS) {
+    return { name: 'Spotter', done: SPOTTER_TASKS, goal: SPOTTER_TASKS, next: 'Analyst' };
+  }
+  return { name: 'Scout', done, goal: SPOTTER_TASKS, next: 'Spotter' };
+}
+
+export function pathSteps(taskCount: number): { name: string; state: 'now' | 'done' | 'locked' }[] {
+  return [
+    { name: 'Start in 5 minutes', state: taskCount >= 1 ? 'done' : 'now' },
+    { name: 'Ship a contribution', state: 'locked' },
+    { name: 'Founding Contributor', state: 'locked' },
+  ];
+}
+
 export function readProgress(value: string | null): Progress {
   if (!value) return emptyProgress;
   try {

@@ -43,7 +43,7 @@ export function CommunityForm({
   if (status === 'done') {
     return (
       <p className="community-note" role="status">
-        Sent. We reply by email if it arrives. This does not put a name on the board, and it does not pay anyone.
+        Got it. We read every one and reply by email.
       </p>
     );
   }
