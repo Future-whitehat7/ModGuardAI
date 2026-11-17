@@ -8,6 +8,34 @@
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ModGuard AI — Free AI Scam Checker | ScamCheck</title>
+    <script>
+      (function () {
+        var path = location.pathname.replace(/\/$/, '') || '/';
+        var page = {
+          '/give-back': {
+            title: 'Give back | ModGuard AI',
+            description: 'The Give back hiring principle for early-career community members. It is a stated principle, not a contract. The hire log lists only confirmed hires.'
+          },
+          '/community': {
+            title: 'Community | ModGuard AI',
+            description: 'Join the ModGuard community, ask about a partnership, or inquire about a sponsorship tier.'
+          }
+        }[path];
+        if (!page) return;
+        document.title = page.title;
+        var set = function (selector, content) {
+          var node = document.head.querySelector(selector);
+          if (node) node.setAttribute('content', content);
+        };
+        set('meta[name="description"]', page.description);
+        set('meta[property="og:title"]', page.title);
+        set('meta[property="og:description"]', page.description);
+        set('meta[name="twitter:title"]', page.title);
+        set('meta[name="twitter:description"]', page.description);
+        var canonical = document.head.querySelector('link[rel="canonical"]');
+        if (canonical) canonical.setAttribute('href', 'https://modguardai.org' + path);
+      })();
+    </script>
     <meta name="description" content="Check if a message is a scam. ModGuard ScamCheck is a free AI scam checker and phishing link checker for texts, emails, and links." />
     <meta name="keywords" content="AI scam checker, is this message a scam, phishing link checker" />
     <meta name="robots" content="index, follow" />
@@ -141,6 +169,45 @@
       <input type="text" name="name" />
       <input type="email" name="email" />
       <input type="text" name="tier" />
+      <textarea name="message"></textarea>
+      <input name="bot-field" />
+    </form>
+    <form name="community-partner" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="organization" />
+      <input type="text" name="contact" />
+      <input type="email" name="email" />
+      <select name="partnership">
+        <option>Platform and trust</option>
+        <option>Research and data</option>
+        <option>Education and campus</option>
+        <option>Distribution</option>
+        <option>Integration</option>
+      </select>
+      <input type="text" name="region" />
+      <input type="checkbox" name="give_back" value="yes" />
+      <textarea name="message"></textarea>
+      <input name="bot-field" />
+    </form>
+    <form name="community-waitlist" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input name="bot-field" />
+    </form>
+    <form name="community-join" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <textarea name="focus"></textarea>
+      <input name="bot-field" />
+    </form>
+    <form name="community-sponsor" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="company" />
+      <input type="text" name="contact" />
+      <input type="email" name="email" />
+      <select name="tier">
+        <option>Supporter</option>
+        <option>Hackathon sponsor</option>
+        <option>Founding sponsor</option>
+      </select>
       <textarea name="message"></textarea>
       <input name="bot-field" />
     </form>
