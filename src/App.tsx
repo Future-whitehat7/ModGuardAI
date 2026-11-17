@@ -6,6 +6,7 @@ import { Operator } from './pages/Operator';
 import { InsightArticle } from './pages/InsightArticle';
 import { Insights } from './pages/Insights';
 import { Daily } from './pages/Daily';
+import { GiveBack } from './pages/GiveBack';
 import { LandingPage } from './pages/LandingPage';
 import { ScamCheckTool } from './pages/ScamCheckTool';
 import { Sponsor } from './pages/Sponsor';
@@ -28,6 +29,7 @@ function App() {
           <Route path="/insights" element={<Insights />} />
           <Route path="/insights/:slug" element={<InsightArticle />} />
           <Route path="/sponsor" element={<Sponsor />} />
+          <Route path="/give-back" element={<GiveBack />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

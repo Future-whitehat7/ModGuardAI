@@ -72,6 +72,13 @@ export function metaForPath(pathname: string): RouteMeta {
         'Public cybersecurity and AI reporting, posts from public platforms, a prompt generator, and sponsor placements. Every item links to its source.',
     };
   }
+  if (pathname === '/give-back') {
+    return {
+      title: 'Give back | ModGuard AI',
+      description:
+        'The Give back hiring principle for early-career community members. It is a stated principle, not a contract. The hire log lists only confirmed hires.',
+    };
+  }
   if (pathname === '/sponsor') {
     return {
       title: 'Sponsors | ModGuard AI',
