@@ -7,7 +7,12 @@ import { FiveMinute } from '../components/community/FiveMinute';
 import { Founding } from '../components/community/Founding';
 import { Hackathons } from '../components/community/Hackathons';
 import { Mission } from '../components/community/Mission';
+import { Partnerships } from '../components/community/Partnerships';
+import { Play } from '../components/community/Play';
 import { PlayerPath } from '../components/community/PlayerPath';
+import { Rewards } from '../components/community/Rewards';
+import { SectionNav } from '../components/community/SectionNav';
+import { Sponsorship } from '../components/community/Sponsorship';
 
 const emptyBoard: CommunityBoard = { contributors: [], shipped: [], hackathons: [] };
 
@@ -46,9 +51,11 @@ export function Community() {
       <p className="eyebrow">Community</p>
       <h1 className="display section-display mt-4 text-ice">The ModGuard community.</h1>
       <p className="community-copy">A doorway task, a build, then a public name.</p>
+      <SectionNav />
       <PlayerPath progress={progress} animate={animate} />
       <Founding board={board} />
       <FiveMinute progress={progress} onDone={onDone} />
+      <Play />
       <CommunityForm
         id="join"
         formName="community-join"
@@ -64,6 +71,9 @@ export function Community() {
       <Hackathons board={board} now={now} />
       <Mission />
       <CampusKit />
+      <Rewards />
+      <Sponsorship />
+      <Partnerships />
     </article>
   );
 }

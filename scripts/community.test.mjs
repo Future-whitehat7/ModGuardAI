@@ -3,7 +3,22 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { countdown, readBoard } from '../src/community/board.ts';
 import { emptyProgress, levelProgress, pathSteps, readProgress, recordTask } from '../src/community/progress.ts';
+import { pairForDay, votePercent } from '../src/community/play.ts';
+import { gulfRegions, regionChoices } from '../src/community/regions.ts';
 import { choiceIsRight, labelTask, promptIsReady } from '../src/community/samples.ts';
+
+test('a duel rotates by date and hides a vote percent until votes exist', () => {
+  assert.equal(pairForDay('2026-11-01').id, pairForDay('2026-12-01').id);
+  assert.notEqual(pairForDay('2026-11-01').id, pairForDay('2026-11-02').id);
+  assert.equal(votePercent(null, 0), null);
+  assert.equal(votePercent(0, 0), null);
+  assert.equal(votePercent(4, 3), 75);
+});
+
+test('partner regions feature the Gulf and do not invent a presence', () => {
+  assert.deepEqual(gulfRegions, ['UAE', 'Abu Dhabi', 'Dubai', 'Saudi Arabia', 'Qatar']);
+  assert.deepEqual(regionChoices, ['UAE', 'Abu Dhabi', 'Dubai', 'Saudi Arabia', 'Qatar', 'Other']);
+});
 
 test('the public board ships empty and ignores a nameless row', () => {
   const file = JSON.parse(readFileSync('public/community/board.json', 'utf8'));

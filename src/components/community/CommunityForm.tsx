@@ -11,10 +11,10 @@ export function CommunityForm({
   fields,
 }: {
   id: string;
-  formName: 'community-join' | 'campus-kit';
+  formName: 'community-join' | 'campus-kit' | 'community-sponsor' | 'community-partner' | 'community-squad' | 'community-sprint';
   title: string;
   lede: string;
-  fields: { name: string; label: string; type?: string; required?: boolean }[];
+  fields: { name: string; label: string; type?: string; required?: boolean; options?: string[]; defaultOption?: string }[];
 }) {
   const [status, setStatus] = useState<Status>('idle');
 
@@ -59,10 +59,30 @@ export function CommunityForm({
       </p>
       <h3>{title}</h3>
       <p>{lede}</p>
-      {fields.map((field) => (
-        <label key={field.name}>
+      {fields.map((field) => field.type === 'checks' && field.options ? (
+        <fieldset key={field.name} className="check-set">
+          <legend>{field.label}</legend>
+          {field.options.map((option) => (
+            <label key={option} className="check-row">
+              <input type="checkbox" name={field.name} value={option} />
+              {option}
+            </label>
+          ))}
+        </fieldset>
+      ) : (
+        <label key={field.name} className={field.type === 'checkbox' ? 'check-row' : undefined}>
+          {field.type === 'checkbox' ? (
+            <input name={field.name} type="checkbox" value="yes" />
+          ) : null}
           {field.label}
-          {field.type === 'textarea' ? (
+          {field.type === 'checkbox' ? null : field.options ? (
+            <select name={field.name} required={field.required !== false} defaultValue={field.defaultOption ?? ''}>
+              <option value="" disabled>Choose one</option>
+              {field.options.map((option) => (
+                <option key={option} value={option}>{option}</option>
+              ))}
+            </select>
+          ) : field.type === 'textarea' ? (
             <textarea name={field.name} required={field.required !== false} maxLength={2000} />
           ) : (
             <input name={field.name} type={field.type ?? 'text'} required={field.required !== false} maxLength={160} />

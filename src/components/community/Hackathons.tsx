@@ -1,80 +1,81 @@
+import { useState } from 'react';
 import { countdown, type CommunityBoard } from '../../community/board';
 import { CommunityForm } from './CommunityForm';
 
-const tiers = [
-  { name: 'Builder', mark: 'B', detail: 'A small build the room can use.' },
-  { name: 'Host', mark: 'H', detail: 'You ran the night from the kit.' },
-  { name: 'First ship', mark: '1', detail: 'The first confirmed build on the board.' },
+const windows = [
+  { id: '24h Blitz', name: '24h Blitz', detail: 'Ship one focused tool before the day ends.' },
+  { id: '48h Build', name: '48h Build', detail: 'A working product and a two-minute demo.' },
+  { id: '72h Moonshot', name: '72h Moonshot', detail: 'A polished product people can actually use.' },
 ];
 
+const prompts = [
+  'A scam text checker a friend can paste a message into.',
+  'A deepfake spotter helper that lists what to check in a clip.',
+  'An impersonation alert bot for one public handle.',
+  'A safety prompt kit an assistant must follow before it says “this is safe.”',
+];
+
+const skills = ['New to vibe coding', 'Comfortable', 'Ships often'];
+
 export function Hackathons({ board, now }: { board: CommunityBoard; now: number }) {
+  const [window, setWindow] = useState(windows[1].id);
   const next = board.hackathons
     .map((event) => ({ event, left: countdown(event.startsAt, now) }))
     .find((item) => item.left);
 
   return (
-    <section id="hackathons" className="community-block" aria-labelledby="hack-title">
-      <p className="eyebrow">B. Hackathons and games</p>
-      <h2 id="hack-title" className="display section-display text-ice">Build the game that catches the trick.</h2>
+    <section id="sprints" className="community-block" aria-labelledby="sprint-title">
+      <p className="eyebrow">B. Vibe Code Sprints</p>
+      <h2 id="sprint-title" className="display section-display text-ice">Idea to shipped, in a weekend.</h2>
       <p className="community-copy">
-        Make something people can play about AI safety, deepfakes, privacy, or moderation. Join when a date is up, or host the night yourself. Recognition is the win: a title, a show-and-tell, and a confirmed build on the board.
+        If you can vibe code, you can ship. Use any AI coding tool. Pick a window, build something about AI safety, and show it. Top builds can earn Spotted by you credit or a Guardian Card tier. Partner prizes unlock as partners join.
       </p>
       {next ? (
         <p className="community-countdown" aria-live="polite">
           <span>{next.left}</span>
           until {next.event.name}
-          {next.event.host ? ` · ${next.event.host}` : ''}
-          {next.event.participants !== null ? ` · ${next.event.participants} people listed` : ''}
         </p>
       ) : (
-        <p className="community-empty">First event date drops soon. Get the ping.</p>
+        <p className="community-empty">First sprint drops soon. Get on the list.</p>
       )}
-      <div className="community-split">
-        <article>
-          <h3>How to join</h3>
-          <ol>
-            <li>Leave your name for the ping.</li>
-            <li>When a date is on the board, show up with a build.</li>
-            <li>Two minutes to show it.</li>
-          </ol>
-        </article>
-        <article>
-          <h3>How to host</h3>
-          <ol>
-            <li>Pick a theme: AI safety, deepfakes, privacy, or moderation.</li>
-            <li>Run the campus kit with your club.</li>
-            <li>Send the results back so a confirmed build can reach the board.</li>
-          </ol>
-        </article>
-      </div>
-      <ul className="recognition-tiles">
-        {tiers.map((tier) => (
-          <li key={tier.name}>
-            <span aria-hidden="true">{tier.mark}</span>
-            <strong>{tier.name}</strong>
-            <small>{tier.detail}</small>
-          </li>
+      <div className="sprint-tickets" role="radiogroup" aria-label="Sprint window">
+        {windows.map((ticket) => (
+          <button
+            key={ticket.id}
+            type="button"
+            role="radio"
+            aria-checked={window === ticket.id}
+            className={window === ticket.id ? 'on' : ''}
+            onClick={() => setWindow(ticket.id)}
+          >
+            <strong>{ticket.name}</strong>
+            <span>{ticket.detail}</span>
+          </button>
         ))}
-      </ul>
-      {board.hackathons.length > 0 ? (
-        <ul className="community-board">
-          {board.hackathons.map((event) => (
-            <li key={event.name}>
-              <strong>{event.name}</strong>
-              {event.startsAt ? <small>{event.startsAt}</small> : null}
-            </li>
+      </div>
+      <article className="perk-card">
+        <p className="community-kicker">Build prompts</p>
+        <ul>
+          {prompts.map((prompt) => (
+            <li key={prompt}>{prompt}</li>
           ))}
         </ul>
-      ) : null}
+        <p>
+          A sponsor can host a sprint. <a href="#sponsor-community">See sponsorship</a>.
+        </p>
+      </article>
       <CommunityForm
-        id="hack-join"
-        formName="community-join"
-        title="Get the ping"
-        lede="We read every one and reply by email."
+        key={window}
+        id="sprint-form"
+        formName="community-sprint"
+        title="Get on the list"
+        lede="We read every one and reply by email. No date is set yet."
         fields={[
           { name: 'name', label: 'Name' },
           { name: 'email', label: 'Email', type: 'email' },
-          { name: 'focus', label: 'Join or host, and the theme you want', type: 'textarea' },
+          { name: 'window', label: 'Preferred window', options: windows.map((item) => item.id), defaultOption: window },
+          { name: 'skill', label: 'Skill level', options: skills },
+          { name: 'idea', label: 'What would you ship?', type: 'textarea', required: false },
         ]}
       />
     </section>

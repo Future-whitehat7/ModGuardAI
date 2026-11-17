@@ -171,6 +171,12 @@
   force = true
 
 [[redirects]]
+  from = "/api/scam-vote"
+  to = "/.netlify/functions/scam-vote"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/api/scamcheck"
   to = "/.netlify/functions/scamcheck-relay"
   status = 200

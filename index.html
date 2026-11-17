@@ -152,6 +152,73 @@
       <textarea name="build"></textarea>
       <input name="bot-field" />
     </form>
+    <form name="community-sponsor" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="company" />
+      <input type="text" name="contact" />
+      <input type="email" name="email" />
+      <select name="tier">
+        <option>Supporter</option>
+        <option>Hackathon sponsor</option>
+        <option>Founding sponsor</option>
+      </select>
+      <input type="text" name="budget" />
+      <textarea name="message"></textarea>
+      <input name="bot-field" />
+    </form>
+    <form name="community-partner" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="organization" />
+      <input type="text" name="contact" />
+      <input type="email" name="email" />
+      <select name="partnership">
+        <option>Platform and trust</option>
+        <option>Research and data</option>
+        <option>Education and campus</option>
+        <option>Distribution</option>
+      </select>
+      <select name="region">
+        <option>UAE</option>
+        <option>Abu Dhabi</option>
+        <option>Dubai</option>
+        <option>Saudi Arabia</option>
+        <option>Qatar</option>
+        <option>Other</option>
+      </select>
+      <input type="checkbox" name="give_back" value="yes" />
+      <input type="checkbox" name="rewards" value="Mentorship" />
+      <input type="checkbox" name="rewards" value="Red-team seats" />
+      <input type="checkbox" name="rewards" value="Early access" />
+      <input type="checkbox" name="rewards" value="Event invites" />
+      <input type="checkbox" name="rewards" value="Other" />
+      <textarea name="message"></textarea>
+      <input name="bot-field" />
+    </form>
+    <form name="community-squad" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="squad" />
+      <select name="type">
+        <option>Campus</option>
+        <option>City</option>
+        <option>Country</option>
+      </select>
+      <input type="text" name="location" />
+      <input type="text" name="captain" />
+      <input name="bot-field" />
+    </form>
+    <form name="community-sprint" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <select name="window">
+        <option>24h Blitz</option>
+        <option>48h Build</option>
+        <option>72h Moonshot</option>
+      </select>
+      <select name="skill">
+        <option>New to vibe coding</option>
+        <option>Comfortable</option>
+        <option>Ships often</option>
+      </select>
+      <textarea name="idea"></textarea>
+      <input name="bot-field" />
+    </form>
     <form name="sponsor-inquiry" method="POST" action="/" data-netlify="true" netlify netlify-honeypot="bot-field" hidden>
       <input type="text" name="name" />
       <input type="email" name="email" />
