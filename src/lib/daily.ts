@@ -51,7 +51,7 @@ export function isPublishable(item: Pick<DailyItem, 'title' | 'summary'>) {
 }
 
 const SECURITY = /\b(cyber\w*|hack\w*|ransom\w*|malware|breach\w*|phish\w*|vulnerab\w*|cisa|exploit\w*|scams?|frauds?|deepfakes?|privacy|passwords?|credentials?|impersonat\w*|spyware|botnets?|zero-day|zero day|prompt injection|jailbreaks?|data leaks?|security)\b/i;
-const GOSSIP = /\b(jensen|huang|celebrity|gossip|plot against|earnings|funding round|billionaire|stock price)\b/i;
+const GOSSIP = /\b(jensen|huang|celebrity|gossip|plot against|earnings|funding round|billionaire|stock price|valuation|raises \$)\b/i;
 const OFF_BEAT = /\b(broken roads|land records|box office|recipe|touchdown|championship)\b/i;
 
 const LEAD_SOURCES = ['CISA', 'BleepingComputer', 'The Hacker News', 'Krebs on Security', 'Dark Reading', 'SecurityWeek', 'The Record'];

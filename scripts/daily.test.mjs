@@ -17,6 +17,7 @@ test('daily categories follow the headline, and an unrelated title stays unlabel
   assert.equal(isDailyRelevant({ title: "The AI start-ups fixing India's broken roads", summary: '', tag: 'AI' }), false);
   assert.equal(isDailyRelevant({ title: "Tech leaders are convinced that Jensen Huang’s exit was a plot against him", summary: '', tag: 'AI' }), false);
   assert.equal(isDailyRelevant({ title: 'Ransomware crew lists a hospital', summary: '', tag: 'Cyber' }), true);
+  assert.equal(isDailyRelevant({ title: 'Cybersecurity AI startup Corma reaches $1B valuation', summary: '', tag: 'Cyber' }), false);
   const ranked = rankDaily([
     { title: 'A chatbot ships', url: 'https://example.com/a', source: 'The Verge AI', date: '2026-11-16', summary: 'ChatGPT', tag: 'AI' },
     { title: 'CISA adds a vulnerability', url: 'https://example.com/b', source: 'CISA', date: '2026-11-15', summary: 'Known exploited', tag: 'Cyber' },
